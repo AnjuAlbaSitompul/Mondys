@@ -33,7 +33,7 @@
                         <div class="col-lg-12">
                             <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn"
                                 name="codesj" type="text" invalid="Harap Masukkan Code SJ" label="Surat Jalan"
-                                id="sj" />
+                                id="sj" disabled="{{ false }}" />
                         </div>
                         <div class="col-lg-12">
                             <x-form.input-btn placeholder="Pilih Picker" btnTxt="Choose" btnId="choosePicker" name="userId"
