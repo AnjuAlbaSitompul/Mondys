@@ -18,7 +18,9 @@ class inputBtn extends Component
         public $btnTxt = '',
         public $invalid = '',
         public $disabled = false
-    ) {}
+    ) {
+        $this->disabled = $disabled;
+    }
 
     /**
      * Get the view / contents that represent the component.
