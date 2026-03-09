@@ -41,7 +41,10 @@
                                 disabled="{{ true }}" />
                         </div>
                     </form>
-
+                    <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#scannerModal">
+                        Scan Barcode
+                    </button>
+                    <x-modal.scan-modal inputId="barcode" />
                 </div>
             </div>
         </div>
