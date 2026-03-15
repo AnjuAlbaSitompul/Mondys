@@ -38,7 +38,7 @@
                         <div class="col-lg-12">
                             <x-form.input-btn placeholder="Pilih Picker" btnTxt="Choose" btnId="choosePicker" name="userId"
                                 type="text" invalid="Harap Masukkan Picker" label="Pilih Picker" id="userId"
-                                disabled="{{ true }}" />
+                                disabled="{{ true }}" target="" toggle="" />
                         </div>
                         <div class="col-lg-12">
                             <textarea name="desc" class="form-control" placeholder="Masukkan Deskripsi Barang"></textarea>
