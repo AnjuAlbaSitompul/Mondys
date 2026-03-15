@@ -19,7 +19,7 @@ class inputBtn extends Component
         public $invalid = '',
         public $disabled = false,
         public $toggle = '',
-        public $target = '',
+        public $target = null,
         public $name = ''
     ) {
         $this->disabled = $disabled;
