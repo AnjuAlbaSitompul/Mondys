@@ -1,9 +1,9 @@
-@props(['label', 'name', 'options', 'value'])
+@props(['label', 'name', 'options', 'value', 'id'])
 
 @if ($label)
     <label class="form-label">{{ $label }}</label>
 @endif
-<select name="{{ $name }}" {{ $attributes->merge(['class' => 'form-select']) }}>
+<select name="{{ $name }}" id="{{ $id }}" {{ $attributes->merge(['class' => 'form-select']) }}>
     @foreach ($options as $key => $option)
         <option value="{{ $key }}" {{ old($name, $value) == $key ? 'selected' : '' }}>
             {{ $option }}

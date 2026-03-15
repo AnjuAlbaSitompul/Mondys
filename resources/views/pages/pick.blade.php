@@ -16,37 +16,68 @@
                     </div>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form class="row g-3">
+                    <form class="row g-3" id="barang">
                         <div class="col-md-4">
                             <x-form.select :options="[
                                 '' => 'Pilih Tipe Barang',
                                 'sj' => 'Surat Jalan',
                                 'titip' => 'Titip',
-                            ]" name="type" label="Tipe Barang" />
+                            ]" name="type" label="Tipe Barang" id="type" />
                         </div>
-                        <div class="col-lg-12">
-                            <x-form.select label="Tujuan Outlet" name="outletId" :options="[
-                                null => 'Pilih Tujuan',
+                        <div class="col-lg-12 form">
+                            <x-form.select label="Dari Outlet" name="outletId" :options="[
+                                null => 'Pilih Outlet',
                                 'HS01' => 'Haritsa Aceh',
                             ]" />
                         </div>
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 sjcode">
                             <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn"
                                 name="codesj" type="text" invalid="Harap Masukkan Code SJ" label="Surat Jalan"
-                                id="sj" disabled="{{ false }}" />
+                                id="sj" disabled="{{ false }}" toggle="modal" target="#scannerModal" />
                         </div>
                         <div class="col-lg-12">
                             <x-form.input-btn placeholder="Pilih Picker" btnTxt="Choose" btnId="choosePicker" name="userId"
                                 type="text" invalid="Harap Masukkan Picker" label="Pilih Picker" id="userId"
                                 disabled="{{ true }}" />
                         </div>
+                        <div class="col-lg-12">
+                            <textarea name="desc" class="form-control" placeholder="Masukkan Deskripsi Barang"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2 me-4">Tambahkan Barang</button>
                     </form>
-                    <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#scannerModal">
-                        Scan Barcode
-                    </button>
                     <x-modal.scan-modal inputId="barcode" />
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.sjcode').hide();
+            $('.form').hide();
+            $('#type').change(function() {
+
+                let value = $(this).val();
+
+                if (value === 'sj') {
+                    $('.sjcode').show();
+                    $('.form').hide();
+                } else if (value === 'titip') {
+                    $('.sjcode').hide();
+                    $('.form').show();
+                } else {
+                    $('.sjcode').hide();
+                    $('.form').hide();
+                }
+
+            });
+
+            $('#barang').on('submit', function(e) {
+                e.preventDefault();
+                let formData = $(this).serializeArray();
+
+                console.log(formData);
+            })
+        })
+    </script>
 @endsection
