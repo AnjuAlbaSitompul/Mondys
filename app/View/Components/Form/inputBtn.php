@@ -23,6 +23,7 @@ class inputBtn extends Component
         public $name = ''
     ) {
         $this->disabled = $disabled;
+        $this->target = $target;
     }
 
     /**
