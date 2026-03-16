@@ -1,86 +1,46 @@
 <?php
 
-namespace App\Http\Controllers;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use App\Models\Barang;
-use App\Models\Outlet;
-use App\Models\PickList;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-
-class BarangController extends Controller
+return new class extends Migration
 {
-    public function index()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        $outlets = Outlet::pluck('name', 'codeOutlet')->toArray();
+        Schema::create('pick_lists', function (Blueprint $table) {
+            $table->id();
 
-        return view('pages.barang', [
-            'outlets' => $outlets
-        ]);
+            $table->foreignId('barang_id')
+                ->constrained('barangs')
+                ->cascadeOnDelete();
+
+            $table->foreignId('picker_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->enum('status', [
+                'picking',
+                'finished'
+            ])->default('picking');
+
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('finished_at')->nullable();
+
+            $table->timestamps();
+
+            $table->index(['picker_id', 'status']);
+        });
     }
 
-    public function create(Request $request)
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        $validator = Validator::make($request->all(), [
-            'type' => 'required|in:sj,titip',
-            'codesj' => 'required_if:type,sj',
-            'pickerId' => 'required_if:type,sj|exists:users,id',
-            'outletId' => 'required_if:type,titip|exists:outlets,codeOutlet',
-            'qty' => 'required|numeric|min:1',
-            'desc' => 'nullable|string'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Silahkan isi data dengan benar',
-                'data' => $validator->errors()
-            ], 422);
-        }
-
-        $validated = $validator->validated();
-
-        try {
-
-            $result = DB::transaction(function () use ($validated) {
-
-                $barang = Barang::create([
-                    'status' => 'PICKED',
-                    'type' => strtoupper($validated['type']),
-                    'sjcode' => $validated['type'] === 'sj'
-                        ? $validated['codesj']
-                        : null,
-                    'id_outlet' => $validated['type'] === 'titip'
-                        ? $validated['outletId']
-                        : null,
-                    'boxqty' => $validated['qty'],
-                    'desc' => $validated['desc'] ?? null,
-                ]);
-
-                if ($validated['type'] === 'sj') {
-                    PickList::create([
-                        'barang_id' => $barang->id,
-                        'picker_id' => $validated['pickerId'],
-                        'started_at' => now(),
-                    ]);
-                }
-
-                return $barang;
-            });
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Barang berhasil ditambahkan',
-                'data' => $validated
-            ]);
-        } catch (\Throwable $th) {
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Terjadi kesalahan server',
-                'error' => $th->getMessage()
-            ], 500);
-        }
+        Schema::dropIfExists('pick_lists');
     }
-}
+};
