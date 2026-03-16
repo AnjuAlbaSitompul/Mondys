@@ -16,11 +16,15 @@ return [
                 'title' => 'List Barang',
                 'route' => 'barang',
             ],
+            [
+                'title' => 'List Picking',
+                'route' => 'barang.pick',
+            ],
         ]
     ],
     [
         'title' => 'Boarding',
-        'icon' => 'fa-solid fa-house',
+        'icon' => 'fa-solid fa-truck',
         'route' => 'boarding',
     ],
 

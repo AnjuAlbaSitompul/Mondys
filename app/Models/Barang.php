@@ -18,4 +18,13 @@ class Barang extends Model
         'boxqty',
         'desc'
     ];
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class, 'id_outlet', 'codeOutlet');
+    }
+
+    public function pickList()
+    {
+        return $this->hasOne(PickList::class);
+    }
 }

@@ -25,8 +25,8 @@ class BarangController extends Controller
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:sj,titip',
             'codesj' => 'required_if:type,sj',
-            'pickerId' => 'required_if:type,sj|exists:users,id',
-            'outletId' => 'required_if:type,titip|exists:outlets,codeOutlet',
+            'pickerId' => 'required_if:type,sj',
+            'outletId' => 'required_if:type,titip',
             'qty' => 'required|numeric|min:1',
             'desc' => 'nullable|string'
         ]);
@@ -72,7 +72,7 @@ class BarangController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Barang berhasil ditambahkan',
-                'data' => $validated
+                'data' => $result
             ]);
         } catch (\Throwable $th) {
 
@@ -82,5 +82,15 @@ class BarangController extends Controller
                 'error' => $th->getMessage()
             ], 500);
         }
+    }
+
+    public function getAll()
+    {
+        $barangs = Barang::with('outlet')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $barangs
+        ]);
     }
 }

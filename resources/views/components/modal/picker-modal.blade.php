@@ -43,7 +43,6 @@
                 url: '/users/picker',
                 type: 'GET',
                 dataSrc: function(json) {
-                    console.log(json.data)
                     return json.data;
                 }
             },

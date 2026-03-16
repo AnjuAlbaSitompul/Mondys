@@ -21,6 +21,6 @@ class PickList extends Model
 
     public function picker()
     {
-        return $this->belongsTo(User::class, 'picker_id');
+        return $this->belongsTo(User::class, 'picker_id', 'id');
     }
 }

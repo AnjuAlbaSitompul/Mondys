@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\PickController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,11 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
     Route::get('/barang', [BarangController::class, 'index'])->name('barang');
     Route::post('/barang', [BarangController::class, 'create']);
+    Route::get('/barang/items', [BarangController::class, 'getAll']);
+
+    Route::get('/pick', [PickController::class, 'index'])->name('barang.pick');
+    Route::get('/pick/items', [PickController::class, 'getAll'])->name('barang.pick');
+
 
     Route::get('/boarding', function () {
         return view('pages.boarding');

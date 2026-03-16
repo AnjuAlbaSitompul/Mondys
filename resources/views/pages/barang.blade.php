@@ -67,7 +67,20 @@
                 </div>
                 <div class="widget-content widget-content-area">
                     <div class="table-responsive">
-
+                        <table id="barangTable" class="table style-3 dt-table-hover">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="text-center col-no">No</th>
+                                    <th>TUJUAN</th>
+                                    <th class="text-center">TYPE</th>
+                                    <th class="text-center">STATUS</th>
+                                    <th class="text-center">QTY</th>
+                                    <th class="text-center col-action">
+                                        <i class="fa fa-cog"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -80,7 +93,50 @@
             $('.titip-section').hide();
             $('.picker-section').hide();
             $('.desc-section').hide();
-            $('.btn-section').hide()
+            $('.btn-section').hide();
+
+            let tableBarang = $('#barangTable').DataTable({
+                processing: true,
+                ajax: {
+                    url: '/barang/items',
+                    type: 'GET',
+                    dataSrc: function(json) {
+                        return json.data;
+                    }
+                },
+                columns: [{
+                        data: null,
+                        className: "text-center",
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        className: 'text-center',
+                        data: 'outlet.name', // pastikan outlet relasi ada
+                        defaultContent: '-' // untuk barang tanpa outlet
+                    },
+                    {
+                        className: 'text-center',
+                        data: 'type'
+                    },
+                    {
+                        className: 'text-center',
+                        data: 'status'
+                    },
+                    {
+                        className: 'text-center',
+                        data: 'boxqty'
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center',
+                        defaultContent: '-'
+                    }
+                ]
+            });
 
             const Toast = Swal.mixin({
                 toast: true,
@@ -136,6 +192,7 @@
             $('#barangForm').on('submit', function(e) {
                 e.preventDefault()
                 let data = $(this).serializeArray()
+                console.log(data)
                 $.ajax({
                     url: '/barang',
                     method: 'POST',
@@ -154,6 +211,7 @@
                         $('#barangForm')[0].reset();
                         $('.sj-section, .titip-section, .picker-section, .desc-section, .btn-section')
                             .hide();
+                        tableBarang.ajax.reload(null, false);
                     },
                     error: function(xhr) {
                         const message = xhr.responseJSON?.message ?? 'Login gagal';
