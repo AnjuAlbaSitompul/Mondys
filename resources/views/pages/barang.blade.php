@@ -17,38 +17,20 @@
                 </div>
                 <div class="widget-content widget-content-area">
                     <form class="row g-3" id="barangForm">
-                        <div class="col-md-4">
-                            <x-form.select :options="[
-                                '' => 'Pilih Tipe Barang',
-                                'sj' => 'Surat Jalan',
-                                'titip' => 'Titip',
-                            ]" name="type" label="Tipe Barang" id="type" />
-                        </div>
-                        <div class="col-lg-12 titip-section">
-                            <x-form.select label="Dari Outlet" name="outletId" :options="[
-                                null => 'Pilih Outlet',
-                                ...$outlets,
-                            ]" />
-                        </div>
-                        <div class="col-lg-12 sj-section">
-                            <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn"
-                                name="codesj" type="text" invalid="Harap Masukkan Code SJ" label="Surat Jalan"
-                                id="sj" disabled="{{ false }}" toggle="modal" target="#scannerModal" />
-                        </div>
-                        <div class="col-lg-12 picker-section">
+                        <input type="hidden" value="sj" name="type">
+                        <div class="col-lg-12">
                             <x-form.input-btn placeholder="Pilih Picker" btnTxt="Choose" btnId="choosePicker" name="picker"
                                 type="text" invalid="Harap Masukkan Picker" label="Pilih Picker" id="picker"
                                 disabled="{{ true }}" target="#pickerModal" toggle="modal" />
                             <input type="hidden" id="pickerId" name="pickerId">
                         </div>
-                        <div class="col-lg-12 desc-section">
-                            <x-form.input label="Masukkan Quantity" name="qty" type="number"
-                                valid="Silahkan Isi Quantity" />
+                        <div class="col-lg-12">
+                            <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn"
+                                name="codesj" type="basic" invalid="Harap Masukkan Code SJ" label="Surat Jalan"
+                                id="sj" disabled="{{ false }}" toggle="modal" target="#scannerModal"
+                                value="tag1, tag2 autofocus" />
                         </div>
-                        <div class="col-lg-12 desc-section">
-                            <textarea name="desc" class="form-control" placeholder="Masukkan Deskripsi Barang"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary mb-2 me-4 btn-section">Tambahkan Barang</button>
+                        <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Picker</button>
                     </form>
                     <x-modal.scan-modal inputId="barcode" />
                     <x-modal.picker-modal inputId="userPicker" />
@@ -86,15 +68,16 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 
     <script>
         $(document).ready(function() {
-            $('.sj-section').hide();
-            $('.titip-section').hide();
-            $('.picker-section').hide();
-            $('.desc-section').hide();
-            $('.btn-section').hide();
+            var input = document.querySelector('#sj');
 
+            var tagify = new Tagify(input, {
+                delimiters: ",",
+                maxTags: 10
+            });
             let tableBarang = $('#barangTable').DataTable({
                 processing: true,
                 ajax: {
@@ -150,34 +133,7 @@
                 }
             })
 
-            $('#type').change(function() {
 
-                let value = $(this).val();
-
-                if (value === 'sj') {
-                    $('.sj-section').show();
-                    $('.titip-section').hide();
-                    $('.picker-section').show();
-                    $('.desc-section').show();
-                    $('.btn-section').show();
-
-
-                } else if (value === 'titip') {
-                    $('.sj-section').hide();
-                    $('.titip-section').show();
-                    $('.picker-section').hide();
-                    $('.desc-section').show();
-                    $('.btn-section').show();
-
-                } else {
-                    $('.sj-section').hide();
-                    $('.titip-section').hide();
-                    $('.picker-section').hide()
-                    $('.desc-section').hide();
-                    $('.btn-section').hide()
-                }
-
-            });
 
             $(document).on('click', '.pilih-picker', function() {
 

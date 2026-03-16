@@ -51,6 +51,11 @@
     <link href="../src/plugins/css/dark/sweetalerts2/custom-sweetalert.css" rel="stylesheet" type="text/css" />
     {{-- END SWALL --}}
 
+    {{-- tagify --}}
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css">
+    {{-- end tagify --}}
+
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <link href="../src/plugins/src/apex/apexcharts.css" rel="stylesheet" type="text/css">
     <link href="../src/assets/css/light/authentication/auth-boxed.css" rel="stylesheet" type="text/css" />

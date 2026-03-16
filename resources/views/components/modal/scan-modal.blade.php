@@ -38,7 +38,7 @@
             },
             function(decodedText) {
 
-                $('#sj').val(decodedText);
+                let input = $('#sj').val(decodedText);
 
                 html5QrCode.stop().then(() => {
                     $('#scannerModal').modal('hide');
