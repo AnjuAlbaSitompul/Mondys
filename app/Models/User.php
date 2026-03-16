@@ -46,4 +46,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function pickLists()
+    {
+        return $this->hasMany(PickList::class, 'picker_id');
+    }
 }

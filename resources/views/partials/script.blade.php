@@ -7,6 +7,11 @@
     <script src="../layouts/vertical-light-menu/app.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
 
+    {{-- swall --}}
+    <script src="../src/plugins/src/sweetalerts2/sweetalerts2.min.js"></script>
+    {{-- <script src="../src/plugins/src/table/datatable/datatables.js"></script> --}}
+
+
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     {{-- <script src="../src/plugins/src/apex/apexcharts.min.js"></script> --}}
     {{-- <script src="../src/assets/js/dashboard/dash_1.js"></script> --}}

@@ -52,6 +52,17 @@
 
     <script>
         $(function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                },
+            })
             $('#signIn').on('submit', function(e) {
                 e.preventDefault();
 
@@ -67,10 +78,19 @@
                         'X-CSRF-TOKEN': $('input[name="_token"]').val()
                     },
                     success: function(res) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Sign You in'
+                        })
                         window.location.href = '/dashboard';
+
                     },
                     error: function(xhr) {
-                        alert(xhr.responseJSON?.message ?? 'Login gagal');
+                        const message = xhr.responseJSON?.message ?? 'Login gagal';
+                        Toast.fire({
+                            icon: 'error',
+                            title: message
+                        })
                     }
                 });
             });

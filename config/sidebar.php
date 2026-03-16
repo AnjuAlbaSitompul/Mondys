@@ -8,15 +8,20 @@ return [
         'route' => 'dashboard',
     ],
     [
-        'title' => 'Picker',
-        'icon' => 'fa-solid fa-person-biking',
-        'id' => 'picker',
+        'title' => 'Barang',
+        'icon' => 'fa-solid fa-box',
+        'id' => 'barang',
         'children' => [
             [
-                'title' => 'Jemput',
-                'route' => 'picker.pick',
+                'title' => 'List Barang',
+                'route' => 'barang',
             ],
         ]
+    ],
+    [
+        'title' => 'Boarding',
+        'icon' => 'fa-solid fa-house',
+        'route' => 'boarding',
     ],
 
 ];

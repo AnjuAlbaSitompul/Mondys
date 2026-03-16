@@ -21,5 +21,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'username' => 'admin',
         ]);
+
+        $this->call([
+            PickerUserSeeder::class,
+            OutletSeeder::class,
+        ]);
     }
 }

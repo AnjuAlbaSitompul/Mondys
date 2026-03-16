@@ -8,15 +8,16 @@ use Illuminate\View\Component;
 
 class Input extends Component
 {
-    public $label;
-    public $name;
-    public $placeholder;
-    public $type;
-    public $value;
-    public $id;
-    public $valid;
-    public function __construct($label, $name, $type = 'text', $value = null, $placeholder = null, $id = "", $valid)
-    {
+
+    public function __construct(
+        public $label = null,
+        public $name = null,
+        public $placeholder = "",
+        public $type = "text",
+        public $value = null,
+        public $id = null,
+        public $valid = ""
+    ) {
         $this->label = $label;
         $this->name = $name;
         $this->type = $type;
