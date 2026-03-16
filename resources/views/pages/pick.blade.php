@@ -22,7 +22,7 @@
                                 <th class="text-center col-no">No</th>
                                 <th class="text-center col-no">Picker</th>
                                 <th class="text-center col-no">Status</th>
-
+                                <th class="text-center col-no">Durasi</th>
                                 <th class="text-center col-action">
                                     <i class="fa fa-cog"></i>
                                 </th>
@@ -55,19 +55,24 @@
                         }
                     },
                     {
+                        className: 'text-center',
                         data: 'picker.name',
                     },
                     {
+                        className: 'text-center',
+
                         data: 'status'
                     },
                     {
+                        className: 'text-center',
+
                         data: 'started_at',
                         render: function(data, type, row) {
                             // type bisa 'display', 'sort', dll
                             let time = new Date(data)
                             let idTime = time.toLocaleTimeString('id-ID')
                             if (type === 'display') {
-                                return moment(data).local().fromNow(); // "2 jam yang lalu"
+                                return moment.utc(data).local().fromNow(); // "2 jam yang lalu"
                             }
                             return data; // biar sorting tetap berdasarkan timestamp asli
                         }
