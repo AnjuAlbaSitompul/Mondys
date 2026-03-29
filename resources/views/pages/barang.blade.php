@@ -32,7 +32,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Picker</button>
                     </form>
-                    <x-modal.scan-modal inputId="barcode" />
+                    <x-modal.scan-modal inputId="sj" />
                     <x-modal.picker-modal inputId="userPicker" />
                 </div>
             </div>

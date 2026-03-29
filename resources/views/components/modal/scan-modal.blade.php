@@ -38,8 +38,10 @@
             },
             function(decodedText) {
 
-                // let input = $('#sj').val(decodedText);
-                tagify.addTags([decodedText]);
+                let input = document.querySelector('#{{ $inputId }}');
+
+                let tagify = new Tagify(input);
+                tagify.addTags(decodedText);
 
                 html5QrCode.stop().then(() => {
                     $('#scannerModal').modal('hide');
