@@ -19,12 +19,12 @@
                         <div class="col-lg-12">
                             <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn"
                                 name="codesj" type="basic" invalid="Harap Masukkan Code SJ" label="Surat Jalan"
-                                id="sj" disabled="{{ false }}" toggle="modal" target="#scannerModal"
+                                id="sjpickend" disabled="{{ false }}" toggle="modal" target="#scannerModal"
                                 value="tag1, tag2 autofocus" />
                         </div>
                         <button type="submit" class="btn btn-primary mb-2 me-4 ">End Pick</button>
                     </form>
-                    <x-modal.scan-modal inputId="endpickBarcode" />
+                    <x-modal.scan-modal inputId="sjpickend" />
                 </div>
             </div>
         </div>
