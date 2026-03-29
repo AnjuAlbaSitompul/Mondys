@@ -39,7 +39,7 @@
             function(decodedText) {
 
                 // let input = $('#sj').val(decodedText);
-                $('#' + @js($inputId)).tagify('addTag', decodedText);
+                tagify.addTags([decodedText]);
 
                 html5QrCode.stop().then(() => {
                     $('#scannerModal').modal('hide');
