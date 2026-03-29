@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form class="row g-3" id="barangForm">
+                    <form class="row g-3" id="endPickForm">
                         <div class="col-lg-12">
                             <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn"
                                 name="codesj" type="basic" invalid="Harap Masukkan Code SJ" label="Surat Jalan"
@@ -59,6 +59,12 @@
 
     <script>
         $(document).ready(function() {
+            var input = document.querySelector('#sj');
+            var tagify = new Tagify(input, {
+                delimiters: ",",
+                maxTags: 10
+            });
+
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'bottom-end',

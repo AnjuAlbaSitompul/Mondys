@@ -67,7 +67,6 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 
     <script>
         $(document).ready(function() {

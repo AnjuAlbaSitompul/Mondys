@@ -6,6 +6,7 @@
     <script src="../src/plugins/src/waves/waves.min.js"></script>
     <script src="../layouts/vertical-light-menu/app.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 
     {{-- swall --}}
     <script src="../src/plugins/src/sweetalerts2/sweetalerts2.min.js"></script>
