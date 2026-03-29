@@ -18,7 +18,7 @@ class OutletFactory extends Factory
     {
         return [
             'name' => 'Outlet ' . $this->faker->city(),
-            'codeOutlet' => $this->faker->unique()->bothify('OUT###'),
+            'codeOutlet' => $this->faker->unique()->bothify('HS##'),
             'alamat' => $this->faker->address(),
         ];
     }

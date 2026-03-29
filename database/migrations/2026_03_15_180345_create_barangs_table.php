@@ -15,21 +15,18 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+
             $table->enum('status', [
                 'PICKED',
+                'PICK END',
                 'BOARDING',
                 'LOADING',
                 'DEPARTURE',
                 'FINISHED'
             ]);
-
-            $table->enum('type', ['SJ', 'TITIP']);
-
             $table->string('id_outlet')->nullable();
             $table->string('sjcode')->nullable();
-
-            $table->integer('boxqty')->nullable();
-            $table->text('desc')->nullable();
         });
     }
 

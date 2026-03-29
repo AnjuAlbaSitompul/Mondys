@@ -15,11 +15,12 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
     Route::get('/barang', [BarangController::class, 'index'])->name('barang');
     Route::post('/barang', [BarangController::class, 'create']);
+    Route::delete('/barang/{id}', [BarangController::class, 'delete'])->name('barang.delete');
     Route::get('/barang/items', [BarangController::class, 'getAll']);
 
     Route::get('/pick', [PickController::class, 'index'])->name('barang.pick');
     Route::get('/pick/items', [PickController::class, 'getAll'])->name('barang.pick');
-
+    Route::patch('/pick/{id}/end', [PickController::class, 'endPick'])->name('pick.end');
 
     Route::get('/boarding', function () {
         return view('pages.boarding');

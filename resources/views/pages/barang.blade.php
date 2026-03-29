@@ -11,7 +11,7 @@
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                            <h4>Tambahkan Barang Untuk Diambil / Barang Yang Dititipkan</h4>
+                            <h4>Picker Operation</h4>
                         </div>
                     </div>
                 </div>
@@ -54,9 +54,8 @@
                                 <tr>
                                     <th class="text-center col-no">No</th>
                                     <th>TUJUAN</th>
-                                    <th class="text-center">TYPE</th>
+                                    <th class="text-center">SJ CODE</th>
                                     <th class="text-center">STATUS</th>
-                                    <th class="text-center">QTY</th>
                                     <th class="text-center col-action">
                                         <i class="fa fa-cog"></i>
                                     </th>
@@ -94,6 +93,7 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
+
                     {
                         className: 'text-center',
                         data: 'outlet.name', // pastikan outlet relasi ada
@@ -101,22 +101,24 @@
                     },
                     {
                         className: 'text-center',
-                        data: 'type'
+                        data: 'sjcode'
                     },
                     {
                         className: 'text-center',
                         data: 'status'
                     },
                     {
-                        className: 'text-center',
-                        data: 'boxqty'
-                    },
-                    {
                         data: null,
                         orderable: false,
                         searchable: false,
                         className: 'text-center',
-                        defaultContent: '-'
+                        render: function(data, type, row) {
+                            return `<button type="button" 
+                                class="btn btn-danger btn-sm delete-btn"
+                                data-id="${row.id}">
+                                <i class="fa fa-trash"></i>
+                            </button>`;
+                        }
                     }
                 ]
             });
@@ -194,7 +196,44 @@
                 });
             })
 
-
-        })
+            $(document).on('click', '.delete-btn', function() {
+                let id = $(this).data('id');
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/barang/${id}`,
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Barang berhasil dihapus'
+                                });
+                                tableBarang.ajax.reload(null, false);
+                            },
+                            error: function(xhr) {
+                                const message = xhr.responseJSON?.message ??
+                                    'Gagal menghapus barang';
+                                Toast.fire({
+                                    icon: 'error',
+                                    title: message
+                                });
+                            }
+                        });
+                    }
+                })
+            })
+        });
     </script>
 @endsection

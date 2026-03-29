@@ -1,3 +1,4 @@
+@props(['inputId', 'type'])
 <div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="Scanner" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -16,7 +17,11 @@
             <div class="modal-body">
                 <div id="reader" style="width:100%"></div>
             </div>
-
+            @if ($type === 'endpick')
+                <div class="modal-footer">
+                    <button type="button" id="{{ $inputId }}"class="btn btn-primary mb-2 me-4 ">END PICK</button>
+                </div>
+            @endif
         </div>
     </div>
 </div>

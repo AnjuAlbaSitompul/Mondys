@@ -11,12 +11,10 @@ class Barang extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'status',
-        'type',
         'sjcode',
         'id_outlet',
-        'boxqty',
-        'desc'
     ];
     public function outlet()
     {
@@ -26,5 +24,9 @@ class Barang extends Model
     public function pickList()
     {
         return $this->hasOne(PickList::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -12,10 +12,12 @@ class scanModal extends Component
      * Create a new component instance.
      */
     public $inputId;
+    public $type;
 
-    public function __construct($inputId = 'scan-result')
+    public function __construct($inputId = 'scan-result', $type = 'basic')
     {
         $this->inputId = $inputId;
+        $this->type = $type;
     }
 
     public function render()

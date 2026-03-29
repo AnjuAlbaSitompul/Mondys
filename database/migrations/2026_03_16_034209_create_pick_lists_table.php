@@ -32,7 +32,12 @@ return new class extends Migration
 
             $table->timestamps();
 
+            // indexing
             $table->index(['picker_id', 'status']);
+            $table->index('barang_id');
+
+            // prevent duplicate
+            $table->unique('barang_id');
         });
     }
 

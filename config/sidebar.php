@@ -13,11 +13,11 @@ return [
         'id' => 'barang',
         'children' => [
             [
-                'title' => 'List Barang',
+                'title' => 'Picker',
                 'route' => 'barang',
             ],
             [
-                'title' => 'List Picking',
+                'title' => 'End Pick',
                 'route' => 'barang.pick',
             ],
         ]

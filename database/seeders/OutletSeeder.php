@@ -13,6 +13,6 @@ class OutletSeeder extends Seeder
      */
     public function run(): void
     {
-        Outlet::factory()->count(10)->create();
+        Outlet::factory()->count(12)->create();
     }
 }
