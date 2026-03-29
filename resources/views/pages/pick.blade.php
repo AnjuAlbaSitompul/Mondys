@@ -24,7 +24,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary mb-2 me-4 ">End Pick</button>
                     </form>
-                    <x-modal.scan-modal inputId="endpickBarcode" type="endpick" />
+                    <x-modal.scan-modal inputId="endpickBarcode" />
                 </div>
             </div>
         </div>
