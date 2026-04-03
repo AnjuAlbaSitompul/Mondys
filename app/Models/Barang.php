@@ -15,6 +15,10 @@ class Barang extends Model
         'status',
         'sjcode',
         'id_outlet',
+        'updated_by',
+        'jenis_barang_id',
+        'type',
+        'nama_barang'
     ];
     public function outlet()
     {
@@ -25,8 +29,18 @@ class Barang extends Model
     {
         return $this->hasOne(PickList::class);
     }
+
+    public function jenisBarang()
+    {
+        return $this->belongsTo(JenisBarang::class, 'jenis_barang_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function boarding()
+    {
+        return $this->hasOne(BoardingList::class);
     }
 }

@@ -43,6 +43,7 @@
                             <tr>
                                 <th class="text-center col-no">No</th>
                                 <th class="text-center col-no">Picker</th>
+                                <th class="text-center col-no">SJ CODE</th>
                                 <th class="text-center col-no">Status</th>
                                 <th class="text-center col-no">Durasi</th>
                                 <th class="text-center col-no">Tanggal</th>
@@ -59,7 +60,7 @@
 
     <script>
         $(document).ready(function() {
-            var input = document.querySelector('#sj');
+            var input = document.querySelector('#sjpickend');
             var tagify = new Tagify(input, {
                 delimiters: ",",
                 maxTags: 10
@@ -99,6 +100,10 @@
                     {
                         className: 'text-center',
                         data: 'picker.name',
+                    },
+                    {
+                        className: 'text-center',
+                        data: 'barang.sjcode'
                     },
                     {
                         className: 'text-center',
@@ -160,10 +165,7 @@
 
             $(document).on('click', '.endPick-btn', function() {
                 let pickId = $(this).data('id');
-                Toast.fire({
-                    icon: 'error',
-                    title: pickId
-                });
+
                 $.ajax({
                     url: `/pick/${pickId}/end`,
                     method: 'PATCH',
@@ -171,7 +173,10 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-                        alert('Pick ended successfully!');
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Pick operation ended successfully'
+                        });
                         $pickTable.ajax.reload(); // Refresh data table
                     },
                     error: function(xhr) {
@@ -186,6 +191,45 @@
                 });
             });
 
-        })
+            $('#endPickForm').on('submit', function(e) {
+                e.preventDefault();
+
+                let data = $(this).serializeArray()
+                console.log(data)
+                $.ajax({
+                    url: '/pick/end',
+                    method: 'PATCH',
+                    data: data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.error
+                        });
+                        $('#endPickForm')[0].reset();
+                        tagify.removeAllTags();
+                        $pickTable.ajax.reload();
+                    },
+                    error: function(xhr) {
+                        let errorMsg = 'Terjadi kesalahan';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        console.log(xhr.responseJSON.errors)
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: errorMsg
+                        });
+                    }
+
+
+                });
+            })
+
+        });
     </script>
 @endsection

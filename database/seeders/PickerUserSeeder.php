@@ -14,11 +14,31 @@ class PickerUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Picker 2',
-            'username' => 'picker',
-            'password' => Hash::make('password'),
-            'role' => 'PICKER'
+        User::insert([
+            [
+                'name' => 'Picker 2',
+                'username' => 'picker',
+                'password' => Hash::make('password'),
+                'role' => 'PICKER'
+            ],
+            [
+                'name' => 'Picker 3',
+                'username' => 'picker3',
+                'password' => Hash::make('password'),
+                'role' => 'PICKER'
+            ],
+            [
+                'name' => 'Suparman',
+                'username' => 'driver1',
+                'password' => Hash::make('password'),
+                'role' => 'DRIVER'
+            ],
+            [
+                'name' => 'Suparman 2',
+                'username' => 'driver2',
+                'password' => Hash::make('password'),
+                'role' => 'DRIVER'
+            ]
         ]);
     }
 }

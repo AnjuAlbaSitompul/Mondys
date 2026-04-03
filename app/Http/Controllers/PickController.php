@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PickList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PickController extends Controller
 {
@@ -15,13 +16,68 @@ class PickController extends Controller
 
     public function getAll()
     {
-        $picklist = PickList::with(['barang', 'picker'])->get();
+        $picklist = PickList::with(['barang', 'picker'])->where('status', '!=', 'finished')->get();
 
         return response()->json([
             'status' => 'success',
             'data' => $picklist,
             'message' => 'Data Pick Lists Berhasil Diambil'
         ]);
+    }
+
+    public function end(Request $request)
+    {
+        $codes = json_decode($request->codesj, true);
+        $request->merge([
+            'codesj' => $codes
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'codesj' => 'required|array|min:1',
+            'codesj.*.value' => 'required|string|min:4'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $pickLists = PickList::where('status', '!=', 'finished')->get();
+
+            foreach ($pickLists as $pickList) {
+                $pickList->update([
+                    'status' => 'finished',
+                    'finished_at' => now()
+                ]);
+
+                if ($pickList->barang) {
+                    $pickList->barang->update([
+                        'status' => 'PICK END'
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Semua Pick List berhasil diakhiri'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage() ?: 'Terjadi kesalahan server'
+            ], 500);
+        }
     }
 
 

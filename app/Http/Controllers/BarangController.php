@@ -12,6 +12,60 @@ use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller
 {
+
+    public function updatePicker(Request $request, $id)
+    {
+        $barang = Barang::find($id);
+
+        if (!$barang) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Barang tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'pickerId' => 'required|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Silahkan isi data dengan benar',
+                'data' => $validator->errors()
+            ], 422);
+        }
+
+        $picklist = $barang->picklist;
+
+        if (!$picklist) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'PickList untuk barang ini tidak ditemukan'
+            ], 404);
+        }
+
+        $status = $picklist->status;
+        if ($status === 'finished') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Barang sudah selesai dipick, tidak bisa diubah pickernya'
+            ], 400);
+        }
+
+
+
+        $picklist->picker_id = $request->pickerId;
+        $picklist->save();
+        $barang->updated_by = Auth::id();
+        $barang->updated_at = now();
+        $barang->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Picker berhasil diperbarui'
+        ]);
+    }
     public function index()
     {
         $outlets = Outlet::pluck('name', 'codeOutlet')->toArray();
@@ -58,7 +112,7 @@ class BarangController extends Controller
         $validator = Validator::make($request->all(), [
             'pickerId' => 'required|exists:users,id',
             'codesj' => 'required|array|min:1',
-            'codesj.*.value' => 'required|string|min:4'
+            'codesj.*.value' => 'required|string|size:16'
         ]);
 
         if ($validator->fails()) {
@@ -73,17 +127,17 @@ class BarangController extends Controller
 
         try {
 
-            // ambil semua outlet dari SJ
-            $outletCodes = collect($request->codesj)
-                ->map(fn($item) => substr($item['value'], 0, 4))
-                ->unique();
+            // // ambil semua outlet dari SJ
+            // $outletCodes = collect($request->codesj)
+            //     ->map(fn($item) => substr($item['value'], 0, 4))
+            //     ->unique();
 
-            // cek ke DB sekali saja
-            $validOutlets = Outlet::whereIn('codeOutlet', $outletCodes)->pluck('codeOutlet');
+            // // cek ke DB sekali saja
+            // $validOutlets = Outlet::whereIn('codeOutlet', $outletCodes)->pluck('codeOutlet');
 
-            if ($validOutlets->count() !== $outletCodes->count()) {
-                throw new \Exception("SJ mengandung outlet yang tidak valid: " . implode(', ', $outletCodes->diff($validOutlets)->toArray()));
-            }
+            // if ($validOutlets->count() !== $outletCodes->count()) {
+            //     throw new \Exception("SJ mengandung outlet yang tidak valid: " . implode(', ', $outletCodes->diff($validOutlets)->toArray()));
+            // }
 
 
             $existing = Barang::whereIn(
@@ -99,8 +153,8 @@ class BarangController extends Controller
                 return [
                     'user_id'   => Auth::id(),
                     'sjcode'    => $item['value'],
-                    'id_outlet' => substr($item['value'], 0, 4),
                     'status'    => 'PICKED',
+                    'type'    => 'REGULER',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -143,7 +197,7 @@ class BarangController extends Controller
 
     public function getAll()
     {
-        $barangs = Barang::with('outlet')->get();
+        $barangs = Barang::where(['status' => 'PICKED', 'type' => 'REGULER'])->with(['picklist.picker'])->get();
 
         return response()->json([
             'status' => 'success',

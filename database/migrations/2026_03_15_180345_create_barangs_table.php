@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->nullOnDelete();
+            $table->string('nama_barang')->nullable();
 
             $table->enum('status', [
                 'PICKED',
@@ -25,6 +26,12 @@ return new class extends Migration
                 'DEPARTURE',
                 'FINISHED'
             ]);
+            $table->enum('type', [
+                'REGULER',
+                'TITIP'
+            ]);
+            $table->foreignId('updated_by')->nullable()->nullOnDelete();
+            $table->foreignId('jenis_barang_id')->nullable()->nullOnDelete();
             $table->string('id_outlet')->nullable();
             $table->string('sjcode')->nullable();
         });

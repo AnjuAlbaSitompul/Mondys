@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PickerUserSeeder::class,
             OutletSeeder::class,
+            JenisBarangSeeder::class,
         ]);
     }
 }

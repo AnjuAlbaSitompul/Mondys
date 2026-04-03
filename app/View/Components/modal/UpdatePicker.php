@@ -6,16 +6,14 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class pickerModal extends Component
+class UpdatePicker extends Component
 {
     /**
      * Create a new component instance.
      */
-
-
-    public function __construct(public $isUpdate = false)
+    public function __construct()
     {
-        $this->isUpdate = $isUpdate;
+        //
     }
 
     /**
@@ -23,6 +21,6 @@ class pickerModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.modal.picker-modal');
+        return view('components.modal.update-picker');
     }
 }

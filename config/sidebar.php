@@ -25,7 +25,22 @@ return [
     [
         'title' => 'Boarding',
         'icon' => 'fa-solid fa-truck',
-        'route' => 'boarding',
+        'id' => 'boarding',
+        'children' => [
+            [
+                'title' => 'Boarding List',
+                'route' => 'boarding',
+            ],
+            [
+                'title' => 'Titip',
+                'route' => 'titip',
+            ]
+        ]
+    ],
+    [
+        'title' => 'Loading',
+        'icon' => 'fa-solid fa-truck-loading',
+        'route' => 'loading',
     ],
 
 ];
