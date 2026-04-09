@@ -16,12 +16,7 @@
             <form id="splitForm">
 
                 <div class="modal-body">
-                    <div class="muted-text mb-3">Split Data box dan koli boarding yang di masukkan ke loading</div>
-                    <div class="col-lg-12 mb-3 box-container">
-                        <input type="hidden" name="id" id="splitId">
-                        <x-form.input placeholder="Masukkan jumlah box" name="box" type="number"
-                            invalid="Harap Masukkan jumlah box" label="Jumlah Box" id="splitBoxCount" />
-                    </div>
+                    <div class="muted-text mb-3">Masukkan Jumlah Koli</div>
                     <div class="col-lg-12">
                         <x-form.input placeholder="Masukkan Jumlah Koli" name="koli" type="number"
                             invalid="Harap Masukkan Jumlah Koli" label="Jumlah Koli" id="splitKoliCount" />
@@ -29,7 +24,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="confirmQty">Confirm Split</button>
+                    <button type="submit" class="btn btn-primary" id="confirmQty">Confirm</button>
                 </div>
             </form>
         </div>
