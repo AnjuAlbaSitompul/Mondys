@@ -108,7 +108,7 @@
                         data: 'status',
                         render: function(data, type, row) {
 
-                            return `<span class="badge badge-success">${toUpperCase(data)}</span>`;
+                            return `<span class="badge badge-success">${data.toUpperCase()}</span>`;
 
                         }
                     },
