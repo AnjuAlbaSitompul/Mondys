@@ -11,6 +11,20 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+    public function printBarcode(Request $request)
+    {
+        $id = $request->id;
+        $qty = (int) $request->qty;
+
+        // contoh format barcode: ID|QTY
+        $barcodeValue = $id . '|' . $qty;
+
+        // generate sebanyak qty
+        $barcodes = array_fill(0, $qty, $barcodeValue);
+
+        return view('print.print-barcode', compact('barcodes', 'id', 'qty'));
+    }
+
     public function index()
     {
         $user = Auth::user();

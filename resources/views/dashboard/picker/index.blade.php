@@ -101,5 +101,18 @@
                 searchPlaceholder: "Search..."
             }
         });
+
+        $('#confirmQty').on('click', function() {
+            let id = $(this).attr('data-id');
+            let qty = $('#koliCount').val();
+
+            if (!qty) {
+                alert('Qty wajib diisi');
+                return;
+            }
+
+            // redirect ke route
+            window.location.href = `/picker/print?id=${id}&qty=${qty}`;
+        });
     });
 </script>

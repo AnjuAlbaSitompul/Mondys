@@ -74,4 +74,5 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/picker/dashboard', [DashboardController::class, 'pickerDashboard']);
+    Route::get('/picker/print', [DashboardController::class, 'printBarcode']);
 });

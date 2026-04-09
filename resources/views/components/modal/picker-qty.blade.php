@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Split items boarding</h5>
+                <h5 class="modal-title">Barcode Boarding</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -19,12 +19,12 @@
                     <div class="muted-text mb-3">Masukkan Jumlah Koli</div>
                     <div class="col-lg-12">
                         <x-form.input placeholder="Masukkan Jumlah Koli" name="koli" type="number"
-                            invalid="Harap Masukkan Jumlah Koli" label="Jumlah Koli" id="splitKoliCount" />
+                            invalid="Harap Masukkan Jumlah Koli" label="Jumlah Koli" id="koliCount" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="confirmQty">Confirm</button>
+                    <button type="submit" class="btn btn-primary" id="confirmQty">Print</button>
                 </div>
             </form>
         </div>
