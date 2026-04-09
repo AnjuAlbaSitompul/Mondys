@@ -36,10 +36,11 @@
                 qrbox: 250
             },
             function(decodedText) {
+                $('#confirmQty').arrt('data-id', decodedText);
+                $('#pickerQty').modal('show');
 
                 html5QrCode.stop().then(() => {
-                    $('#confirmQty').arrt('data-id', decodedText);
-                    $('#pickerQty').modal('show');
+
                     $('#scannerModal').modal('hide');
                 });
 
