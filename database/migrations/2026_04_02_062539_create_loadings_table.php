@@ -22,6 +22,9 @@ return new class extends Migration
             $table->timestamp('loading_start')->nullable();
             $table->timestamp('loading_end')->nullable();
 
+            $table->timestamp('clock_in')->nullable();
+            $table->timestamp('clock_out')->nullable();
+
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->foreignId('outlet_id')

@@ -20,9 +20,12 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // 🔥 tambahkan is_active
+        $credentials['is_active'] = 1;
+
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             throw ValidationException::withMessages([
-                'username' => __('auth.failed'),
+                'username' => 'Username / Password salah atau akun tidak aktif',
             ]);
         }
 

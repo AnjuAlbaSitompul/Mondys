@@ -8,7 +8,9 @@ class LoadingDetail extends Model
 {
     protected $fillable = [
         'loading_id',
-        'barang_id'
+        'boarding_list_id',
+        'koli',
+        'box'
     ];
 
     public function loading()
@@ -16,8 +18,8 @@ class LoadingDetail extends Model
         return $this->belongsTo(Loading::class);
     }
 
-    public function barang()
+    public function boardingList()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(BoardingList::class);
     }
 }

@@ -83,7 +83,6 @@
                     url: '/barang/items',
                     type: 'GET',
                     dataSrc: function(json) {
-                        console.log(json.data)
                         return json.data;
                     }
                 },
@@ -106,7 +105,12 @@
                     },
                     {
                         className: 'text-center',
-                        data: 'status'
+                        data: 'status',
+                        render: function(data, type, row) {
+
+                            return `<span class="badge badge-success">${toUpperCase(data)}</span>`;
+
+                        }
                     },
                     {
                         data: null,

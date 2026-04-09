@@ -22,6 +22,9 @@ class User extends Authenticatable
         'username',
         'role',
         'password',
+        'location_id',
+        'outlet_id',
+        'is_active'
     ];
 
     /**
@@ -49,5 +52,14 @@ class User extends Authenticatable
     public function pickLists()
     {
         return $this->hasMany(PickList::class, 'picker_id');
+    }
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
     }
 }

@@ -151,7 +151,12 @@ class BoardingListController extends Controller
 
     public function getAll()
     {
-        $data = BoardingList::with(['barang', 'outlet', 'creator'])->whereNull('boarding_end')->get();
+        $data = BoardingList::with(['barang', 'outlet', 'creator'])
+            ->whereNull('boarding_end')
+            ->whereHas('barang', function ($q) {
+                $q->where('type', 'REGULER');
+            })
+            ->get();
 
         return response()->json([
             'status' => true,

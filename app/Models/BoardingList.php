@@ -15,7 +15,8 @@ class BoardingList extends Model
         'updated_by',
         'outlet_id',
         'boarding_start',
-        'boarding_end'
+        'boarding_end',
+        'deleteable'
     ];
 
     // Relasi ke Barang

@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('loading_details', function (Blueprint $table) {
+        Schema::create('locations', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('loading_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('boarding_list_id')->constrained()->cascadeOnDelete();
-            $table->integer('koli');
-            $table->integer('box')->nullable();
+            $table->string('code')->unique(); // kode warehouse (WH001, dll)
+            $table->string('name');
+            $table->text('address')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('loading_details');
+        Schema::dropIfExists('locations');
     }
 };

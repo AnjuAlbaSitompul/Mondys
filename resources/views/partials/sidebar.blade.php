@@ -1,4 +1,5 @@
 @php
+    $user = auth()->user();
     $menus = config('sidebar');
 @endphp
 <!--  BEGIN SIDEBAR  -->
@@ -35,61 +36,72 @@
             @endphp
 
             @foreach ($menus as $menu)
-                @php
-                    $childActive = false;
 
-                    if (isset($menu['children'])) {
-                        foreach ($menu['children'] as $child) {
-                            if (request()->routeIs($child['route'])) {
-                                $childActive = true;
-                            }
-                        }
-                    }
+                @php
+                    // cek apakah user punya akses ke menu ini
+                    $hasAccess = isset($menu['role']) ? in_array($user->role, $menu['role']) : $user->role === 'admin';
                 @endphp
 
-                <li
-                    class="menu {{ $childActive || (isset($menu['route']) && request()->routeIs($menu['route'])) ? 'active' : '' }}">
+                @if ($hasAccess)
 
-                    {{-- MENU WITH SUBMENU --}}
+                    @php
+                        $childActive = false;
+                    @endphp
+
+                    {{-- cek children kalau ada --}}
                     @if (isset($menu['children']))
-                        <a href="#{{ $menu['id'] }}" data-bs-toggle="collapse"
-                            aria-expanded="{{ $childActive ? 'true' : 'false' }}" class="dropdown-toggle">
+                        @php
+                            $filteredChildren = collect($menu['children'])->filter(function ($child) use ($user) {
+                                return !isset($child['roles']) || in_array($user->role, $child['roles']);
+                            });
+                        @endphp
 
-                            <div>
-                                <i class="{{ $menu['icon'] }}" style="width: 24px, height: 24px"></i>
-                                <span>{{ $menu['title'] }}</span>
-                            </div>
-
-                            <div>
-                                <i class="fa-solid fa-chevron-right" style="width: 24px, height: 24px"></i>
-                            </div>
-
-                        </a>
-
-                        <ul class="collapse submenu list-unstyled {{ $childActive ? 'show' : '' }}"
-                            id="{{ $menu['id'] }}" data-bs-parent="#accordionExample">
-
-                            @foreach ($menu['children'] as $child)
-                                <li class="{{ request()->routeIs($child['route']) ? 'active' : '' }}">
-                                    <a href="{{ route($child['route']) }}">
-                                        {{ $child['title'] }}
-                                    </a>
-                                </li>
+                        @if ($filteredChildren->count())
+                            @foreach ($filteredChildren as $child)
+                                @if (request()->routeIs($child['route']))
+                                    @php $childActive = true; @endphp
+                                @endif
                             @endforeach
 
-                        </ul>
+                            <li class="menu {{ $childActive ? 'active' : '' }}">
 
-                        {{-- MENU WITHOUT SUBMENU --}}
+                                <a href="#{{ $menu['id'] }}" data-bs-toggle="collapse" class="dropdown-toggle"
+                                    aria-expanded="{{ $childActive ? 'true' : 'false' }}">
+
+                                    <div>
+                                        <i class="{{ $menu['icon'] }}"></i>
+                                        <span>{{ $menu['title'] }}</span>
+                                    </div>
+                                </a>
+
+                                <ul class="collapse submenu list-unstyled {{ $childActive ? 'show' : '' }}"
+                                    id="{{ $menu['id'] }}">
+
+                                    @foreach ($filteredChildren as $child)
+                                        <li class="{{ request()->routeIs($child['route']) ? 'active' : '' }}">
+                                            <a href="{{ route($child['route']) }}">
+                                                {{ $child['title'] }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+
+                                </ul>
+
+                            </li>
+                        @endif
                     @else
-                        <a href="{{ route($menu['route']) }}" aria-expanded="false" class="dropdown-toggle">
-                            <div>
-                                <i class="{{ $menu['icon'] }}"></i>
-                                <span>{{ $menu['title'] }}</span>
-                            </div>
-                        </a>
+                        <li class="menu {{ request()->routeIs($menu['route']) ? 'active' : '' }}">
+                            <a href="{{ route($menu['route']) }}" class="dropdown-toggle">
+                                <div>
+                                    <i class="{{ $menu['icon'] }}"></i>
+                                    <span>{{ $menu['title'] }}</span>
+                                </div>
+                            </a>
+                        </li>
                     @endif
 
-                </li>
+                @endif
+
             @endforeach
         </ul>
 
