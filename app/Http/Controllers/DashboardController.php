@@ -16,13 +16,13 @@ class DashboardController extends Controller
         $id = $request->id;
         $qty = (int) $request->qty;
 
-        // contoh format barcode: ID|QTY
-        $barcodeValue = $id . '|' . $qty;
+        // gabung id + qty (bukan serial)
+        $barcodeValue = $id . '-' . $qty;
 
-        // generate sebanyak qty
+        // tetap diulang sesuai qty (kalau kamu mau banyak label)
         $barcodes = array_fill(0, $qty, $barcodeValue);
 
-        return view('print.print-barcode', compact('barcodes', 'id', 'qty'));
+        return view('print.print-barcode', compact('barcodes'));
     }
 
     public function index()

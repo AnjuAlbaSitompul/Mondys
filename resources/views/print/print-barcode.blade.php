@@ -1,3 +1,9 @@
+@php
+    $total = count($barcodes);
+    $availableHeight = 38;
+    $perItemHeight = max(8, min(12, $availableHeight / max($total, 1)));
+@endphp
+
 <!DOCTYPE html>
 <html>
 
@@ -6,39 +12,37 @@
 
     <style>
         @page {
-            size: auto;
-            margin: 2mm;
+            size: 50mm 40mm;
+            margin: 0;
         }
 
         body {
             margin: 0;
-            padding: 0;
+            padding: 1mm;
+            width: 50mm;
+            height: 40mm;
+            font-family: Arial, sans-serif;
         }
 
         .container {
             display: flex;
-            flex-wrap: wrap;
-        }
-
-        .label {
-            width: 50mm;
-            height: 40mm;
-            border: 1px solid #000;
-            display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 2mm;
-            page-break-inside: avoid;
+            justify-content: flex-start;
         }
 
-        .barcode {
-            margin-bottom: 4px;
+        .item {
+            align-items: 'center';
+            margin-bottom: 1mm;
         }
 
         .text {
-            font-size: 10px;
-            text-align: center;
+            font-size: 6px;
+            line-height: 1;
+        }
+
+        svg {
+            width: 100%;
+            max-width: 100%;
         }
     </style>
 </head>
@@ -47,16 +51,8 @@
 
     <div class="container">
         @foreach ($barcodes as $code)
-            <div class="label">
-
-                <div class="barcode">
-                    {!! DNS1D::getBarcodeHTML($code, 'C128', 1.5, 40) !!}
-                </div>
-
-                <div class="text">
-                    {{ $code }}
-                </div>
-
+            <div class="item">
+                {!! DNS1D::getBarcodeSVG($code, 'C128', 0.6, $perItemHeight * 3) !!}
             </div>
         @endforeach
     </div>
