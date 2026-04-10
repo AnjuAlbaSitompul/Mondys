@@ -26,7 +26,7 @@ class DeliverController extends Controller
         }
 
         // ❌ 3. belum mulai
-        if ($delivering->started_at === null) {
+        if ($delivering->start_at === null) {
             return redirect()->back()->with('error', 'Delivery belum dimulai');
         }
 
