@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 class DeliverController extends Controller
 {
 
-    public function sendPhoto(Request $request)
+    public function clockIn(Request $request)
     {
         $request->validate([
             'photo' => 'required|image'

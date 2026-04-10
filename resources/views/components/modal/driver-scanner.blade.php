@@ -74,6 +74,8 @@
                                             ).attr('content')
                                         },
                                         success: function(res) {
+                                            $('#clockInBtn').show();
+                                            $('#scanBtn').hide();
                                             $('#scanBarcodeDriver')
                                                 .modal('hide');
                                             Swal.fire('Success',
@@ -81,6 +83,8 @@
                                                 'success');
                                         },
                                         error: function() {
+                                            $('#clockInBtn').hide();
+                                            $('#scanBtn').show();
                                             $('#scanBarcodeDriver')
                                                 .modal('hide')
                                             Swal.fire('Error',
