@@ -92,5 +92,8 @@
             }
         });
 
+        $('#clockInBtn').on('click', function() {
+            window.location.href = '/driver/camera';
+        });
     })
 </script>

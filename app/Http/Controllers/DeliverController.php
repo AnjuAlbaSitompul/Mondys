@@ -6,9 +6,33 @@ use App\Models\Delivering;
 use App\Models\Loading;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class DeliverController extends Controller
 {
+
+    public function sendPhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image'
+        ]);
+
+        $token = env('TELEGRAM_BOT_TOKEN');
+        $chatId = env('TELEGRAM_CHAT_ID');
+
+        $file = $request->file('photo');
+
+        $response = Http::attach(
+            'photo',
+            file_get_contents($file->getRealPath()),
+            $file->getClientOriginalName()
+        )->post("https://api.telegram.org/bot{$token}/sendPhoto", [
+            'chat_id' => $chatId,
+            'caption' => 'Upload dari user 💕'
+        ]);
+
+        return $response->json();
+    }
     public function create(Request $request)
     {
         DB::beginTransaction();

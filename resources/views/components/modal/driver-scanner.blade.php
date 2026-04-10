@@ -74,11 +74,15 @@
                                             ).attr('content')
                                         },
                                         success: function(res) {
+                                            $('#scanBarcodeDriver')
+                                                .modal('hide');
                                             Swal.fire('Success',
                                                 'Delivering dibuat',
                                                 'success');
                                         },
                                         error: function() {
+                                            $('#scanBarcodeDriver')
+                                                .modal('hide')
                                             Swal.fire('Error',
                                                 'Gagal membuat delivering',
                                                 'error');

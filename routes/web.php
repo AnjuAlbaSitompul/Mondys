@@ -79,6 +79,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/picker/print', [DashboardController::class, 'printBarcode']);
 
     Route::get('/driver/dashboard', [DashboardController::class, 'driverDashboard']);
+    Route::get('/driver/camera', function () {
+        return view('camera.index');
+    });
 
     Route::post('/deliver/create', [DeliverController::class, 'create']);
+    Route::post('/deliver/clock-in', [DeliverController::class, 'clockIn']);
 });
