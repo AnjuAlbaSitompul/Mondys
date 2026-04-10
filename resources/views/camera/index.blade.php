@@ -28,44 +28,50 @@
                     toast.addEventListener('mouseenter', Swal.stopTimer)
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
-            })
-            let video = document.getElementById('video');
-            let canvas = document.getElementById('canvas');
+            });
 
-            // 🎥 Start Camera
+            let stream = null;
+
             navigator.mediaDevices.getUserMedia({
                 video: {
                     facingMode: "environment"
-                } // back camera
-            }).then(stream => {
+                }
+            }).then(s => {
+                stream = s;
                 video.srcObject = stream;
-            }).catch(err => {
+            }).catch(() => {
                 Toast.fire({
                     icon: 'error',
                     title: 'Kamera Tidak Bisa Di Akses'
-                })
+                });
             });
 
-            // 📸 Capture
             $('#captureBtn').click(function() {
                 let btn = $(this);
-                btn.prop('disabled', true);
-                btn.css('opacity', '0.5');
-                let context = canvas.getContext('2d');
 
+                if (!video.videoWidth) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Kamera belum siap'
+                    });
+                    return;
+                }
+
+                btn.prop('disabled', true).css('opacity', '0.5');
+                btn.html('<i class="fa fa-spinner fa-spin"></i>');
+
+                let context = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
 
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                // convert ke blob
                 canvas.toBlob(function(blob) {
                     let formData = new FormData();
                     formData.append('photo', blob, 'clockin.jpg');
 
-                    // 🚀 AJAX kirim ke Laravel
                     $.ajax({
-                        url: '/deliver/clock-in',
+                        url: '/deliver/clock-in/{{ $delivering->id }}',
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -73,19 +79,31 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        success: function(res) {
+                        success: function() {
+
+                            if (stream) {
+                                stream.getTracks().forEach(track => track.stop());
+                            }
+
                             Toast.fire({
                                 icon: 'success',
                                 title: 'Kamu Sudah Clock In'
-                            })
+                            });
+
+                            setTimeout(() => {
+                                window.location.href = '/driver/dashboard';
+                            }, 1500);
                         },
                         error: function(err) {
-                            btn.prop('disabled', false);
-                            btn.css('opacity', '1');
+                            console.log(err);
+
+                            btn.prop('disabled', false).css('opacity', '1');
+                            btn.html('<i class="fa fa-camera"></i>');
+
                             Toast.fire({
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan'
-                            })
+                            });
                         }
                     });
                 }, 'image/jpeg', 0.8);
