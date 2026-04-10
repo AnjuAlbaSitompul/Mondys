@@ -30,48 +30,43 @@
                 }
             });
 
-            let stream = null;
+            let video = document.getElementById('video');
+            let canvas = document.getElementById('canvas');
 
+            // 🎥 Start Camera
             navigator.mediaDevices.getUserMedia({
                 video: {
                     facingMode: "environment"
-                }
-            }).then(s => {
-                stream = s;
+                } // back camera
+            }).then(stream => {
                 video.srcObject = stream;
-            }).catch(() => {
+            }).catch(err => {
                 Toast.fire({
                     icon: 'error',
                     title: 'Kamera Tidak Bisa Di Akses'
-                });
+                })
             });
 
+            // 📸 Capture
             $('#captureBtn').click(function() {
                 let btn = $(this);
-
-                if (!video.videoWidth) {
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Kamera belum siap'
-                    });
-                    return;
-                }
-
-                btn.prop('disabled', true).css('opacity', '0.5');
-                btn.html('<i class="fa fa-spinner fa-spin"></i>');
-
+                btn.prop('disabled', true);
+                btn.css('opacity', '0.5');
                 let context = canvas.getContext('2d');
+
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
 
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+                // convert ke blob
                 canvas.toBlob(function(blob) {
                     let formData = new FormData();
                     formData.append('photo', blob, 'clockin.jpg');
 
+                    // 🚀 AJAX kirim ke Laravel
                     $.ajax({
-                        url: '/deliver/clock-in/{{ $delivering->id }}',
+                        url: '/deliver/clock-in',
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -79,31 +74,19 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        success: function() {
-
-                            if (stream) {
-                                stream.getTracks().forEach(track => track.stop());
-                            }
-
+                        success: function(res) {
                             Toast.fire({
                                 icon: 'success',
                                 title: 'Kamu Sudah Clock In'
-                            });
-
-                            setTimeout(() => {
-                                window.location.href = '/driver/dashboard';
-                            }, 1500);
+                            })
                         },
                         error: function(err) {
-                            console.log(err);
-
-                            btn.prop('disabled', false).css('opacity', '1');
-                            btn.html('<i class="fa fa-camera"></i>');
-
+                            btn.prop('disabled', false);
+                            btn.css('opacity', '1');
                             Toast.fire({
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan'
-                            });
+                            })
                         }
                     });
                 }, 'image/jpeg', 0.8);
