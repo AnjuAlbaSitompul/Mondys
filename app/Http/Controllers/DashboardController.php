@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Delivering;
 use App\Models\Loading;
 use App\Models\Outlet;
 use App\Models\PickList;
@@ -48,8 +49,18 @@ class DashboardController extends Controller
                 break;
 
             case 'DRIVER':
-                // contoh driver
+
+                // total semua loading milik driver
                 $data['totalDelivery'] = Loading::where('driver_id', $user->id)->count();
+
+                // cek apakah masih ada delivering aktif (belum clock_out)
+                $data['isDelivering'] = Delivering::whereNull('clock_out')
+                    ->whereHas('loading', function ($q) use ($user) {
+                        $q->where('driver_id', $user->id);
+                    })
+                    ->with('loading')
+                    ->first(); // pakai first biar dapat 1 data aja
+
                 break;
 
             case 'SPV':
@@ -70,6 +81,16 @@ class DashboardController extends Controller
     public function pickerDashboard()
     {
         $data = Picklist::with(['barang', 'picker'])->whereNull('finished_at')->where('picker_id', Auth::id())->get();
+
+        return response()->json([
+            'data' => $data,
+            'status' => 'success'
+        ]);
+    }
+
+    public function driverDashboard()
+    {
+        $data = Loading::with(['outlet'])->whereNull('loading_end')->where('driver_id', Auth::id())->get();
 
         return response()->json([
             'data' => $data,

@@ -14,6 +14,26 @@ use Illuminate\Support\Facades\DB;
 
 class LoadingContoroller extends Controller
 {
+
+    public function checkId($id)
+    {
+        $exists = Loading::where('surat_jalan', $id)
+            ->where('driver_id', Auth::id())
+            ->whereNull('loading_end')
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data ditemukan'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Data tidak ditemukan'
+        ], 404);
+    }
     public function history()
     {
         $loading = Loading::with(['driver', 'coDriver', 'outlet'])

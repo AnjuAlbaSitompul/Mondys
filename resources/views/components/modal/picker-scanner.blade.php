@@ -20,11 +20,11 @@
     </div>
 </div>
 
+
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
     let html5QrCode;
-
     $('#scanBarcode').on('shown.bs.modal', function() {
 
         html5QrCode = new Html5Qrcode("reader");

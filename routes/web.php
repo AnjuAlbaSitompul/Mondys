@@ -11,6 +11,7 @@ use App\Http\Controllers\MasterController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\PickController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DeliverController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => view('auth.login'));
@@ -50,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/loading/update/{id}', [LoadingContoroller::class, 'updateLoading'])->name('loading.update');
     Route::patch('/loading/split/{id}', [LoadingContoroller::class, 'splitItem'])->name('loading.split');
     Route::get('/loading/history', [LoadingContoroller::class, 'history']);
+    Route::get('/loading/get/{id}', [LoadingContoroller::class, 'checkId']);
     Route::get('/loading/print/{id}', [LoadingContoroller::class,  'printById'])->name('loading.print');
     Route::get('/loading/{id}', [LoadingContoroller::class,  'loadingDetail'])->name('loading.detail');
 
@@ -75,4 +77,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/picker/dashboard', [DashboardController::class, 'pickerDashboard']);
     Route::get('/picker/print', [DashboardController::class, 'printBarcode']);
+
+    Route::get('/driver/dashboard', [DashboardController::class, 'driverDashboard']);
+
+    Route::post('/deliver/create', [DeliverController::class, 'create']);
 });
