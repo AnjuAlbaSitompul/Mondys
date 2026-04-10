@@ -74,7 +74,10 @@
                                             ).attr('content')
                                         },
                                         success: function(res) {
-                                            $('#clockInBtn').show();
+                                            $('#clockInBtn').attr(
+                                                'data-id', res
+                                                .data.id
+                                            ).show();
                                             $('#scanBtn').hide();
                                             $('#scanBarcodeDriver')
                                                 .modal('hide');

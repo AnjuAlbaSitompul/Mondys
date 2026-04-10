@@ -12,7 +12,9 @@
                     Scan to Start
                 </button>
 
-                <button class="btn btn-primary mb-2" id="clockInBtn" {{ !$isDelivering ? 'style=display:none' : '' }}>
+                <button class="btn btn-primary mb-2" id="clockInBtn"
+                    data-id="{{ $isDelivering ? $isDelivering->id : null }}"
+                    {{ !$isDelivering ? 'style=display:none' : '' }}>
                     Clock In
                 </button>
             </div>
@@ -93,7 +95,8 @@
         });
 
         $('#clockInBtn').on('click', function() {
-            window.location.href = '/driver/camera';
+            let id = $(this).data('id')
+            window.location.href = `/driver/camera/${id}`;
         });
     })
 </script>

@@ -55,9 +55,8 @@ class DashboardController extends Controller
 
                 // cek apakah masih ada delivering aktif (belum clock_out)
                 $data['isDelivering'] = Delivering::whereNull('clock_out')
-                    ->whereHas('loading', function ($q) use ($user) {
-                        $q->where('driver_id', $user->id);
-                    })
+                    ->whereNotNull('start_at')
+                    ->where('driver_id', Auth::id())
                     ->with('loading')
                     ->first(); // pakai first biar dapat 1 data aja
 

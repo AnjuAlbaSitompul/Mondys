@@ -21,7 +21,9 @@ return new class extends Migration
             $table->timestamp('start_at')->nullable();
             $table->timestamp('clock_in')->nullable();
             $table->timestamp('clock_out')->nullable();
-
+            $table->foreignId('driver_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }

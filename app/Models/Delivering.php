@@ -11,12 +11,14 @@ class Delivering extends Model
         'start_at',
         'clock_in',
         'clock_out',
+        'driver_id'
     ];
 
     protected $casts = [
         'start_at' => 'datetime',
         'clock_in' => 'datetime',
         'clock_out' => 'datetime',
+
     ];
 
     // RELATION
