@@ -18,6 +18,17 @@
 
     <script>
         $(document).ready(function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
 
             let video = document.getElementById('video');
             let canvas = document.getElementById('canvas');
@@ -55,7 +66,7 @@
 
                     // 🚀 AJAX kirim ke Laravel
                     $.ajax({
-                        url: '/deliver/clock-in',
+                        url: "{{ url('/deliver/clock-in/' . $delivering->id) }}",
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -64,18 +75,23 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(res) {
-                            // Toast.fire({
-                            //     icon: 'success',
-                            //     title: 'Kamu Sudah Clock In'
-                            // })
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Kamu Sudah Clock In'
+                            })
+
+                            setTimeout(() => {
+                                window.location.href = '/dashboard';
+                            }, 1500);
+
                         },
                         error: function(err) {
                             btn.prop('disabled', false);
                             btn.css('opacity', '1');
-                            // Toast.fire({
-                            //     icon: 'error',
-                            //     title: 'Terjadi Kesalahan'
-                            // })
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan'
+                            })
                         }
                     });
                 }, 'image/jpeg', 0.8);

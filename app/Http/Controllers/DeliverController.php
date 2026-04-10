@@ -38,27 +38,57 @@ class DeliverController extends Controller
         // ✅ semua valid
         return view('camera.index', compact('delivering'));
     }
-    public function clockIn(Request $request)
+    public function clockIn(Request $request, $id)
     {
         $request->validate([
             'photo' => 'required|image'
         ]);
+
+        $delivering = Delivering::find($id);
+
+        // optional: validasi basic
+        if (!$delivering) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Delivering tidak ditemukan'
+            ], 404);
+        }
 
         $token = env('TELEGRAM_BOT_TOKEN');
         $chatId = env('TELEGRAM_CHAT_ID');
 
         $file = $request->file('photo');
 
+        // 🚀 kirim ke telegram
         $response = Http::attach(
             'photo',
             file_get_contents($file->getRealPath()),
             $file->getClientOriginalName()
         )->post("https://api.telegram.org/bot{$token}/sendPhoto", [
             'chat_id' => $chatId,
-            'caption' => 'Upload dari user 💕'
+            'caption' => 'Driver ID: ' . $delivering->user_id . ' sudah clock in 😎'
         ]);
 
-        return $response->json();
+        $result = $response->json();
+
+        // ✅ kalau berhasil dari Telegram
+        if ($response->successful() && isset($result['ok']) && $result['ok'] === true) {
+
+            $delivering->update([
+                'clock_in' => now()
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Clock in berhasil'
+            ]);
+        }
+
+        // ❌ kalau gagal kirim telegram
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Gagal kirim ke Telegram'
+        ], 500);
     }
     public function create(Request $request)
     {

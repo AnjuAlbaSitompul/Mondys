@@ -82,5 +82,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/driver/camera/{id}', [DeliverController::class, 'camera']);
 
     Route::post('/deliver/create', [DeliverController::class, 'create']);
-    Route::post('/deliver/clock-in', [DeliverController::class, 'clockIn']);
+    Route::post('/deliver/clock-in/{id}', [DeliverController::class, 'clockIn']);
 });
