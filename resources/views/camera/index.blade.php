@@ -4,16 +4,14 @@
     @include('partials.loader')
 @endsection
 @section('content')
-    <div class="col-12">
-        <div id="cameraContainer" style="position:fixed; top:0; left:0; width:100%; height:100%; background:black;">
-            <video id="video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+    <div id="cameraContainer" style="position:fixed; top:0; left:0; width:100%; height:100%; background:black;">
+        <video id="video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
 
-            <button id="captureBtn"
-                style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
+        <button id="captureBtn"
+            style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%);
         padding:20px; border-radius:50%; background:white; border:none;">
-                <i class="fa fa-camera"></i>
-            </button>
-        </div>
+            <i class="fa fa-camera"></i>
+        </button>
     </div>
 
     <canvas id="canvas" style="display:none;"></canvas>
