@@ -47,7 +47,7 @@
 
                     // 🔥 AJAX CHECK
                     $.ajax({
-                        url: `/loading/check/${decodedText}`,
+                        url: `/loading/get/${decodedText}`,
                         type: 'GET',
                         success: function(res) {
 
