@@ -17,6 +17,11 @@
                     {{ !$isDelivering ? 'style=display:none' : '' }}>
                     Clock In
                 </button>
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
