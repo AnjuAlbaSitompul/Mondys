@@ -96,6 +96,7 @@
 
         $('#clockInBtn').on('click', function() {
             let id = $(this).data('id')
+            alert(id)
             window.location.href = `/driver/camera/${id}`;
         });
     })
