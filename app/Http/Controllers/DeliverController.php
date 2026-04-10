@@ -21,7 +21,7 @@ class DeliverController extends Controller
         }
 
         // ❌ 2. bukan owner/driver
-        if ($delivering->user_id !== Auth::id()) {
+        if ($delivering->driver_id !== Auth::id()) {
             return redirect()->back()->with('error', 'Tidak memiliki akses');
         }
 
