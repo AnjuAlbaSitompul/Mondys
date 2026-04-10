@@ -102,7 +102,7 @@
         $('#clockInBtn').on('click', function() {
             let id = $(this).data('id')
             alert(id)
-            window.location.href = `/driver/camera/${id}`;
+            window.location.href = "{{ url('/deliver/camera/' . $idDelivering->id) }}"
         });
     })
 </script>
