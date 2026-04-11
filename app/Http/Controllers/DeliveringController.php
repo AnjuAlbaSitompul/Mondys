@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\BoardingList;
+use App\Models\JenisBarang;
 use App\Models\Outlet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,8 +93,8 @@ class DeliveringController extends Controller
     }
     public function index()
     {
-        $outlets = Outlet::pluck('codeOutlet', 'id')->toArray();
-        $jenisBarangs = DB::table('jenis_barangs')->pluck('name', 'id')->toArray();
+        $outlets = Outlet::where('is_active', 1)->pluck('codeOutlet', 'id')->toArray();
+        $jenisBarangs = JenisBarang::where('is_active', 1)->pluck('name', 'id')->toArray();
         return view('pages.titip', [
             'outlets' => $outlets,
             'jenisBarangs' => $jenisBarangs

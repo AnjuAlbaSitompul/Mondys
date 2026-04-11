@@ -74,6 +74,25 @@ class LoadingContoroller extends Controller
             )
             ->map(fn($items) => $items->sum('koli'));
 
+        $rekapJenis = $titipItems
+            ->groupBy(
+                fn($d) =>
+                $d->boardingList?->barang?->jenisBarang?->name ?? 'LAINNYA'
+            )
+            ->map(fn($items) => $items->sum('koli'));
+
+        // TOTAL QTY SEMUA TITIP
+        $totalQtyTitip = $titipItems->sum('koli');
+
+        // TOTAL BOX (dari REGULER)
+        $totalBox = $regularItems->sum('box');
+
+        // Tambahkan "BOX" ke rekap jenis
+        $rekapJenis = $rekapJenis->put('BOX', $totalBox);
+
+        // GRAND TOTAL (kalau mau dipakai di view)
+        $grandTotal = $totalQtyTitip + $totalBox;
+
         return view('print.print-loading', compact(
             'loading',
             'titipItems',

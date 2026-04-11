@@ -89,6 +89,19 @@
             margin-top: 40px;
             border-top: 1px solid black;
         }
+
+        @media print {
+            .barcode {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            svg,
+            img {
+                display: block !important;
+                visibility: visible !important;
+            }
+        }
     </style>
 </head>
 

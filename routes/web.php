@@ -53,6 +53,7 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/loading/items', [LoadingContoroller::class, 'getLoadingItems'])->name('loading.items');
     Route::get('/loading/items/{outletId}', [LoadingContoroller::class, 'getLoadingItemsByOutlet'])->name('loading.items.by-outlet');
     Route::patch('/loading/update/{id}', [LoadingContoroller::class, 'updateLoading'])->name('loading.update');
+    Route::get('/loading/print/{id}', [LoadingContoroller::class,  'printById'])->name('loading.print');
     Route::get('/loading/history', [LoadingContoroller::class, 'history']);
     Route::get('/loading/{id}', [LoadingContoroller::class,  'loadingDetail'])->name('loading.detail');
 
@@ -76,6 +77,10 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::delete('/master/outlet/delete/{id}', [OutletController::class, 'destroy']);
 
     Route::get('/master/jenis-barang', [JenisController::class, 'index'])->name('master.jenis');
+    Route::get('/master/jenis-barang/items', [JenisController::class, 'items'])->name('master.jenis');
+    Route::post('/master/jenis-barang/create', [JenisController::class, 'store']);
+    Route::patch('/master/jenis-barang/update/{id}', [JenisController::class, 'update']);
+    Route::delete('/master/jenis-barang/delete/{id}', [JenisController::class, 'destroy']);
 
     Route::get('/admin/dashboard/picker', [DashboardController::class, 'pickerPerformance']);
     Route::get('/admin/dashboard/picking', [DashboardController::class, 'pickingData']);

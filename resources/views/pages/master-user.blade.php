@@ -183,7 +183,7 @@
 
                 $('#departmentField, #outletField').addClass('d-none');
 
-                if (role === 'ADMIN') {
+                if (role === 'ADMIN' || role === 'SPV') {
                     $('#departmentField').removeClass('d-none');
                 }
 

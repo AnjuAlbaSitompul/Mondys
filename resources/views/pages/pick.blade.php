@@ -168,7 +168,7 @@
                         icon: 'success',
                         title: 'Pick operation ended successfully'
                     });
-                    $pickTable.ajax.reload(); // Refresh data table
+                    pickTable.ajax.reload(); // Refresh data table
                 },
                 error: function(xhr) {
                     const message = xhr.responseJSON?.message ?? 'Login gagal';
@@ -202,7 +202,7 @@
                     });
                     $('#endPickForm')[0].reset();
                     tagify.removeAllTags();
-                    $pickTable.ajax.reload();
+                    pickTable.ajax.reload();
                 },
                 error: function(xhr) {
                     let errorMsg = 'Terjadi kesalahan';

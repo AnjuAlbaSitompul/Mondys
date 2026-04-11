@@ -11,7 +11,7 @@
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>Create Outlet</h4>
+                                <h4>Create Jenis Barang</h4>
                             </div>
                         </div>
                     </div>
@@ -19,33 +19,20 @@
                         <form id="userForm">
 
                             {{-- ROLE --}}
-                            <div class="row mb-3">
-                                <div class="col-8">
-                                    <x-form.input id="name" label="Nama Department" name="name"
-                                        placeholder="Masukkan Nama Department" type="text"
-                                        valid="Masukkan Nama Department Yang Valid" />
-                                </div>
-                                <div class="col-4">
-                                    <x-form.input id="codeOutlet" label="Code Department" name="codeOutlet"
-                                        placeholder="Code Department" type="text"
-                                        valid="Masukkan Code Department Yang Valid" />
-                                </div>
-
-                            </div>
-
-                            {{-- NAME --}}
-
-
-                            {{-- USERNAME --}}
                             <div class="mb-3">
-                                <label for="alamat" class="form-label">Alamat</label>
-                                <textarea class="form-control" aria-label="With textarea" id="alamat" placeholder="Masukkan Alamat" name="alamat"></textarea>
+                                <x-form.input id="name" label="Nama Jenis Barang" name="name"
+                                    placeholder="Jenis Barang" type="text" valid="Masukkan Nama Department Yang Valid" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="description class="form-label">Deskripsi</label>
+                                <textarea class="form-control" aria-label="With textarea" id="description" placeholder="Masukkan Desrkripsi"
+                                    name="description"></textarea>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">
                                 Simpan
                             </button>
-                            <button type="button" class="btn btn-primary w-100 update-user" style="display: none">
+                            <button type="button" class="btn btn-primary w-100 update-jenis" style="display: none">
                                 Update
                             </button>
                         </form>
@@ -58,19 +45,18 @@
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>Data Outlet</h4>
+                                <h4>Data Jenis Barang Terdaftar</h4>
                             </div>
                         </div>
                     </div>
                     <div class="widget-content widget-content-area">
                         <div class="table-responsive">
-                            <table id="outletTable" class="table style-3 dt-table-hover">
+                            <table id="jenisTable" class="table style-3 dt-table-hover">
                                 <thead class="table-header">
                                     <tr>
                                         <th class="text-center col-no">No</th>
-                                        <th>Code</th>
                                         <th class="text-center">Nama</th>
-                                        <th class="text-center">Alamat</th>
+                                        <th class="text-center">Deskripsi Barang</th>
                                         <th class="text-center col-action">
                                             <i class="fa-solid fa-ellipsis-vertical"></i>
                                         </th>
@@ -101,10 +87,10 @@
                 timerProgressBar: true,
             });
 
-            let outletTable = $('#outletTable').DataTable({
+            let jenisTable = $('#jenisTable').DataTable({
                 processing: true,
                 ajax: {
-                    url: '/master/outlet/items',
+                    url: '/master/jenis-barang/items',
                     dataSrc: 'data'
                 },
                 columns: [{
@@ -113,15 +99,10 @@
                         render: (data, type, row, meta) => meta.row + 1
                     },
                     {
-                        data: 'codeOutlet'
-                    },
-                    {
                         data: 'name',
-                        className: 'text-center'
                     },
                     {
-                        data: 'alamat',
-                        className: 'text-center'
+                        data: 'description',
                     },
                     {
                         data: 'id',
@@ -144,15 +125,16 @@
                 ]
             });
 
+
             $('#userForm').on('submit', function(e) {
                 e.preventDefault();
 
                 let btn = $(this).find('button[type="submit"]');
 
                 btn.prop('disabled', true).text('Loading...');
-
+                console.log($(this).serialize())
                 $.ajax({
-                    url: '/master/outlet/create',
+                    url: '/master/jenis-barang/create',
                     method: 'POST',
                     data: $(this).serialize(),
                     success: function(res) {
@@ -164,7 +146,7 @@
 
                         $('#userForm')[0].reset();
 
-                        outletTable.ajax.reload();
+                        jenisTable.ajax.reload();
 
                         btn.prop('disabled', false).text('Simpan');
                     },
@@ -179,16 +161,16 @@
                         });
                     }
                 });
+
             });
 
             $(document).on('click', '.btn-edit', function() {
-                let data = outletTable.row($(this).closest('tr')).data();
+                let data = jenisTable.row($(this).closest('tr')).data();
 
                 $('#name').val(data.name);
-                $('#codeOutlet').val(data.codeOutlet);
-                $('#alamat').val(data.alamat);
+                $('#desc').val(data.description);
 
-                $('.update-user')
+                $('.update-jenis')
                     .attr('data-id', data.id)
                     .show();
 
@@ -200,14 +182,14 @@
                 }, 300);
             });
 
-            $('.update-user').on('click', function() {
+            $('.update-jenis').on('click', function() {
                 let id = $(this).data('id');
                 let btn = $(this);
 
                 btn.prop('disabled', true).text('Updating...');
 
                 $.ajax({
-                    url: `/master/outlet/update/${id}`,
+                    url: `/master/jenis-barang/update/${id}`,
                     method: 'PATCH',
                     data: $('#userForm').serialize(),
                     success: function(res) {
@@ -219,10 +201,10 @@
 
                         $('#userForm')[0].reset();
 
-                        $('.update-user').hide();
+                        $('.update-jenis').hide();
                         $('#userForm button[type="submit"]').show();
 
-                        outletTable.ajax.reload();
+                        jenisTable.ajax.reload();
 
                         btn.prop('disabled', false).text('Update');
                     },
@@ -249,7 +231,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: `/master/outlet/delete/${id}`,
+                            url: `/master/jenis-barang/delete/${id}`,
                             method: 'DELETE',
                             success: function(res) {
 
@@ -258,7 +240,7 @@
                                     title: res.message || 'Berhasil dihapus'
                                 });
 
-                                outletTable.ajax.reload();
+                                jenisTable.ajax.reload();
                             }
                         });
                     }
