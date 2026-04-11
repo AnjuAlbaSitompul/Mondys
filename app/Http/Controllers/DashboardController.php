@@ -177,16 +177,69 @@ class DashboardController extends Controller
             'data' => $data
         ], 200);
     }
+
     public function printBarcode(Request $request)
     {
+        $request->validate([
+            'id' => 'required|string',
+            'qty' => 'required|integer|min:1'
+        ]);
+
         $id = $request->id;
         $qty = (int) $request->qty;
 
-        // gabung id + qty (bukan serial)
-        $barcodeValue = $id . '-' . $qty;
+        // ========================
+        // SPLIT DATA
+        // ========================
 
-        // tetap diulang sesuai qty (kalau kamu mau banyak label)
-        $barcodes = array_fill(0, $qty, $barcodeValue);
+        $codeOutlet = substr($id, 0, 4);     // 4 huruf awal
+        $sjcode     = substr($id, 4);        // sisanya = sjcode asli
+
+        // ========================
+        // VALIDASI OUTLET
+        // ========================
+
+        $outlet = Outlet::where('codeOutlet', $codeOutlet)->first();
+        if (!$outlet) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Kode outlet tidak valid'
+            ], 422);
+        }
+
+        // ========================
+        // VALIDASI PICKLIST
+        // ========================
+
+        $picklist = Picklist::whereHas('barang', function ($q) use ($sjcode) {
+            $q->where('sjcode', $sjcode);
+        })->where('picker_id', Auth::id())->first();
+
+        if (!$picklist) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'SJ tidak ditemukan / bukan milik kamu'
+            ], 403);
+        }
+
+        // ========================
+        // GENERATE BARCODE
+        // ========================
+        $formattedQty = str_pad($qty, 2, '0', STR_PAD_LEFT);
+
+        // gabungkan TANPA separator
+        $barcodeFullValue = $id . $formattedQty; // full (prefix + sj + qty)
+        $barcodeSjValue   = $sjcode;          // hanya SJ
+
+        $barcodes = [];
+
+        for ($i = 0; $i < $qty; $i++) {
+            $barcodes[] = [
+                'full' => $barcodeFullValue,
+                'sj'   => $barcodeSjValue,
+                'outlet' => $codeOutlet,
+            ];
+        }
 
         return view('print.print-barcode', compact('barcodes'));
     }

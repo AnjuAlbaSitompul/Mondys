@@ -16,14 +16,12 @@
         <div class="widget-content widget-content-area">
             <form class="row g-3" id="endPickForm">
                 <div class="col-lg-12">
-                    <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn" name="codesj"
+                    <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="pickBtn" name="codesj"
                         type="basic" invalid="Harap Masukkan Code SJ" label="Surat Jalan" id="sjpickend"
-                        disabled="{{ false }}" toggle="modal" target="#scannerModal"
-                        value="tag1, tag2 autofocus" />
+                        disabled="{{ false }}" value="tag1, tag2 autofocus" />
                 </div>
                 <button type="submit" class="btn btn-primary mb-2 me-4 ">End Pick</button>
             </form>
-            <x-modal.scan-modal inputId="sjpickend" />
         </div>
     </div>
 </div>
@@ -58,11 +56,6 @@
 
 <script>
     $(document).ready(function() {
-        var input = document.querySelector('#sjpickend');
-        var tagify = new Tagify(input, {
-            delimiters: ",",
-            maxTags: 10
-        });
 
         const Toast = Swal.mixin({
             toast: true,

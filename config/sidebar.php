@@ -43,6 +43,10 @@ return [
             [
                 'title' => 'Outlet',
                 'route' => 'master.outlet',
+            ],
+            [
+                'title' => 'Jenis Barang',
+                'route' => 'master.jenis',
             ]
         ]
     ],

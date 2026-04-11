@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique();
-            $table->string('role')->default('admin'); // admin, user, dll
+            $table->string('role')->default('ADMIN'); // admin, user, dll
             $table->string('password');
             $table->unsignedBigInteger('location_id')->nullable();
             $table->unsignedBigInteger('outlet_id')->nullable();

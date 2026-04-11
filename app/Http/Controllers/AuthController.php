@@ -10,6 +10,10 @@ class AuthController extends Controller
 {
     public function index()
     {
+        if (Auth::check()) {
+            return redirect('/dashboard');
+        }
+
         return view('auth.login');
     }
 
@@ -35,5 +39,15 @@ class AuthController extends Controller
             'message' => 'Login Berhasil',
             'redirect' => redirect()->intended('/dashboard')->getTargetUrl(),
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

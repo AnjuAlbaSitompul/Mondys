@@ -20,7 +20,8 @@ class inputBtn extends Component
         public $disabled = false,
         public $toggle = '',
         public $target = null,
-        public $name = ''
+        public $name = '',
+        public $btnId = 'id'
     ) {
         $this->disabled = $disabled;
         $this->target = $target;

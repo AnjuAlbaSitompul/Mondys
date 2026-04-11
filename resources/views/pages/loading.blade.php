@@ -47,13 +47,13 @@
                                                     :options="[null => 'Pilih Outlet'] + $outlets" />
                                             </div>
                                         </div>
-                                        <div class="col-lg-12 mb-3">
+                                        {{-- <div class="col-lg-12 mb-3">
                                             <x-form.input-btn placeholder="Masukkan No Surat Jalan" btnTxt="Scan"
                                                 btnId="suratjalanBtn" name="codesj" type="basic"
                                                 invalid="Harap Masukkan No Surat Jalan" label="Surat Jalan" id="sjcode"
                                                 disabled="{{ false }}" toggle="modal" target="#scannerModal"
                                                 value="tag1, tag2 autofocus" />
-                                        </div>
+                                        </div> --}}
                                         <div class="row">
                                             <div class="col-lg-6 col-md-6 col-sm-12">
                                                 <x-form.select id="driver" label="Pilih Driver" name="driver"
@@ -484,7 +484,7 @@
                         $('#driver').val(res.loading.driver.id)
                         $('#coDriver').val(res.loading.co_driver.id)
                         $('#outlet').val(res.loading.outlet_id)
-                        $('#sjcode').val(res.loading.surat_jalan)
+                        // $('#sjcode').val(res.loading.surat_jalan)
                         let titip = res.availableBoarding.titip || [];
                         let reguler = res.availableBoarding.reguler || [];
                         let loaded = res.loadedItems || [];
@@ -553,7 +553,7 @@
                 let driverId = $('#driver').val();
                 let coDriverId = $('#coDriver').val();
                 let outletId = $('#outlet').val();
-                let sjCode = $('#sjcode').val();
+                // let sjCode = $('#sjcode').val();
 
                 if (selectedItems.length === 0) {
                     alert('Pilih minimal satu Item untuk loading.');
@@ -563,10 +563,10 @@
                     alert('Pilih driver untuk loading.');
                     return;
                 }
-                if (!sjCode) {
-                    alert('Masukkan No Surat Jalan.');
-                    return;
-                }
+                // if (!sjCode) {
+                //     alert('Masukkan No Surat Jalan.');
+                //     return;
+                // }
 
 
 
@@ -578,7 +578,7 @@
                         driverId: driverId,
                         coDriverId: coDriverId,
                         outletId: outletId,
-                        sjCode: sjCode,
+                        // sjCode: sjCode,
                     },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -630,7 +630,7 @@
                 let driverId = $('#driver').val();
                 let coDriverId = $('#coDriver').val();
                 let outletId = $('#outlet').val();
-                let sjCode = $('#sjcode').val();
+                // let sjCode = $('#sjcode').val();
 
                 if (selectedItems.length === 0) {
                     alert('Pilih minimal satu Item untuk loading.');
@@ -640,10 +640,10 @@
                     alert('Pilih driver untuk loading.');
                     return;
                 }
-                if (!sjCode) {
-                    alert('Masukkan No Surat Jalan.');
-                    return;
-                }
+                // if (!sjCode) {
+                //     alert('Masukkan No Surat Jalan.');
+                //     return;
+                // }
 
 
 
@@ -655,7 +655,7 @@
                         driverId: driverId,
                         coDriverId: coDriverId,
                         outletId: outletId,
-                        sjCode: sjCode,
+                        // sjCode: sjCode,
                     },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

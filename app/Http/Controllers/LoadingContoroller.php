@@ -237,6 +237,27 @@ class LoadingContoroller extends Controller
             ]
         ]);
     }
+    private function generateSjCode()
+    {
+        $prefix = 'HS' . now()->format('ym'); // HS + YYMM
+
+        // ambil terakhir di bulan yang sama
+        $last = Loading::where('surat_jalan', 'like', $prefix . '%')
+            ->lockForUpdate()
+            ->orderBy('surat_jalan', 'desc')
+            ->first();
+
+        if ($last) {
+            $lastNumber = (int) substr($last->surat_jalan, -3);
+            $newNumber = $lastNumber + 1;
+        } else {
+            $newNumber = 1;
+        }
+
+        $running = str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
+        return $prefix . $running;
+    }
 
     public function loading(Request $request)
     {
@@ -248,7 +269,7 @@ class LoadingContoroller extends Controller
             'items.*.id' => 'required|exists:boarding_lists,id',
             'items.*.koli' => 'required|integer|min:0',
             'items.*.qty' => 'nullable|integer|min:0',
-            'sjCode' => 'required|string|unique:loadings,surat_jalan',
+            // 'sjCode' => 'required|string|unique:loadings,surat_jalan',
         ]);
 
         DB::beginTransaction();
@@ -256,12 +277,12 @@ class LoadingContoroller extends Controller
         try {
             // 🔹 1. create loading (header)
             $loading = Loading::create([
-                'surat_jalan' => $request->sjCode,
-                'driver_id'   => $request->driverId,
+                'surat_jalan'  => $this->generateSjCode(),
+                'driver_id'    => $request->driverId,
                 'co_driver_id' => $request->coDriverId,
-                'outlet_id'   => $request->outletId,
+                'outlet_id'    => $request->outletId,
                 'loading_start' => now(),
-                'created_by'  =>  Auth::id() ?? 1,
+                'created_by'   => Auth::id() ?? 1,
             ]);
 
             // 🔹 2. loop items → insert ke loading_details

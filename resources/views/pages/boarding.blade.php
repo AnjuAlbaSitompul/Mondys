@@ -15,14 +15,14 @@
                             data-bs-target="#home-tab-icon-pane" type="button" role="tab"
                             aria-controls="home-tab-icon-pane" aria-selected="true">
                             <i class="fa fa-box"></i>
-                            Start Pick
+                            Boarding
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab-icon" data-bs-toggle="tab"
                             data-bs-target="#profile-tab-icon-pane" type="button" role="tab"
                             aria-controls="profile-tab-icon-pane" aria-selected="false">
                             <i class="fa fa-truck"></i>
-                            End Pick
+                            Titip
                         </button>
                     </li>
                 </ul>
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade show active" id="profile-tab-icon-pane" role="tabpanel"
+                    <div class="tab-pane fade show" id="profile-tab-icon-pane" role="tabpanel"
                         aria-labelledby="profile-tab-icon" tabindex="0">
                         @include('pages.titip')
                     </div>

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('loadings', function (Blueprint $table) {
             $table->id();
 
-            $table->string('surat_jalan');
+            $table->string('surat_jalan')->unique();
 
             $table->unsignedBigInteger('driver_id');
             $table->unsignedBigInteger('co_driver_id')->nullable();

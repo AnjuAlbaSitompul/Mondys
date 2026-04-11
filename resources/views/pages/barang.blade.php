@@ -4,6 +4,8 @@
     @include('partials.loader')
 @endsection
 @section('content')
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
     <div class="row layout-top-spacing">
 
         <div id="basic" class="col-lg-12 col-sm-12 col-12 layout-spacing">
@@ -15,14 +17,14 @@
                             data-bs-target="#home-tab-icon-pane" type="button" role="tab"
                             aria-controls="home-tab-icon-pane" aria-selected="true">
                             <i class="fa fa-box"></i>
-                            Boarding
+                            Pick Start
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab-icon" data-bs-toggle="tab"
                             data-bs-target="#profile-tab-icon-pane" type="button" role="tab"
                             aria-controls="profile-tab-icon-pane" aria-selected="false">
                             <i class="fa fa-truck"></i>
-                            Titip
+                            Pick End
                         </button>
                     </li>
                 </ul>
@@ -52,14 +54,11 @@
                                         <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan"
                                             btnId="suratjalanBtn" name="codesj" type="basic"
                                             invalid="Harap Masukkan Code SJ" label="Surat Jalan" id="sj"
-                                            disabled="{{ false }}" toggle="modal" target="#scannerModal"
-                                            value="tag1, tag2 autofocus" />
+                                            disabled="{{ false }}" value="tag1, tag2 autofocus" />
                                     </div>
                                     <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Picker</button>
                                 </form>
-                                <x-modal.scan-modal inputId="sj" />
-                                <x-modal.picker-modal inputId="userPicker" />
-                                <x-modal.update-picker inputId="userPicker" />
+
                             </div>
                         </div>
 
@@ -92,7 +91,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade show active" id="profile-tab-icon-pane" role="tabpanel"
+                    <div class="tab-pane fade show" id="profile-tab-icon-pane" role="tabpanel"
                         aria-labelledby="profile-tab-icon" tabindex="0">
                         @include('pages.pick')
                     </div>
@@ -100,12 +99,46 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="Scanner" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Scan Barcode Surat Jalan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="reader" style="width:100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <x-modal.picker-modal inputId="userPicker" />
+    <x-modal.update-picker inputId="userPicker" />
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
     <script>
         $(document).ready(function() {
+            let html5QrCode;
+
+
             var input = document.querySelector('#sj');
+            var pickEnd = document.querySelector('#sjpickend');
 
             var tagify = new Tagify(input, {
+                delimiters: ",",
+                maxTags: 10
+            });
+            var tagifyPickEnd = new Tagify(pickEnd, {
                 delimiters: ",",
                 maxTags: 10
             });
@@ -275,6 +308,44 @@
                     }
                 });
             });
+
+            $('#suratjalanBtn').on('click', function() {
+                alert('access')
+                $('#scannerModal').modal('show');
+                openModal(tagify)
+            });
+
+
+            $('#pickBtn').on('click', function() {
+                alert('access')
+                $('#scannerModal').modal('show');
+                openModal(tagifyPickEnd)
+            });
+
+            function openModal(input) {
+                html5QrCode = new Html5Qrcode("reader");
+
+                html5QrCode.start({
+                        facingMode: "environment"
+                    }, {
+                        fps: 10,
+                        qrbox: 250
+                    },
+                    function(decodedText) {
+                        input.addTags(decodedText);
+
+                        html5QrCode.stop().then(() => {
+                            $('#scannerModal').modal('hide');
+                        });
+                    }
+                );
+            };
+
+            $('#scannerModal').on('hide.bs.modal', function() {
+                html5QrCode.stop()
+            })
+
+
 
             $(document).on('click', '.delete-btn', function() {
                 let id = $(this).data('id');
