@@ -10,6 +10,7 @@ class UserController extends Controller
     public function getPicker()
     {
         $pickers = User::where('role', 'PICKER')
+            ->where('is_active', 1)
             ->withCount([
                 'pickLists as picking_today' => function ($q) {
                     $q->whereDate('started_at', today())

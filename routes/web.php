@@ -99,6 +99,7 @@ Route::middleware(['auth', 'role:DRIVER'])->group(function () {
     Route::post('/deliver/clock-in/{id}', [DeliverController::class, 'clockIn']);
     Route::get('/driver/dashboard', [DashboardController::class, 'driverDashboard']);
     Route::get('/driver/camera/{id}', [DeliverController::class, 'camera']);
+    Route::get('/loading/get/{id}', [LoadingContoroller::class, 'checkId']);
 });
 
 Route::middleware(['auth', 'role:PIC'])->group(function () {

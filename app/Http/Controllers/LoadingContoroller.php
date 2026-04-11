@@ -37,7 +37,7 @@ class LoadingContoroller extends Controller
     public function history()
     {
         $loading = Loading::with(['driver', 'coDriver', 'outlet'])
-            ->whereNull('loading_end')
+            ->whereNotNull('loading_end')
             ->get();
         return response()->json([
             'status' => 'success',

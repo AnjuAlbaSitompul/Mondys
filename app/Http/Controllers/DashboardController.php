@@ -97,7 +97,7 @@ class DashboardController extends Controller
                     'box' => $item->qty ?? 0,
                     'koli' => $item->koli ?? 0,
                     'pic_boarding' => $item->creator->name ?? '-',
-                    'started_at' => $item->started_at,
+                    'started_at' => $item->boarding_start,
                     'finished_at' => $item->boarding_end,
                 ];
             });

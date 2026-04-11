@@ -167,24 +167,19 @@ class DeliverController extends Controller
         DB::beginTransaction();
 
         try {
-            $loading = Loading::with('details.boardingList.barang')
-                ->where('surat_jalan', $request->id)
+            $loading = Loading::where('surat_jalan', $request->id)
+                ->with('details.boardingList.barang')
                 ->whereNull('loading_end')
-                ->first();
+                ->firstOrFail();
 
-            if (!$loading) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Loading tidak ditemukan'
-                ], 404);
-            }
+            // if (!$loading) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'message' => 'Loading tidak ditemukan'
+            //     ], 404);
+            // }
 
-            // update loading_end
-            $loading->update([
-                'loading_end' => now(),
-            ]);
 
-            // ✅ update semua barang jadi DEPARTURE START
             foreach ($loading->details as $detail) {
                 $boarding = $detail->boardingList;
 
@@ -194,6 +189,9 @@ class DeliverController extends Controller
                     ]);
                 }
             }
+            $loading->update([
+                'loading_end' => now()
+            ]);
 
             // create delivering
             $delivering = Delivering::create([

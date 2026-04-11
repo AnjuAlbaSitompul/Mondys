@@ -26,6 +26,7 @@ class PickerPerformanceService
                     ->whereBetween('pick_lists.created_at', [$startDate, $endDate]);
             })
             ->where('users.role', 'PICKER')
+            ->where('users.is_active', 1)
             ->select(
                 'users.id as picker_id',
                 'users.name as picker_name',
