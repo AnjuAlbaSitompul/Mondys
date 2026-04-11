@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Barang;
 use App\Models\BoardingList;
 use App\Models\LoadingDetail;
+use App\Models\PickList;
 use Carbon\Carbon;
-use App\Models\Picklist;
 
 class DashboardAdminService
 {
@@ -35,7 +35,7 @@ class DashboardAdminService
             ->count('barang_id');
 
         // 🔹 3. barang masih dipick (belum selesai)
-        $barangPicking = Picklist::whereBetween('created_at', [$startDate, $endDate])
+        $barangPicking = PickList::whereBetween('created_at', [$startDate, $endDate])
             ->whereNull('finished_at')
             ->distinct('barang_id')
             ->count('barang_id');
