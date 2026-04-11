@@ -7,58 +7,90 @@
     <div class="row layout-top-spacing">
 
         <div id="basic" class="col-lg-12 col-sm-12 col-12 layout-spacing">
-            <div class="statbox widget box box-shadow">
-                <div class="widget-header">
-                    <div class="row">
-                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                            <h4>Boarding Operation</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="widget-content widget-content-area">
-                    <form class="row g-3" id="bordingForm">
-                        <div class="col-lg-12">
-                            <x-form.input-btn placeholder="Masukkan Code Boarding" btnTxt="Scan" btnId="scanCode"
-                                name="codeBoarding" type="basic" invalid="Harap Masukkan Code Boarding"
-                                label="Code Boarding" id="codeBoarding" disabled="{{ false }}" toggle="modal"
-                                target="#scannerModal" value="tag1, tag2 autofocus" />
-                            <div class="text-muted">Format: HS09(4) + SJ(16) + PR(8) + Koli(2) = 30 chars</div>
-                        </div>
-                        <div class="col-lg-12">
-                            <x-form.input id="qty" label="Masukkan Jumlah Box" name="qty" type="number"
-                                min="1" placeholder="Masukkan Jumlah Box" valid="Masukkan Jumlah Box yang valid" />
-                        </div>
-                        <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Ke Boarding</button>
-                    </form>
-                    <x-modal.scan-modal inputId="codeBoarding" />
-                </div>
-            </div>
-        </div>
+            <div class="simple-tab">
 
-        <div class="col-lg-12 col-md-12 layout-spacing">
-            <div class="statbox widget box box-shadow">
-                <div class="widget-header">
-                    <div class="row">
-                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                            <h4>Data Boarding</h4>
+                <ul class="nav nav-tabs p-3" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab-icon" data-bs-toggle="tab"
+                            data-bs-target="#home-tab-icon-pane" type="button" role="tab"
+                            aria-controls="home-tab-icon-pane" aria-selected="true">
+                            <i class="fa fa-box"></i>
+                            Start Pick
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab-icon" data-bs-toggle="tab"
+                            data-bs-target="#profile-tab-icon-pane" type="button" role="tab"
+                            aria-controls="profile-tab-icon-pane" aria-selected="false">
+                            <i class="fa fa-truck"></i>
+                            End Pick
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home-tab-icon-pane" role="tabpanel"
+                        aria-labelledby="home-tab-icon" tabindex="0">
+                        <div class="statbox widget box box-shadow">
+                            <div class="widget-header">
+                                <div class="row">
+                                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                        <h4>Boarding Operation</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-content widget-content-area">
+                                <form class="row g-3" id="bordingForm">
+                                    <div class="col-lg-12">
+                                        <x-form.input-btn placeholder="Masukkan Code Boarding" btnTxt="Scan"
+                                            btnId="scanCode" name="codeBoarding" type="basic"
+                                            invalid="Harap Masukkan Code Boarding" label="Code Boarding" id="codeBoarding"
+                                            disabled="{{ false }}" toggle="modal" target="#scannerModal"
+                                            value="tag1, tag2 autofocus" />
+                                        <div class="text-muted">Format: HS09(4) + SJ(16) + PR(8) + Koli(2) = 30 chars</div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <x-form.input id="qty" label="Masukkan Jumlah Box" name="qty"
+                                            type="number" min="1" placeholder="Masukkan Jumlah Box"
+                                            valid="Masukkan Jumlah Box yang valid" />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Ke Boarding</button>
+                                </form>
+                                <x-modal.scan-modal inputId="codeBoarding" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 layout-spacing">
+                            <div class="statbox widget box box-shadow">
+                                <div class="widget-header">
+                                    <div class="row">
+                                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                            <h4>Data Boarding</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="widget-content widget-content-area">
+                                    <div class="table-responsive">
+                                        <table id="boardingListTable" class="table style-3 dt-table-hover">
+                                            <thead class="table-header">
+                                                <tr>
+                                                    <th class="text-center col-no">No</th>
+                                                    <th class="text-center">TUJUAN</th>
+                                                    <th class="text-center">TYPE</th>
+                                                    <th class="text-center">BOARDING CODE</th>
+                                                    <th class="text-center">STATUS</th>
+                                                    <th class="text-center">DURATION</th>
+                                                    <th class="text-center">Created By</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="widget-content widget-content-area">
-                    <div class="table-responsive">
-                        <table id="boardingListTable" class="table style-3 dt-table-hover">
-                            <thead class="table-header">
-                                <tr>
-                                    <th class="text-center col-no">No</th>
-                                    <th class="text-center">TUJUAN</th>
-                                    <th class="text-center">TYPE</th>
-                                    <th class="text-center">BOARDING CODE</th>
-                                    <th class="text-center">STATUS</th>
-                                    <th class="text-center">DURATION</th>
-                                    <th class="text-center">Created By</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="tab-pane fade show active" id="profile-tab-icon-pane" role="tabpanel"
+                        aria-labelledby="profile-tab-icon" tabindex="0">
+                        @include('pages.titip')
                     </div>
                 </div>
             </div>

@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('loading_details', function (Blueprint $table) {
+        Schema::create('driver_ratings', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('loading_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('boarding_list_id')->constrained()->cascadeOnDelete();
-            $table->integer('koli');
-            $table->integer('box')->nullable();
-            $table->foreignId('barang_id')
-                ->constrained('barangs')
+            $table->foreignId('driver_id')
+                ->constrained('users')
                 ->cascadeOnDelete();
+
+            $table->unsignedTinyInteger('rating'); // 1 - 5
+            $table->text('feedback')->nullable();
+
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('loading_details');
+        Schema::dropIfExists('driver_ratings');
     }
 };

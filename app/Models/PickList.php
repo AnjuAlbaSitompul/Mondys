@@ -11,7 +11,9 @@ class PickList extends Model
         'picker_id',
         'status',
         'started_at',
-        'finished_at'
+        'finished_at',
+        'created_by',
+        'ended_by'
     ];
 
     public function barang()
@@ -22,5 +24,14 @@ class PickList extends Model
     public function picker()
     {
         return $this->belongsTo(User::class, 'picker_id', 'id');
+    }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function ender()
+    {
+        return $this->belongsTo(User::class, 'ended_by');
     }
 }

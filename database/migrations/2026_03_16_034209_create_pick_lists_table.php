@@ -27,6 +27,15 @@ return new class extends Migration
                 'finished'
             ])->default('picking');
 
+            $table->foreignId('created_by')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->foreignId('ended_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
             $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();
 

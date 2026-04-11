@@ -148,6 +148,7 @@ class LoadingContoroller extends Controller
                         'loading_id'       => $loading->id,
                         'boarding_list_id' => $boarding->id,
                         'koli'             => $newKoli,
+                        'barang_id'        => $boarding->barang_id,
                         'box'              => $newBox,
                     ]);
                 }
@@ -280,6 +281,7 @@ class LoadingContoroller extends Controller
                 // 🔹 insert detail
                 LoadingDetail::create([
                     'loading_id'        => $loading->id,
+                    'barang_id'         => $boarding->barang_id,
                     'boarding_list_id'  => $boarding->id,
                     'koli'              => $item['koli'],
                     'box'               => $item['qty'] ?? 0,

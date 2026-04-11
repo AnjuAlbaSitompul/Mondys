@@ -8,15 +8,17 @@
                 <i class="fa-solid fa-box fa-2x mb-2 text-primary"></i>
                 <h5 class="card-title">Upcoming Delivering</h5>
                 <h3 class="fw-bold card-title">{{ $totalDelivery }}</h3>
-                <button class="btn btn-primary mb-2" id="scanBtn" {{ $isDelivering ? 'style=display:none' : '' }}>
-                    Scan to Start
-                </button>
+                @if (!$isClockingIn)
+                    <button class="btn btn-primary mb-2" id="scanBtn"
+                        @if ($isDelivering) style="display:none" @endif>
+                        Scan to Start
+                    </button>
 
-                <button class="btn btn-primary mb-2" id="clockInBtn"
-                    data-id="{{ $isDelivering ? $isDelivering->id : null }}"
-                    {{ !$isDelivering ? 'style=display:none' : '' }}>
-                    Clock In
-                </button>
+                    <button class="btn btn-primary mb-2" id="clockInBtn" data-id="{{ $isDelivering->id ?? '' }}"
+                        @if (!$isDelivering) style="display:none" @endif>
+                        Clock In
+                    </button>
+                @endif
                 @if (session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
@@ -56,7 +58,75 @@
     $(document).ready(function() {
 
         $('#scanBtn').on('click', function() {
-            $('#scanBarcodeDriver').modal('show')
+            // $('#scanBarcodeDriver').modal('show')
+            $.ajax({
+                url: `/loading/get/SJ-12KKLSI-39`,
+                type: 'GET',
+                success: function(res) {
+
+                    // ✅ kalau valid → Swal confirm
+                    Swal.fire({
+                        title: 'Valid Loading',
+                        text: 'Lanjutkan ke delivering?',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya',
+                        cancelButtonText: 'Tidak'
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+
+                            // 🔥 CREATE DELIVERING
+                            $.ajax({
+                                url: '/deliver/create',
+                                type: 'POST',
+                                data: {
+                                    id: 'SJ-12KKLSI-39',
+                                    _token: $(
+                                        'meta[name="csrf-token"]'
+                                    ).attr('content')
+                                },
+                                success: function(res) {
+                                    $('#clockInBtn').attr(
+                                        'data-id', res
+                                        .data.id
+                                    ).show();
+                                    $('#scanBtn').hide();
+                                    $('#scanBarcodeDriver')
+                                        .modal('hide');
+                                    Swal.fire('Success',
+                                        'Delivering dibuat',
+                                        'success');
+                                },
+                                error: function(xhr) {
+                                    $('#clockInBtn').hide();
+                                    $('#scanBtn').show();
+                                    $('#scanBarcodeDriver')
+                                        .modal('hide')
+                                    Swal.fire('Error',
+                                        'Gagal membuat delivering',
+                                        'error');
+                                }
+                            });
+
+                        }
+
+                    });
+
+                },
+                error: function() {
+
+                    // ❌ kalau tidak valid
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Loading tidak valid / tidak ditemukan',
+                        icon: 'error'
+                    });
+
+                    scanned = false; // allow scan ulang
+                }
+            });
+
         });
         $('#pickingTable').DataTable({
             processing: true,
@@ -102,7 +172,7 @@
         $('#clockInBtn').on('click', function() {
             let id = $(this).data('id')
             alert(id)
-            window.location.href = "{{ url('/driver/camera/' . $isDelivering->id) }}"
+            window.location.href = `/driver/camera/${id}`
         });
     })
 </script>

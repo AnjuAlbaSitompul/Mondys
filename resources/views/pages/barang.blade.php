@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Barang')
+@section('title', 'Boarding')
 @section('loader')
     @include('partials.loader')
 @endsection
@@ -7,62 +7,94 @@
     <div class="row layout-top-spacing">
 
         <div id="basic" class="col-lg-12 col-sm-12 col-12 layout-spacing">
-            <div class="statbox widget box box-shadow">
-                <div class="widget-header">
-                    <div class="row">
-                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                            <h4>Picker Operation</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="widget-content widget-content-area">
-                    <form class="row g-3" id="barangForm">
-                        <input type="hidden" value="sj" name="type">
-                        <div class="col-lg-12">
-                            <x-form.input-btn placeholder="Pilih Picker" btnTxt="Choose" btnId="choosePicker" name="picker"
-                                type="text" invalid="Harap Masukkan Picker" label="Pilih Picker" id="picker"
-                                disabled="{{ true }}" target="#pickerModal" toggle="modal" />
-                            <input type="hidden" id="pickerId" name="pickerId">
-                        </div>
-                        <div class="col-lg-12">
-                            <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="suratjalanBtn"
-                                name="codesj" type="basic" invalid="Harap Masukkan Code SJ" label="Surat Jalan"
-                                id="sj" disabled="{{ false }}" toggle="modal" target="#scannerModal"
-                                value="tag1, tag2 autofocus" />
-                        </div>
-                        <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Picker</button>
-                    </form>
-                    <x-modal.scan-modal inputId="sj" />
-                    <x-modal.picker-modal inputId="userPicker" />
-                    <x-modal.update-picker inputId="userPicker" />
-                </div>
-            </div>
-        </div>
+            <div class="simple-tab">
 
-        <div class="col-lg-12 col-md-12 layout-spacing">
-            <div class="statbox widget box box-shadow">
-                <div class="widget-header">
-                    <div class="row">
-                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                            <h4>Data Barang</h4>
+                <ul class="nav nav-tabs p-3" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab-icon" data-bs-toggle="tab"
+                            data-bs-target="#home-tab-icon-pane" type="button" role="tab"
+                            aria-controls="home-tab-icon-pane" aria-selected="true">
+                            <i class="fa fa-box"></i>
+                            Boarding
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab-icon" data-bs-toggle="tab"
+                            data-bs-target="#profile-tab-icon-pane" type="button" role="tab"
+                            aria-controls="profile-tab-icon-pane" aria-selected="false">
+                            <i class="fa fa-truck"></i>
+                            Titip
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home-tab-icon-pane" role="tabpanel"
+                        aria-labelledby="home-tab-icon" tabindex="0">
+                        <div class="statbox widget box box-shadow">
+                            <div class="widget-header">
+                                <div class="row">
+                                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                        <h4>Picker Operation</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-content widget-content-area">
+                                <form class="row g-3" id="barangForm">
+                                    <input type="hidden" value="sj" name="type">
+                                    <div class="col-lg-12">
+                                        <x-form.input-btn placeholder="Pilih Picker" btnTxt="Choose" btnId="choosePicker"
+                                            name="picker" type="text" invalid="Harap Masukkan Picker"
+                                            label="Pilih Picker" id="picker" disabled="{{ true }}"
+                                            target="#pickerModal" toggle="modal" />
+                                        <input type="hidden" id="pickerId" name="pickerId">
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan"
+                                            btnId="suratjalanBtn" name="codesj" type="basic"
+                                            invalid="Harap Masukkan Code SJ" label="Surat Jalan" id="sj"
+                                            disabled="{{ false }}" toggle="modal" target="#scannerModal"
+                                            value="tag1, tag2 autofocus" />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Picker</button>
+                                </form>
+                                <x-modal.scan-modal inputId="sj" />
+                                <x-modal.picker-modal inputId="userPicker" />
+                                <x-modal.update-picker inputId="userPicker" />
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 layout-spacing">
+                            <div class="statbox widget box box-shadow">
+                                <div class="widget-header">
+                                    <div class="row">
+                                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                            <h4>Data Barang</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="widget-content widget-content-area">
+                                    <div class="table-responsive">
+                                        <table id="barangTable" class="table style-3 dt-table-hover">
+                                            <thead class="table-header">
+                                                <tr>
+                                                    <th class="text-center col-no">No</th>
+                                                    <th>PICKER</th>
+                                                    <th class="text-center">SJ CODE</th>
+                                                    <th class="text-center">STATUS</th>
+                                                    <th class="text-center col-action">
+                                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="widget-content widget-content-area">
-                    <div class="table-responsive">
-                        <table id="barangTable" class="table style-3 dt-table-hover">
-                            <thead class="table-header">
-                                <tr>
-                                    <th class="text-center col-no">No</th>
-                                    <th>PICKER</th>
-                                    <th class="text-center">SJ CODE</th>
-                                    <th class="text-center">STATUS</th>
-                                    <th class="text-center col-action">
-                                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                                    </th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="tab-pane fade show active" id="profile-tab-icon-pane" role="tabpanel"
+                        aria-labelledby="profile-tab-icon" tabindex="0">
+                        @include('pages.pick')
                     </div>
                 </div>
             </div>

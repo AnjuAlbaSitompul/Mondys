@@ -10,7 +10,8 @@ class LoadingDetail extends Model
         'loading_id',
         'boarding_list_id',
         'koli',
-        'box'
+        'box',
+        'barang_id',
     ];
 
     public function loading()

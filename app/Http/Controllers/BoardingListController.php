@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Validator;
 
 class BoardingListController extends Controller
 {
+
+    public function index()
+    {
+        $outlets = Outlet::pluck('codeOutlet', 'id')->toArray();
+        $jenisBarangs = DB::table('jenis_barangs')->pluck('name', 'id')->toArray();
+        return view('pages.boarding', [
+            'outlets' => $outlets,
+            'jenisBarangs' => $jenisBarangs
+        ]);
+    }
     public function store(Request $request)
     {
         $codes = json_decode($request->codeBoarding, true);

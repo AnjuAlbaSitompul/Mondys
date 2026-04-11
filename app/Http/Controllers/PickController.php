@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PickList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,7 +55,8 @@ class PickController extends Controller
             foreach ($pickLists as $pickList) {
                 $pickList->update([
                     'status' => 'finished',
-                    'finished_at' => now()
+                    'finished_at' => now(),
+                    'ended_by' => Auth::id()
                 ]);
 
                 if ($pickList->barang) {
@@ -106,7 +108,8 @@ class PickController extends Controller
             // update picklist
             $pickList->update([
                 'status' => 'finished',
-                'finished_at' => now()
+                'finished_at' => now(),
+                'ended_by' => Auth::id(),
             ]);
 
             if ($pickList->barang) {

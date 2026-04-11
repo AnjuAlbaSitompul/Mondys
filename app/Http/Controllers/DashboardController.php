@@ -2,16 +2,181 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BoardingList;
 use App\Models\Delivering;
 use App\Models\Loading;
 use App\Models\Outlet;
 use App\Models\PickList;
 use App\Models\User;
+use App\Services\DashboardAdminService;
+use App\Services\PickerPerformanceService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
+
+    public function summary(Request $request, DashboardAdminService $service)
+    {
+        $data = $service->getDashboardData(
+            $request->start_date,
+            $request->end_date
+        );
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
+
+
+    public function loadingData(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : Carbon::now()->endOfDay();
+
+        $data = Loading::with([
+            'outlet',
+            'driver',
+            'coDriver',
+            'details'
+        ])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get()
+            ->map(function ($item) {
+
+                $totalBox = $item->details->sum('box');
+                $totalKoli = $item->details->sum('koli');
+
+                return [
+                    'surat_jalan' => $item->surat_jalan,
+                    'outlet_name' => $item->outlet->name ?? '-',
+                    'total_box' => $totalBox,
+                    'total_koli' => $totalKoli,
+                    'driver' => trim(
+                        ($item->driver->name ?? '-') .
+                            ($item->coDriver ? ' / ' . $item->coDriver->name : '')
+                    ),
+                    'loading_start' => $item->loading_start,
+                    'loading_end' => $item->loading_end,
+                ];
+            });
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+    public function boardingData(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : Carbon::now()->endOfDay();
+
+        $data = BoardingList::with([
+            'barang',
+            'outlet',
+            'creator'
+        ])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'surat_jalan' => $item->barang->sjcode ?? '-',
+                    'outlet_name' => $item->outlet->name ?? '-',
+                    'box' => $item->qty ?? 0,
+                    'koli' => $item->koli ?? 0,
+                    'pic_boarding' => $item->creator->name ?? '-',
+                    'started_at' => $item->started_at,
+                    'finished_at' => $item->boarding_end,
+                ];
+            });
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+    public function pickingData(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : Carbon::now()->endOfDay();
+
+        $data = PickList::with([
+            'barang',
+            'picker',
+            'creator',   // nanti kita tambah relasi
+            'ender'      // nanti kita tambah relasi
+        ])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'surat_jalan' => $item->barang->sjcode ?? '-',
+                    'picker_name' => $item->picker->name ?? '-',
+                    'pic_start'   => $item->creator->name ?? '-',
+                    'started_at'  => $item->started_at,
+                    'pic_end'     => $item->ender->name ?? '-',
+                    'finished_at' => $item->finished_at,
+                ];
+            });
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+    public function pickerPerformance(Request $request, PickerPerformanceService $service)
+    {
+        try {
+            $result = $service->getPickerStats(
+                $request->start_date,
+                $request->end_date
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $result['data']
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function picDashboard()
+    {
+        $user = Auth::user();
+
+        $data = Delivering::with('loading') // eager load
+            ->whereHas('loading', function ($q) use ($user) {
+                $q->where('outlet_id', $user->outlet_id);
+            })
+            ->latest() // optional: urut terbaru
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ], 200);
+    }
     public function printBarcode(Request $request)
     {
         $id = $request->id;
@@ -26,10 +191,9 @@ class DashboardController extends Controller
         return view('print.print-barcode', compact('barcodes'));
     }
 
-    public function index()
+    public function index(Request $request, DashboardAdminService $service)
     {
         $user = Auth::user();
-
         $role = strtoupper($user->role);
 
         $data = [
@@ -50,33 +214,51 @@ class DashboardController extends Controller
 
             case 'DRIVER':
 
-                // total semua loading milik driver
                 $data['totalDelivery'] = Loading::where('driver_id', $user->id)->count();
 
-                // cek apakah masih ada delivering aktif (belum clock_out)
                 $data['isDelivering'] = Delivering::whereNull('clock_out')
+                    ->whereNull('clock_in')
                     ->whereNotNull('start_at')
-                    ->where('driver_id', Auth::id())
+                    ->where('driver_id', $user->id)
                     ->with('loading')
-                    ->first(); // pakai first biar dapat 1 data aja
+                    ->first();
+
+                $data['isClockingIn'] = Delivering::whereNull('clock_out')
+                    ->whereNotNull('start_at')
+                    ->whereNotNull('clock_in')
+                    ->where('driver_id', $user->id)
+                    ->exists();
 
                 break;
 
-            case 'SPV':
-                // contoh supervisor
-                $data['totalPicker'] = User::where('role', 'PICKER')->count();
+            case 'PIC':
+
+                $deliverings = Delivering::whereHas('loading', function ($q) use ($user) {
+                    $q->where('outlet_id', $user->outlet_id);
+                })
+                    ->whereNull('clock_out')
+                    ->get();
+
+                $data['hasClockIn'] = $deliverings->filter(function ($item) {
+                    return !is_null($item->clock_in);
+                })->values();
+
+                $data['totalDelivering'] = $deliverings->count();
                 break;
 
             case 'ADMIN':
-                // admin full akses
-                $data['totalUser'] = User::count();
-                $data['totalOutlet'] = Outlet::count();
+
+                $adminData = $service->getDashboardData(
+                    $request->start_date,
+                    $request->end_date
+                );
+
+                $data = array_merge($data, $adminData);
                 break;
         }
 
         return view('pages.dashboard', $data);
     }
-
     public function pickerDashboard()
     {
         $data = Picklist::with(['barang', 'picker'])->whereNull('finished_at')->where('picker_id', Auth::id())->get();

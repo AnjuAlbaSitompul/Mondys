@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BoardingListController;
+use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveringController;
 use App\Http\Controllers\DepartmentController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\OutletController;
 use App\Http\Controllers\PickController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DeliverController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => view('auth.login'));
@@ -30,9 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/pick/{id}/end', [PickController::class, 'endPick'])->name('pick.end');
     Route::patch('/pick/end', [PickController::class, 'end']);
 
-    Route::get('/boarding', function () {
-        return view('pages.boarding');
-    })->name('boarding');
+    Route::get('/boarding', [BoardingListController::class, 'index'])->name('boarding');
     Route::post('/boarding', [BoardingListController::class, 'store'])->name('boarding.store');
     Route::get('/boarding/items', [BoardingListController::class, 'getAll'])->name('boarding.items');
 
@@ -81,6 +81,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/driver/dashboard', [DashboardController::class, 'driverDashboard']);
     Route::get('/driver/camera/{id}', [DeliverController::class, 'camera']);
 
+    Route::get('/pic/dashboard', [DashboardController::class, 'picDashboard']);
+    Route::get('/pic/detail/{id}', [DeliverController::class, 'picDetail']);
     Route::post('/deliver/create', [DeliverController::class, 'create']);
     Route::post('/deliver/clock-in/{id}', [DeliverController::class, 'clockIn']);
+    Route::post('/deliver/clock-out/{id}', [DeliverController::class, 'clockOut']);
+
+    Route::post('/rating/driver/{id}', [RatingController::class, 'store']);
+    Route::post('/claim', [ClaimController::class, 'store']);
+
+    Route::get('/admin/dashboard/picker', [DashboardController::class, 'pickerPerformance']);
+    Route::get('/admin/dashboard/picking', [DashboardController::class, 'pickingData']);
+    Route::get('/admin/dashboard/boarding', [DashboardController::class, 'boardingData']);
+    Route::get('/admin/dashboard/loading', [DashboardController::class, 'loadingData']);
+    Route::get('/admin/dashboard/summary', [DashboardController::class, 'summary']);
 });

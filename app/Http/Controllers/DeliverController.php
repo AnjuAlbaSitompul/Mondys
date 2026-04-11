@@ -11,6 +11,18 @@ use Illuminate\Support\Facades\Http;
 
 class DeliverController extends Controller
 {
+    public function picDetail($id)
+    {
+        $delivering = Delivering::with([
+            'loading.details.boardingList.barang'
+        ])->findOrFail($id);
+
+        $details = $delivering->loading->details;
+
+        return response()->json([
+            'data' => $details
+        ]);
+    }
     public function camera($id)
     {
         $delivering = Delivering::find($id);
@@ -38,13 +50,73 @@ class DeliverController extends Controller
         // ✅ semua valid
         return view('camera.index', compact('delivering'));
     }
+    public function clockOut($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $delivering = Delivering::with('loading.details.boardingList.barang')
+                ->findOrFail($id);
+
+            // ❌ belum clock in
+            if (!$delivering->clock_in) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Belum melakukan clock in'
+                ], 400);
+            }
+
+            // ❌ cegah double clock out
+            if ($delivering->clock_out) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Sudah melakukan clock out'
+                ], 400);
+            }
+
+            // ✅ update clock out
+            $delivering->update([
+                'clock_out' => now()
+            ]);
+
+            // ✅ update semua barang jadi FINISHED
+            $loading = $delivering->loading;
+
+            if ($loading) {
+                foreach ($loading->details as $detail) {
+                    $boarding = $detail->boardingList;
+
+                    if ($boarding && $boarding->barang) {
+                        $boarding->barang->update([
+                            'status' => 'FINISHED'
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Clock out berhasil',
+                'data' => $delivering,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
     public function clockIn(Request $request, $id)
     {
         $request->validate([
             'photo' => 'required|image'
         ]);
 
-        $delivering = Delivering::find($id);
+        $delivering = Delivering::with('loading')->findOrFail($id);
 
         // optional: validasi basic
         if (!$delivering) {
@@ -66,7 +138,7 @@ class DeliverController extends Controller
             $file->getClientOriginalName()
         )->post("https://api.telegram.org/bot{$token}/sendPhoto", [
             'chat_id' => $chatId,
-            'caption' => 'Driver ID: ' . $delivering->user_id . ' sudah clock in 😎'
+            'caption' => 'Driver ID: ' . $delivering->loading->surat_jalan . ' sudah clock in'
         ]);
 
         $result = $response->json();
@@ -95,7 +167,8 @@ class DeliverController extends Controller
         DB::beginTransaction();
 
         try {
-            $loading = Loading::where('surat_jalan', $request->id)
+            $loading = Loading::with('details.boardingList.barang')
+                ->where('surat_jalan', $request->id)
                 ->whereNull('loading_end')
                 ->first();
 
@@ -109,8 +182,18 @@ class DeliverController extends Controller
             // update loading_end
             $loading->update([
                 'loading_end' => now(),
-
             ]);
+
+            // ✅ update semua barang jadi DEPARTURE START
+            foreach ($loading->details as $detail) {
+                $boarding = $detail->boardingList;
+
+                if ($boarding && $boarding->barang) {
+                    $boarding->barang->update([
+                        'status' => 'DEPARTURE'
+                    ]);
+                }
+            }
 
             // create delivering
             $delivering = Delivering::create([

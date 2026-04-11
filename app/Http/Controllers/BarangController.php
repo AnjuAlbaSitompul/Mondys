@@ -172,6 +172,7 @@ class BarangController extends Controller
                     'started_at' => now(),
                     'created_at' => now(),
                     'updated_at' => now(),
+                    'created_by' => Auth::id(),
                 ];
             })->toArray();
 

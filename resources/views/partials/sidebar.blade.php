@@ -39,7 +39,7 @@
 
                 @php
                     // cek apakah user punya akses ke menu ini
-                    $hasAccess = isset($menu['role']) ? in_array($user->role, $menu['role']) : $user->role === 'admin';
+                    $hasAccess = isset($menu['role']) ? in_array($user->role, $menu['role']) : $user->role === 'ADMIN';
                 @endphp
 
                 @if ($hasAccess)

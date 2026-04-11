@@ -11,17 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('loading_details', function (Blueprint $table) {
+        Schema::create('claims', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('loading_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('boarding_list_id')->constrained()->cascadeOnDelete();
-            $table->integer('koli');
-            $table->integer('box')->nullable();
             $table->foreignId('barang_id')
-                ->constrained('barangs')
+                ->constrained()
                 ->cascadeOnDelete();
-            $table->timestamps();
+
+            $table->foreignId('claimed_by')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->text('desc')->nullable();
+
+            $table->timestamps(); // created_at & updated_at
         });
     }
 
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('loading_details');
+        Schema::dropIfExists('claims');
     }
 };

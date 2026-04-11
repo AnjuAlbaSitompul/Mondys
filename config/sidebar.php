@@ -6,42 +6,26 @@ return [
         'title' => 'Dashboard',
         'icon' => 'fa-solid fa-house',
         'route' => 'dashboard',
-        'role' => ['admin', 'DRIVER', 'PICKER', 'PIC', 'SPV']
+        'role' => ['ADMIN', 'DRIVER', 'PICKER', 'PIC', 'SPV']
     ],
     [
-        'title' => 'Barang',
+        'title' => 'Task',
         'icon' => 'fa-solid fa-box',
         'id' => 'barang',
         'children' => [
             [
-                'title' => 'Picker',
+                'title' => 'Picking',
                 'route' => 'barang',
             ],
             [
-                'title' => 'End Pick',
-                'route' => 'barang.pick',
-            ],
-        ]
-    ],
-    [
-        'title' => 'Boarding',
-        'icon' => 'fa-solid fa-truck',
-        'id' => 'boarding',
-        'children' => [
-            [
-                'title' => 'Boarding List',
+                'title' => 'Boarding',
                 'route' => 'boarding',
             ],
             [
-                'title' => 'Titip',
-                'route' => 'titip',
-            ]
+                'title' => 'Loading',
+                'route' => 'loading',
+            ],
         ]
-    ],
-    [
-        'title' => 'Loading',
-        'icon' => 'fa-solid fa-truck-loading',
-        'route' => 'loading',
     ],
     [
         'title' => 'Master',
