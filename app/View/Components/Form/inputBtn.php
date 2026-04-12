@@ -26,6 +26,7 @@ class inputBtn extends Component
         $this->disabled = $disabled;
         $this->target = $target;
         $this->btnId = $btnId;
+        $this->toggle = $toggle;
     }
 
     /**
