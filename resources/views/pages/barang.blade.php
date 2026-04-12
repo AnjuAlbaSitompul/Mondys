@@ -51,11 +51,11 @@
                                         <input type="hidden" id="pickerId" name="pickerId">
                                     </div>
                                     <div class="col-lg-12">
-                                        <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan"
+                                        {{-- <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan"
                                             btnId="suratjalanBtn" name="codesj" type="basic"
                                             invalid="Harap Masukkan Code SJ" label="Surat Jalan" id="sj"
                                             disabled="{{ false }}" value="tag1, tag2 autofocus" toggle=""
-                                            target="" />
+                                            target="" /> --}}
                                     </div>
                                     <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Picker</button>
                                 </form>
