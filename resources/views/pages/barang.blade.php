@@ -46,8 +46,8 @@
                                     <div class="col-lg-12">
                                         <x-form.input-btn placeholder="Pilih Picker" btnTxt="Choose" btnId="choosePicker"
                                             name="picker" type="text" invalid="Harap Masukkan Picker"
-                                            label="Pilih Picker" id="picker" disabled="{{ true }}"
-                                            target="#pickerModal" toggle="modal" />
+                                            label="Pilih Picker" btnId="pickerBtn" id="picker"
+                                            disabled="{{ true }}" target="#pickerModal" toggle="modal" />
                                         <input type="hidden" id="pickerId" name="pickerId">
                                     </div>
                                     <div class="col-lg-12">
@@ -310,14 +310,12 @@
             });
 
             $('#suratjalanBtn').on('click', function() {
-                alert('access')
                 $('#scannerModal').modal('show');
                 openModal(tagify)
             });
 
 
             $('#pickBtn').on('click', function() {
-                alert('access')
                 $('#scannerModal').modal('show');
                 openModal(tagifyPickEnd)
             });
