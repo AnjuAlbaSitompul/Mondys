@@ -1,4 +1,4 @@
-@props([
+{{-- @props([
     'label',
     'btnId',
     'name',
@@ -11,7 +11,7 @@
     'disabled',
     'btnTxt',
     'invalid',
-])
+]) --}}
 
 <label for="{{ $id }}" class="form-label">{{ $label }}</label>
 <div class="input-group has-validation">

@@ -23,10 +23,10 @@ class inputBtn extends Component
         public $name = '',
         public $btnId = 'id'
     ) {
-        $this->disabled = $disabled;
-        $this->target = $target;
-        $this->btnId = $btnId;
-        $this->toggle = $toggle;
+        // $this->disabled = $disabled;
+        // $this->target = $target;
+        // $this->btnId = $btnId;
+        // $this->toggle = $toggle;
     }
 
     /**
