@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     <x-form.input-btn placeholder="Masukkan Code SJ" btnTxt="Scan" btnId="pickBtn" name="codesj"
                         type="basic" invalid="Harap Masukkan Code SJ" label="Surat Jalan" id="sjpickend"
-                        disabled="{{ false }}" value="tag1, tag2 autofocus" />
+                        disabled="{{ false }}" value="tag1, tag2 autofocus" toggle="" target="" />
                 </div>
                 <button type="submit" class="btn btn-primary mb-2 me-4 ">End Pick</button>
             </form>
