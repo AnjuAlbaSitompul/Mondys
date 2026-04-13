@@ -4,7 +4,7 @@
         <div class="row align-items-center">
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Dashboard Overview</h4>
-                <div id="datetime" class="text-muted small"></div>
+
             </div>
         </div>
 
@@ -272,26 +272,6 @@
         $('#startDate').attr('max', todayStr);
         $('#endDate').attr('max', todayStr);
 
-        function updateDateTime() {
-            const now = new Date();
-
-            const options = {
-                timeZone: 'Asia/Jakarta',
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-
-            const formatted = now.toLocaleString('id-ID', options);
-            document.getElementById('datetime').innerText = formatted;
-        }
-
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
 
         // biar end tidak bisa < start
         $('#startDate').on('change', function() {
