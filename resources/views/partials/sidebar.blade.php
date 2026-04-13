@@ -36,7 +36,6 @@
             @endphp
 
             @foreach ($menus as $menu)
-
                 @php
                     // cek apakah user punya akses ke menu ini
                     $hasAccess = isset($menu['role']) ? in_array($user->role, $menu['role']) : $user->role === 'ADMIN';

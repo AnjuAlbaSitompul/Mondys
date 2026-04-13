@@ -21,6 +21,7 @@ class PickerPerformanceService
             : Carbon::now()->endOfDay();
 
         $data = DB::table('users')
+            ->leftJoin('locations', 'users.location_id', '=', 'locations.id') // ✅ join location
             ->leftJoin('pick_lists', function ($join) use ($startDate, $endDate) {
                 $join->on('users.id', '=', 'pick_lists.picker_id')
                     ->whereBetween('pick_lists.created_at', [$startDate, $endDate]);
@@ -30,11 +31,10 @@ class PickerPerformanceService
             ->select(
                 'users.id as picker_id',
                 'users.name as picker_name',
+                'locations.name as picker_department', // ✅ ini yang kamu mau
 
-                // total barang
                 DB::raw('COUNT(pick_lists.barang_id) as total_barang'),
 
-                // rata-rata durasi
                 DB::raw('AVG(
             CASE 
                 WHEN pick_lists.started_at IS NOT NULL 
@@ -44,7 +44,6 @@ class PickerPerformanceService
             END
         ) as avg_duration'),
 
-                // error
                 DB::raw('SUM(
             CASE 
                 WHEN pick_lists.started_at IS NOT NULL 
@@ -54,7 +53,7 @@ class PickerPerformanceService
             END
         ) as total_error')
             )
-            ->groupBy('users.id', 'users.name')
+            ->groupBy('users.id', 'users.name', 'locations.name') // ✅ jangan lupa ini
             ->get();
 
         // 🔥 scoring
@@ -88,6 +87,7 @@ class PickerPerformanceService
             return [
                 'picker_id' => $item->picker_id,
                 'picker_name' => $item->picker_name,
+                'picker_department' => $item->picker_department, // ✅ kirim ke frontend
                 'total_barang' => $total,
                 'avg_duration_minutes' => round($avgMinutes, 2),
                 'total_error' => $error,

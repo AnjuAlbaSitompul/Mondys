@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'User')
 @section('loader')
     @include('partials.loader')
 @endsection
@@ -183,7 +183,7 @@
 
                 $('#departmentField, #outletField').addClass('d-none');
 
-                if (role === 'ADMIN' || role === 'SPV') {
+                if (role === 'PICKER') {
                     $('#departmentField').removeClass('d-none');
                 }
 

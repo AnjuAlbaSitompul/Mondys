@@ -1,9 +1,10 @@
 <div class="row layout-top-spacing">
 
     <div id="basic" class="col-lg-12 col-sm-12 col-12 layout-spacing">
-        <div class="row">
-            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                <h4>Dashboard Overview</h4>
+        <div class="row align-items-center">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Dashboard Overview</h4>
+                <div id="datetime" class="text-muted small"></div>
             </div>
         </div>
 
@@ -107,6 +108,8 @@
                                     <tr>
                                         <th class="text-center col-no">No</th>
                                         <th>Nama Picker</th>
+                                        <th class="text-center col-no">Department</th>
+
                                         <th class="text-center">Total SJ</th>
                                         <th class="text-center">Rata - Rata Durasi</th>
                                         <th class="text-center">Pick Error</th>
@@ -269,6 +272,27 @@
         $('#startDate').attr('max', todayStr);
         $('#endDate').attr('max', todayStr);
 
+        function updateDateTime() {
+            const now = new Date();
+
+            const options = {
+                timeZone: 'Asia/Jakarta',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+
+            const formatted = now.toLocaleString('id-ID', options);
+            document.getElementById('datetime').innerText = formatted;
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
         // biar end tidak bisa < start
         $('#startDate').on('change', function() {
             $('#endDate').attr('min', $(this).val());
@@ -324,6 +348,9 @@
                 },
                 {
                     data: 'picker_name'
+                },
+                {
+                    data: 'picker_department'
                 },
                 {
                     data: 'total_barang',

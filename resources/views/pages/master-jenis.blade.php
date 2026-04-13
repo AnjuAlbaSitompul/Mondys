@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'Jenis Barang')
 @section('loader')
     @include('partials.loader')
 @endsection

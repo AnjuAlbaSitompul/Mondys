@@ -91,7 +91,7 @@ class MasterController extends Controller
         $locationId = null;
         $outletId = null;
 
-        if ($request->role === 'ADMIN' || $request->role === 'SPV') {
+        if ($request->role === 'PICKER') {
             $locationId = $request->location_id;
         }
 

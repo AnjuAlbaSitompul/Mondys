@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
-    Route::get('/barang', [BarangController::class, 'index'])->name('barang');
+    Route::get('/picking', [BarangController::class, 'index'])->name('barang');
     Route::post('/barang', [BarangController::class, 'create']);
     Route::delete('/barang/{id}', [BarangController::class, 'delete'])->name('barang.delete');
     Route::get('/barang/items', [BarangController::class, 'getAll']);

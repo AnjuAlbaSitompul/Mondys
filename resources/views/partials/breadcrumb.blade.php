@@ -22,10 +22,10 @@
                                         <nav aria-label="breadcrumb">
                                             <ol class="breadcrumb d-flex align-items-center gap-2">
 
-                                                <li class="fw-semibold">
+                                                {{-- <li class="fw-semibold">
                                                     <a href="{{ url('/dashboard') }}"
                                                         class="text-decoration-none">Dashboard</a>
-                                                </li>
+                                                </li> --}}
 
                                                 @php
                                                     $segments = request()->segments();

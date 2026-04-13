@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'Department')
 @section('loader')
     @include('partials.loader')
 @endsection
@@ -37,10 +37,10 @@
 
 
                             {{-- USERNAME --}}
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="alamat" class="form-label">Alamat</label>
                                 <textarea class="form-control" aria-label="With textarea" id="alamat" placeholder="Masukkan Alamat" name="address"></textarea>
-                            </div>
+                            </div> --}}
 
                             <button type="submit" class="btn btn-primary w-100">
                                 Simpan
@@ -70,7 +70,6 @@
                                         <th class="text-center col-no">No</th>
                                         <th>Code</th>
                                         <th class="text-center">Nama</th>
-                                        <th class="text-center">Alamat</th>
                                         <th class="text-center col-action">
                                             <i class="fa-solid fa-ellipsis-vertical"></i>
                                         </th>
@@ -117,10 +116,6 @@
                     },
                     {
                         data: 'name',
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'address',
                         className: 'text-center'
                     },
                     {
@@ -186,7 +181,7 @@
 
                 $('#name').val(data.name);
                 $('#code').val(data.code);
-                $('#alamat').val(data.address);
+                // $('#alamat').val(data.address);
 
                 $('.update-user')
                     .attr('data-id', data.id)
