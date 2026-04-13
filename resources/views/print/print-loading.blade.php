@@ -123,7 +123,8 @@
         <div class="line"></div>
         <!-- INFO -->
         <div class="info">
-            <div>Dari: {{ $loading->creator->location->code ?? '-' }}</div>
+            {{-- <div>Dari: {{ $loading->creator->location->code ?? '-' }}</div> --}}
+            <div>Dari: DC01</div>
 
             <div>Tujuan: {{ $loading->outlet->codeOutlet ?? '-' }}</div>
             <div>Tiba: __________</div>
