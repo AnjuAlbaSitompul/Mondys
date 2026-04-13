@@ -22,7 +22,7 @@ Route::post('/signin', [AuthController::class, 'signIn']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/logout', [AuthController::class, 'logout'])->name('dashboard');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
@@ -34,7 +34,7 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
 
     Route::get('/users/picker', [UserController::class, 'getPicker']);
     Route::get('/pick', [PickController::class, 'index'])->name('barang.pick');
-    Route::get('/pick/items', [PickController::class, 'getAll'])->name('barang.pick');
+    Route::get('/pick/items', [PickController::class, 'getAll'])->name('pick.items');
     Route::patch('/pick/end', [PickController::class, 'end']);
     Route::patch('/pick/{id}/end', [PickController::class, 'endPick'])->name('pick.end');
 
@@ -49,7 +49,7 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::patch('/titip/update/{id}', [DeliveringController::class, 'update'])->name('titip.update');
 
     Route::get('/loading', [LoadingContoroller::class, 'index'])->name('loading');
-    Route::post('/loading', [LoadingContoroller::class, 'loading'])->name('loading');
+    Route::post('/loading', [LoadingContoroller::class, 'loading'])->name('loading.store');
     Route::get('/loading/items', [LoadingContoroller::class, 'getLoadingItems'])->name('loading.items');
     Route::get('/loading/items/{outletId}', [LoadingContoroller::class, 'getLoadingItemsByOutlet'])->name('loading.items.by-outlet');
     Route::patch('/loading/update/{id}', [LoadingContoroller::class, 'updateLoading'])->name('loading.update');
@@ -71,13 +71,13 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::delete('/master/department/delete/{id}', [DepartmentController::class, 'delete'])->name('department.delete');
 
     Route::get('/master/outlet', [OutletController::class, 'index'])->name('master.outlet');
-    Route::get('/master/outlet/items', [OutletController::class, 'items'])->name('master.outlet');
+    Route::get('/master/outlet/items', [OutletController::class, 'items'])->name('master.outlet.items');
     Route::post('/master/outlet/create', [OutletController::class, 'store']);
     Route::patch('/master/outlet/update/{id}', [OutletController::class, 'update']);
     Route::delete('/master/outlet/delete/{id}', [OutletController::class, 'destroy']);
 
     Route::get('/master/jenis-barang', [JenisController::class, 'index'])->name('master.jenis');
-    Route::get('/master/jenis-barang/items', [JenisController::class, 'items'])->name('master.jenis');
+    Route::get('/master/jenis-barang/items', [JenisController::class, 'items'])->name('master.jenis.items');
     Route::post('/master/jenis-barang/create', [JenisController::class, 'store']);
     Route::patch('/master/jenis-barang/update/{id}', [JenisController::class, 'update']);
     Route::delete('/master/jenis-barang/delete/{id}', [JenisController::class, 'destroy']);
