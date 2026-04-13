@@ -20,15 +20,16 @@
 
                             {{-- ROLE --}}
                             <div class="row mb-3">
+                                <div class="col-4">
+                                    <x-form.input id="codeOutlet" label="Code Outlet" name="codeOutlet"
+                                        placeholder="Code Outlet" type="text" valid="Masukkan Code Outlet Yang Valid" />
+                                </div>
                                 <div class="col-8">
                                     <x-form.input id="name" label="Nama Outlet" name="name"
                                         placeholder="Masukkan Nama Outlet" type="text"
                                         valid="Masukkan Nama Outlet Yang Valid" />
                                 </div>
-                                <div class="col-4">
-                                    <x-form.input id="codeOutlet" label="Code Outlet" name="codeOutlet"
-                                        placeholder="Code Outlet" type="text" valid="Masukkan Code Outlet Yang Valid" />
-                                </div>
+
 
                             </div>
 
