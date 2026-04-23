@@ -1,9 +1,22 @@
 <style>
     .camera-view {
+        position: relative;
         width: 100%;
         height: 100dvh;
         max-height: 100vh;
         background: black;
+        overflow: hidden;
+    }
+
+    /* paksa video fullscreen */
+    #reader video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+
+    #reader {
+        border: none !important;
     }
 
     /* overlay */
@@ -16,21 +29,20 @@
         pointer-events: none;
     }
 
-    /* 🔥 SAMAKAN DENGAN qrbox */
+    /* scan box */
     .scan-box {
-        /* width: min(70vw, 250px);
-        height: min(70vw, 250px); */
-        /* border: 3px solid #00ff99;
+        width: min(70vw, 260px);
+        height: min(70vw, 260px);
+        border: 3px solid #00ff99;
         border-radius: 12px;
         position: relative;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); */
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
     }
 
-    /* scan line */
+    /* garis scan */
     .scan-box::after {
         content: "";
         position: absolute;
-        left: 0;
         width: 100%;
         height: 2px;
         background: #00ff99;
@@ -47,6 +59,7 @@
         }
     }
 
+    /* header */
     .camera-header {
         position: absolute;
         top: 0;
@@ -57,9 +70,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        color: white;
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
     }
 
+    /* footer */
     .camera-footer {
         position: absolute;
         bottom: 0;
@@ -68,22 +83,23 @@
         z-index: 20;
         padding: 16px;
         text-align: center;
+        color: white;
         background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
     }
 </style>
+
+<!-- modal -->
 <div class="modal fade" id="scanBarcode" tabindex="-1">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content bg-black border-0">
 
-            <div class="camera-header text-white">
-                <div class="d-flex align-items-center gap-2">
-                    <span>Scan Barcode</span>
-                    <select id="cameraSelect" class="form-select form-select-sm d-none d-md-block"></select>
-                </div>
-
-                <button type="button" class="btn text-white fs-4" data-bs-dismiss="modal">✕</button>
+            <!-- header -->
+            <div class="camera-header">
+                <span>Scan Barcode</span>
+                <button class="btn text-white fs-4" data-bs-dismiss="modal">✕</button>
             </div>
 
+            <!-- camera -->
             <div class="modal-body p-0 position-relative">
                 <div id="reader" class="camera-view"></div>
 
@@ -92,40 +108,19 @@
                 </div>
             </div>
 
-            <div class="camera-footer text-white small">
+            <!-- footer -->
+            <div class="camera-footer">
                 Arahkan kamera ke barcode
             </div>
 
         </div>
     </div>
 </div>
-
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
     let html5QrCode = null;
     let isScanning = false;
-    let currentCameraId = null;
-
-    // load camera list (desktop support)
-    async function loadCameras() {
-        try {
-            const devices = await Html5Qrcode.getCameras();
-            const select = $('#cameraSelect');
-            select.empty();
-
-            devices.forEach(device => {
-                select.append(`<option value="${device.id}">${device.label || 'Camera'}</option>`);
-            });
-
-            if (devices.length) {
-                currentCameraId = devices[0].id;
-            }
-
-        } catch (err) {
-            console.error("Camera load error:", err);
-        }
-    }
 
     async function startScanner() {
         if (isScanning) return;
@@ -135,29 +130,31 @@
         try {
             isScanning = true;
 
-            let config = {
+            const config = {
                 fps: 10,
-                qrbox: function(viewfinderWidth, viewfinderHeight) {
-                    let size = Math.min(viewfinderWidth, viewfinderHeight) * 0.6;
+                qrbox: (w, h) => {
+                    let size = Math.min(w, h) * 0.6;
                     return {
                         width: size,
                         height: size
                     };
-                }
+                },
+                aspectRatio: 1
             };
+
+            const devices = await Html5Qrcode.getCameras();
 
             let cameraConfig;
 
-            // mobile fallback
-            if (!currentCameraId) {
+            if (devices && devices.length) {
                 cameraConfig = {
-                    facingMode: "environment"
+                    deviceId: {
+                        exact: devices[0].id
+                    }
                 };
             } else {
                 cameraConfig = {
-                    deviceId: {
-                        exact: currentCameraId
-                    }
+                    facingMode: "environment"
                 };
             }
 
@@ -165,19 +162,27 @@
                 cameraConfig,
                 config,
                 (decodedText) => {
-                    alert(`Scanned: ${decodedText}`);
-                    $('#confirmQty').attr('data-id', decodedText);
+
+                    alert("Scanned: " + decodedText);
 
                     stopScanner().then(() => {
                         $('#scanBarcode').modal('hide');
-                        $('#pickerQty').modal('show');
                     });
 
                 }
             );
 
+            // 🔥 fix iOS
+            setTimeout(() => {
+                const video = document.querySelector('#reader video');
+                if (video) {
+                    video.setAttribute("playsinline", true);
+                    video.setAttribute("muted", true);
+                }
+            }, 200);
+
         } catch (err) {
-            console.error("Camera start error:", err);
+            console.error("Camera error:", err);
             isScanning = false;
         }
     }
@@ -190,34 +195,23 @@
             await html5QrCode.clear();
         } catch (err) {}
 
-        isScanning = false;
         html5QrCode = null;
+        isScanning = false;
     }
 
-    // switch camera (desktop)
-    $('#cameraSelect').on('change', function() {
-        currentCameraId = $(this).val();
-
-        if (isScanning) {
-            stopScanner().then(startScanner);
-        }
-    });
-
-    // open modal
+    // buka modal
     $('#openScan').on('click', function() {
         $('#scanBarcode').modal('show');
     });
 
-    // start
+    // start camera
     $('#scanBarcode').on('shown.bs.modal', function() {
-        loadCameras();
-
         setTimeout(() => {
             startScanner();
         }, 300);
     });
 
-    // stop
+    // stop camera
     $('#scanBarcode').on('hidden.bs.modal', function() {
         stopScanner();
     });
