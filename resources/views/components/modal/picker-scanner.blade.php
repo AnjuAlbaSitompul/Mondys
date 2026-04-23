@@ -122,6 +122,25 @@
     let html5QrCode = null;
     let isScanning = false;
 
+    function isMobile() {
+        return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    async function getBackCamera() {
+        const devices = await Html5Qrcode.getCameras();
+
+        if (!devices || !devices.length) return null;
+
+        // 🔥 cari kamera belakang berdasarkan label
+        const backCamera = devices.find(device =>
+            device.label.toLowerCase().includes('back') ||
+            device.label.toLowerCase().includes('rear') ||
+            device.label.toLowerCase().includes('environment')
+        );
+
+        return backCamera ? backCamera.id : devices[0].id;
+    }
+
     async function startScanner() {
         if (isScanning) return;
 
@@ -142,18 +161,24 @@
                 aspectRatio: 1
             };
 
-            const devices = await Html5Qrcode.getCameras();
-
             let cameraConfig;
 
-            if (devices && devices.length) {
+            if (isMobile()) {
+                // 📱 MOBILE → pakai belakang
                 cameraConfig = {
-                    deviceId: {
-                        exact: devices[0].id
+                    facingMode: {
+                        exact: "environment"
                     }
                 };
             } else {
-                cameraConfig = {
+                // 💻 DESKTOP → pilih device
+                const cameraId = await getBackCamera();
+
+                cameraConfig = cameraId ? {
+                    deviceId: {
+                        exact: cameraId
+                    }
+                } : {
                     facingMode: "environment"
                 };
             }
@@ -172,7 +197,7 @@
                 }
             );
 
-            // 🔥 fix iOS
+            // 🔥 iOS fix
             setTimeout(() => {
                 const video = document.querySelector('#reader video');
                 if (video) {
