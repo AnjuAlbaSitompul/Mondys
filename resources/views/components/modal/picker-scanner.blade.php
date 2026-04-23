@@ -1,11 +1,8 @@
 <style>
-    /* 🔥 FIX iOS viewport issue */
     .camera-view {
         width: 100%;
         height: 100dvh;
-        /* modern fix */
         max-height: 100vh;
-        object-fit: cover;
         background: black;
     }
 
@@ -19,17 +16,17 @@
         pointer-events: none;
     }
 
-    /* scan box responsive */
+    /* 🔥 SAMAKAN DENGAN qrbox */
     .scan-box {
-        width: min(70vw, 300px);
-        height: min(70vw, 300px);
-        border: 3px solid #00ff99;
-        border-radius: 16px;
+        /* width: min(70vw, 250px);
+        height: min(70vw, 250px); */
+        /* border: 3px solid #00ff99;
+        border-radius: 12px;
         position: relative;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); */
     }
 
-    /* animasi scan line */
+    /* scan line */
     .scan-box::after {
         content: "";
         position: absolute;
@@ -40,7 +37,6 @@
         animation: scan 2s linear infinite;
     }
 
-    /* animation */
     @keyframes scan {
         0% {
             top: 0;
@@ -51,7 +47,6 @@
         }
     }
 
-    /* header overlay */
     .camera-header {
         position: absolute;
         top: 0;
@@ -62,11 +57,9 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
     }
 
-    /* footer (optional info / button) */
     .camera-footer {
         position: absolute;
         bottom: 0;
@@ -75,53 +68,30 @@
         z-index: 20;
         padding: 16px;
         text-align: center;
-
         background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-    }
-
-    /* desktop adjustment */
-    @media (min-width: 768px) {
-        .scan-box {
-            width: 320px;
-            height: 320px;
-        }
-    }
-
-    /* extra large screen */
-    @media (min-width: 1200px) {
-        .scan-box {
-            width: 380px;
-            height: 380px;
-        }
     }
 </style>
 <div class="modal fade" id="scanBarcode" tabindex="-1">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content bg-black border-0">
 
-            <!-- HEADER -->
             <div class="camera-header text-white">
                 <div class="d-flex align-items-center gap-2">
                     <span>Scan Barcode</span>
                     <select id="cameraSelect" class="form-select form-select-sm d-none d-md-block"></select>
                 </div>
 
-                <button type="button" class="btn text-white fs-4" data-bs-dismiss="modal">
-                    ✕
-                </button>
+                <button type="button" class="btn text-white fs-4" data-bs-dismiss="modal">✕</button>
             </div>
 
-            <!-- CAMERA -->
             <div class="modal-body p-0 position-relative">
                 <div id="reader" class="camera-view"></div>
 
-                <!-- overlay -->
                 <div class="scan-overlay">
                     <div class="scan-box"></div>
                 </div>
             </div>
 
-            <!-- FOOTER -->
             <div class="camera-footer text-white small">
                 Arahkan kamera ke barcode
             </div>
@@ -135,6 +105,27 @@
 <script>
     let html5QrCode = null;
     let isScanning = false;
+    let currentCameraId = null;
+
+    // load camera list (desktop support)
+    async function loadCameras() {
+        try {
+            const devices = await Html5Qrcode.getCameras();
+            const select = $('#cameraSelect');
+            select.empty();
+
+            devices.forEach(device => {
+                select.append(`<option value="${device.id}">${device.label || 'Camera'}</option>`);
+            });
+
+            if (devices.length) {
+                currentCameraId = devices[0].id;
+            }
+
+        } catch (err) {
+            console.error("Camera load error:", err);
+        }
+    }
 
     async function startScanner() {
         if (isScanning) return;
@@ -144,18 +135,37 @@
         try {
             isScanning = true;
 
-            await html5QrCode.start({
-                    facingMode: "environment"
-                }, {
-                    fps: 10,
-                    qrbox: {
-                        width: 250,
-                        height: 250
-                    },
-                    aspectRatio: 1
-                },
-                (decodedText) => {
+            let config = {
+                fps: 10,
+                qrbox: function(viewfinderWidth, viewfinderHeight) {
+                    let size = Math.min(viewfinderWidth, viewfinderHeight) * 0.6;
+                    return {
+                        width: size,
+                        height: size
+                    };
+                }
+            };
 
+            let cameraConfig;
+
+            // mobile fallback
+            if (!currentCameraId) {
+                cameraConfig = {
+                    facingMode: "environment"
+                };
+            } else {
+                cameraConfig = {
+                    deviceId: {
+                        exact: currentCameraId
+                    }
+                };
+            }
+
+            await html5QrCode.start(
+                cameraConfig,
+                config,
+                (decodedText) => {
+                    alert(`Scanned: ${decodedText}`);
                     $('#confirmQty').attr('data-id', decodedText);
 
                     stopScanner().then(() => {
@@ -167,7 +177,7 @@
             );
 
         } catch (err) {
-            console.error("Camera error:", err);
+            console.error("Camera start error:", err);
             isScanning = false;
         }
     }
@@ -184,18 +194,30 @@
         html5QrCode = null;
     }
 
+    // switch camera (desktop)
+    $('#cameraSelect').on('change', function() {
+        currentCameraId = $(this).val();
+
+        if (isScanning) {
+            stopScanner().then(startScanner);
+        }
+    });
+
+    // open modal
     $('#openScan').on('click', function() {
         $('#scanBarcode').modal('show');
     });
 
-    // start setelah modal muncul
+    // start
     $('#scanBarcode').on('shown.bs.modal', function() {
+        loadCameras();
+
         setTimeout(() => {
             startScanner();
         }, 300);
     });
 
-    // stop saat close
+    // stop
     $('#scanBarcode').on('hidden.bs.modal', function() {
         stopScanner();
     });
