@@ -46,7 +46,7 @@
                                             invalid="Harap Masukkan Code Boarding" label="Code Boarding" id="codeBoarding"
                                             disabled="{{ false }}" toggle="modal" target="#scannerModal"
                                             value="tag1, tag2 autofocus" />
-                                        <div class="text-muted">Format: HS09(4) + SJ(16) + PR(8) + Koli(2) = 30 chars</div>
+                                        <div class="text-muted">Format: HS09(4) + SJ(16) + Koli(2) = 22 chars</div>
                                     </div>
                                     <div class="col-lg-12">
                                         <x-form.input id="qty" label="Masukkan Jumlah Box" name="qty"
@@ -104,6 +104,7 @@
             var input = document.querySelector('#codeBoarding');
             var tagify = new Tagify(input, {
                 delimiters: ",",
+                maxTags: 1
             });
 
             let tableBoarding = $('#boardingListTable').DataTable({

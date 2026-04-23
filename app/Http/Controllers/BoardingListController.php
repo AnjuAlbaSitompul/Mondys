@@ -32,7 +32,7 @@ class BoardingListController extends Controller
 
         $validator = Validator::make($request->all(), [
             'codeBoarding' => 'required|array|min:1',
-            'codeBoarding.*.value' => 'required|string|size:30',
+            'codeBoarding.*.value' => 'required|string|size:22',
             'qty' => 'required|integer|min:1'
         ]);
 
