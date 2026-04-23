@@ -70,7 +70,7 @@
         });
 
         moment.locale('id')
-        $pickTable = $('#pickTable').DataTable({
+        let pickTable = $('#pickTable').DataTable({
             processing: true,
             ajax: {
                 url: '/pick/items',

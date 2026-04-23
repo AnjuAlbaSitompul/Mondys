@@ -299,7 +299,7 @@ class DashboardController extends Controller
                 $data['totalDelivering'] = $deliverings->count();
                 break;
 
-            case 'ADMIN':
+            case 'ADMIN' || 'SPV':
 
                 $adminData = $service->getDashboardData(
                     $request->start_date,

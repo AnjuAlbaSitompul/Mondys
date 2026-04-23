@@ -17,7 +17,6 @@
                     </div>
                     <div class="widget-content widget-content-area">
                         <form id="userForm">
-
                             {{-- ROLE --}}
                             <div class="row mb-3">
                                 <div class="col-4">
@@ -29,8 +28,6 @@
                                         placeholder="Masukkan Nama Outlet" type="text"
                                         valid="Masukkan Nama Outlet Yang Valid" />
                                 </div>
-
-
                             </div>
 
                             {{-- NAME --}}

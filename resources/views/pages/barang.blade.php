@@ -137,11 +137,9 @@
 
             var tagify = new Tagify(input, {
                 delimiters: ",",
-                maxTags: 10
             });
             var tagifyPickEnd = new Tagify(pickEnd, {
                 delimiters: ",",
-                maxTags: 10
             });
             let tableBarang = $('#barangTable').DataTable({
                 processing: true,

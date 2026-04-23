@@ -31,39 +31,29 @@
         </div>
         <div class="shadow-bottom"></div>
         <ul class="list-unstyled menu-categories" id="accordionExample">
-            @php
-                $menus = config('sidebar');
-            @endphp
-
             @foreach ($menus as $menu)
                 @php
-                    // cek apakah user punya akses ke menu ini
-                    $hasAccess = isset($menu['role']) ? in_array($user->role, $menu['role']) : $user->role === 'ADMIN';
+                    // cek akses parent
+                    $hasAccess = isset($menu['role']) && in_array($user->role, $menu['role']);
                 @endphp
 
                 @if ($hasAccess)
 
-                    @php
-                        $childActive = false;
-                    @endphp
-
-                    {{-- cek children kalau ada --}}
+                    {{-- kalau ada children --}}
                     @if (isset($menu['children']))
                         @php
                             $filteredChildren = collect($menu['children'])->filter(function ($child) use ($user) {
-                                return !isset($child['roles']) || in_array($user->role, $child['roles']);
+                                return isset($child['roles']) && in_array($user->role, $child['roles']);
+                            });
+
+                            $childActive = $filteredChildren->contains(function ($child) {
+                                return request()->routeIs($child['route']);
                             });
                         @endphp
 
+                        {{-- tampilkan hanya jika masih ada child --}}
                         @if ($filteredChildren->count())
-                            @foreach ($filteredChildren as $child)
-                                @if (request()->routeIs($child['route']))
-                                    @php $childActive = true; @endphp
-                                @endif
-                            @endforeach
-
                             <li class="menu {{ $childActive ? 'active' : '' }}">
-
                                 <a href="#{{ $menu['id'] }}" data-bs-toggle="collapse" class="dropdown-toggle"
                                     aria-expanded="{{ $childActive ? 'true' : 'false' }}">
 
@@ -85,10 +75,10 @@
                                     @endforeach
 
                                 </ul>
-
                             </li>
                         @endif
                     @else
+                        {{-- menu tanpa children --}}
                         <li class="menu {{ request()->routeIs($menu['route']) ? 'active' : '' }}">
                             <a href="{{ route($menu['route']) }}" class="dropdown-toggle">
                                 <div>
@@ -100,7 +90,6 @@
                     @endif
 
                 @endif
-
             @endforeach
         </ul>
 

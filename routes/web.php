@@ -25,6 +25,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+Route::middleware(['auth', 'role:ADMIN'])->group(function () {
+    Route::get('/master/users', [MasterController::class, 'index'])->name('master.users');
+    Route::get('/master/users/items', [MasterController::class, 'userItems'])->name('master.users.items');
+    Route::post('/master/user/create', [MasterController::class, 'userCreate'])->name('master.user.create');
+    Route::patch('/master/user/update/{id}', [MasterController::class, 'userUpdate']);
+    Route::delete('/master/user/delete/{id}', [MasterController::class, 'userDelete']);
+});
+
 Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/picking', [BarangController::class, 'index'])->name('barang');
     Route::post('/barang', [BarangController::class, 'create']);
@@ -57,12 +65,6 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/loading/history', [LoadingContoroller::class, 'history']);
     Route::get('/loading/{id}', [LoadingContoroller::class,  'loadingDetail'])->name('loading.detail');
 
-
-    Route::get('/master/users', [MasterController::class, 'index'])->name('master.users');
-    Route::get('/master/users/items', [MasterController::class, 'userItems'])->name('master.users.items');
-    Route::post('/master/user/create', [MasterController::class, 'userCreate'])->name('master.user.create');
-    Route::patch('/master/user/update/{id}', [MasterController::class, 'userUpdate']);
-    Route::delete('/master/user/delete/{id}', [MasterController::class, 'userDelete']);
 
     Route::get('/master/department', [DepartmentController::class, 'index'])->name('master.department');
     Route::get('/master/department/items', [DepartmentController::class, 'items'])->name('department.items');
