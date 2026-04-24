@@ -158,7 +158,16 @@
                         height: size
                     };
                 },
-                aspectRatio: 1
+                aspectRatio: 1,
+                videoConstraints: {
+                    facingMode: "environment", // kamera belakang
+                    width: {
+                        ideal: 1920
+                    },
+                    height: {
+                        ideal: 1080
+                    }
+                }
             };
 
             let cameraConfig;
