@@ -189,9 +189,11 @@
                 (decodedText) => {
 
                     alert("Scanned: " + decodedText);
-
+                    $('#confirmQty').attr('data-id', decodedText);
                     stopScanner().then(() => {
                         $('#scanBarcode').modal('hide');
+                        $('#pickerQty').modal('show')
+
                     });
 
                 }
