@@ -127,7 +127,7 @@
     async function getBackCamera() {
         const devices = await Html5Qrcode.getCameras();
         if (!devices.length) return null;
-
+        console.log(devices)
         const back = devices.find(d =>
             d.label.toLowerCase().includes('back') ||
             d.label.toLowerCase().includes('rear')
@@ -188,10 +188,9 @@
                 cameraConfig,
                 config,
                 (decodedText) => {
-                    alert("Scanned: " + decodedText);
 
                     $('#confirmQty').attr('data-id', decodedText);
-
+                    console.log(decodedText)
                     stopScanner().then(() => {
                         $('#scanBarcode').modal('hide');
                         $('#pickerQty').modal('show');

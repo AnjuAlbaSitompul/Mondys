@@ -46,6 +46,27 @@
 
 <script>
     $(document).ready(function() {
+        let barcode = '';
+        let lastTime = Date.now();
+
+        $(document).on('keypress', function(e) {
+            let currentTime = Date.now();
+
+            // kalau jeda terlalu lama, reset (anggap bukan scanner)
+            if (currentTime - lastTime > 100) {
+                barcode = '';
+            }
+
+            lastTime = currentTime;
+
+            if (e.which === 13) {
+                $('#confirmQty').attr('data-id', barcode)
+                $('#pickerQty').modal('show')
+                barcode = '';
+            } else {
+                barcode += String.fromCharCode(e.which);
+            }
+        });
 
         $('#scanBtn').on('click', function(e) {
             $('#scanBarcode').modal('show')

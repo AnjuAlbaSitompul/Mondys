@@ -148,6 +148,14 @@
                                 Loading
                             </button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="claim-tab" data-bs-toggle="tab"
+                                data-bs-target="#claim-tab-pane" type="button" role="tab"
+                                aria-controls="claim-tab-pane" aria-selected="false">
+                                <i class="fa fa-file"></i>
+                                Claim
+                            </button>
+                        </li>
                     </ul>
 
                     <div class="tab-content" id="myTabContent">
@@ -243,6 +251,37 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="claim-tab-pane" role="tabpanel"
+                            aria-labelledby="claim-tab-pane" tabindex="0">
+                            <div class="statbox widget box box-shadow">
+                                <div class="widget-header">
+                                    <div class="row">
+                                        <div class="col-xl-10 col-md-10col-sm-10 col-10">
+                                            <h4>Loading List</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="widget-content widget-content-area">
+                                    <div class="table-responsive">
+                                        <table id="claimTable" class="table style-3 dt-table-hover mb-3">
+                                            <thead class="table-header">
+                                                <tr>
+                                                    <th class="text-center col-no">No</th>
+                                                    <th class="text-center col-no">No SJ</th>
+                                                    <th class="text-center col-no">Desc</th>
+                                                    <th class="text-center col-no">Claimed At</th>
+                                                    <th class="text-center col-no">Status</th>
+                                                    <th class="text-center col-no">
+                                                        <i class="fa fa-cog"></i>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -307,6 +346,7 @@
                 }
             });
         }
+
 
         let tablePicker = $('#performaTable').DataTable({
             processing: true,
@@ -581,6 +621,67 @@
             ]
         });
 
+        let tableClaim = $('#claimTable').DataTable({
+            processing: true,
+            serverSide: false, // karena kita return array biasa
+            ajax: {
+                url: '/admin/dashboard/claim',
+                dataSrc: 'data',
+                data: function(d) {
+                    d.start_date = $('#startDate').val();
+                    d.end_date = $('#endDate').val();
+                }
+            },
+            columns: [{
+                    data: null,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    data: 'picker_name'
+                },
+                {
+                    data: 'picker_department'
+                },
+                {
+                    data: 'total_barang',
+                    className: 'text-center'
+                },
+                {
+                    data: 'avg_duration_minutes',
+                    className: 'text-center',
+                    render: function(data) {
+                        if (!data) return '-';
+
+                        let hours = Math.floor(data / 60);
+                        let minutes = Math.floor(data % 60);
+
+                        if (hours > 0) {
+                            return `${hours}j ${minutes}m`;
+                        }
+                        return `${minutes}m`;
+                    }
+                },
+                {
+                    data: 'total_error',
+                    className: 'text-center',
+                    render: function(data) {
+                        let color = data > 0 ? 'danger' : 'success';
+                        return `<span class="badge bg-${color}">${data}</span>`;
+                    }
+                },
+                {
+                    data: 'performance_score',
+                    className: 'text-center',
+                    render: function(data) {
+                        let color = data >= 85 ? 'success' : data >= 70 ? 'warning' : 'danger';
+                        return `<span class="badge bg-${color}">${data}</span>`;
+                    }
+                }
+            ]
+        });
 
         $('#refresh').on('click', function() {
             tablePicker.ajax.reload();
