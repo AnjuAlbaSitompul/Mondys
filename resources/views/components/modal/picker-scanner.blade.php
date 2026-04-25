@@ -8,11 +8,12 @@
         overflow: hidden;
     }
 
-    /* paksa video fullscreen */
+    /* 🔥 jangan zoom (biar barcode gak blur) */
     #reader video {
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover !important;
+        object-fit: contain !important;
+        /* 🔥 penting */
     }
 
     #reader {
@@ -29,10 +30,11 @@
         pointer-events: none;
     }
 
-    /* scan box */
+    /* 🔥 horizontal box (penting untuk barcode) */
     .scan-box {
-        width: min(70vw, 260px);
-        height: min(70vw, 260px);
+        width: min(80vw, 320px);
+        height: 120px;
+        /* 🔥 pendek, bukan kotak */
         border: 3px solid #00ff99;
         border-radius: 12px;
         position: relative;
@@ -69,7 +71,6 @@
         padding: 12px 16px;
         display: flex;
         justify-content: space-between;
-        align-items: center;
         color: white;
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
     }
@@ -88,18 +89,15 @@
     }
 </style>
 
-<!-- modal -->
 <div class="modal fade" id="scanBarcode" tabindex="-1">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content bg-black border-0">
 
-            <!-- header -->
             <div class="camera-header">
                 <span>Scan Barcode</span>
                 <button class="btn text-white fs-4" data-bs-dismiss="modal">✕</button>
             </div>
 
-            <!-- camera -->
             <div class="modal-body p-0 position-relative">
                 <div id="reader" class="camera-view"></div>
 
@@ -108,14 +106,14 @@
                 </div>
             </div>
 
-            <!-- footer -->
             <div class="camera-footer">
-                Arahkan kamera ke barcode
+                Arahkan barcode ke dalam kotak
             </div>
 
         </div>
     </div>
 </div>
+
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
@@ -128,17 +126,14 @@
 
     async function getBackCamera() {
         const devices = await Html5Qrcode.getCameras();
+        if (!devices.length) return null;
 
-        if (!devices || !devices.length) return null;
-
-        // 🔥 cari kamera belakang berdasarkan label
-        const backCamera = devices.find(device =>
-            device.label.toLowerCase().includes('back') ||
-            device.label.toLowerCase().includes('rear') ||
-            device.label.toLowerCase().includes('environment')
+        const back = devices.find(d =>
+            d.label.toLowerCase().includes('back') ||
+            d.label.toLowerCase().includes('rear')
         );
 
-        return backCamera ? backCamera.id : devices[0].id;
+        return back ? back.id : devices[0].id;
     }
 
     async function startScanner() {
@@ -151,16 +146,16 @@
 
             const config = {
                 fps: 10,
-                qrbox: (w, h) => {
-                    let size = Math.min(w, h) * 0.6;
-                    return {
-                        width: size,
-                        height: size
-                    };
-                },
-                aspectRatio: 1,
+                qrbox: {
+                    width: 300,
+                    height: 120
+                }, // 🔥 horizontal (penting!)
+                aspectRatio: 1.777, // 🔥 biar landscape, cocok barcode
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.CODE_128
+                ],
                 videoConstraints: {
-                    facingMode: "environment", // kamera belakang
+                    facingMode: "environment",
                     width: {
                         ideal: 1920
                     },
@@ -173,19 +168,16 @@
             let cameraConfig;
 
             if (isMobile()) {
-                // 📱 MOBILE → pakai belakang
                 cameraConfig = {
                     facingMode: {
                         exact: "environment"
                     }
                 };
             } else {
-                // 💻 DESKTOP → pilih device
-                const cameraId = await getBackCamera();
-
-                cameraConfig = cameraId ? {
+                const id = await getBackCamera();
+                cameraConfig = id ? {
                     deviceId: {
-                        exact: cameraId
+                        exact: id
                     }
                 } : {
                     facingMode: "environment"
@@ -196,15 +188,14 @@
                 cameraConfig,
                 config,
                 (decodedText) => {
-
                     alert("Scanned: " + decodedText);
+
                     $('#confirmQty').attr('data-id', decodedText);
+
                     stopScanner().then(() => {
                         $('#scanBarcode').modal('hide');
-                        $('#pickerQty').modal('show')
-
+                        $('#pickerQty').modal('show');
                     });
-
                 }
             );
 
@@ -217,8 +208,24 @@
                 }
             }, 200);
 
+            // 🔥 optional zoom (kalau device support)
+            setTimeout(() => {
+                try {
+                    const track = html5QrCode.getRunningTrack();
+                    const cap = track.getCapabilities();
+
+                    if (cap.zoom) {
+                        track.applyConstraints({
+                            advanced: [{
+                                zoom: cap.zoom.max / 2
+                            }]
+                        });
+                    }
+                } catch (e) {}
+            }, 1000);
+
         } catch (err) {
-            console.error("Camera error:", err);
+            console.error(err);
             isScanning = false;
         }
     }
@@ -229,25 +236,20 @@
         try {
             await html5QrCode.stop();
             await html5QrCode.clear();
-        } catch (err) {}
+        } catch (e) {}
 
         html5QrCode = null;
         isScanning = false;
     }
 
-    // buka modal
     $('#openScan').on('click', function() {
         $('#scanBarcode').modal('show');
     });
 
-    // start camera
     $('#scanBarcode').on('shown.bs.modal', function() {
-        setTimeout(() => {
-            startScanner();
-        }, 300);
+        setTimeout(startScanner, 300);
     });
 
-    // stop camera
     $('#scanBarcode').on('hidden.bs.modal', function() {
         stopScanner();
     });
