@@ -7,7 +7,7 @@
     <style>
         @page {
             size: 50mm 40mm;
-            margin: 0;
+            margin: 1mm;
         }
 
         body {
@@ -19,37 +19,54 @@
         }
 
         .label {
-            width: 100%;
-            height: 100%;
-            margin-top: 1mm;
             display: flex;
             flex-direction: column;
+        }
+
+        /* === TOP AREA === */
+        .top {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === LEFT: BARCODE VERTICAL === */
+        .barcode-vertical {
+            height: 10mm;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            /* penting */
+        }
+
+        /* === RIGHT: QR BOX === */
+        .qr-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 26mm;
+            text-align: center;
+        }
+
+        .qr-box svg {
+            width: 24mm;
+            height: 24mm;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* === FOOTER === */
+        .footer-container {
+            display: flex;
             justify-content: space-between;
-        }
-
-        .center {
-            align-self: center;
-        }
-
-        .barcode-full svg {
-            width: 100%;
-            height: 15mm;
-        }
-
-        .barcode-sj svg {
-            width: 100%;
-            height: 15mm;
+            align-items: center;
+            margin-top: 1mm;
         }
 
         .big-text {
             font-size: 11px;
             font-weight: bold;
-            margin-top: 1mm;
-        }
-
-        .footer-container {
-            flex-direction: row;
-            justify-content: space-between;
         }
 
         .footer {
@@ -69,23 +86,26 @@
 
         <div class="label">
 
-            {{-- BARCODE FULL --}}
-            <div class="barcode-full center">
-                {!! DNS1D::getBarcodeSVG($item['full'], 'C128', 0.6, 50) !!}
+            <div class="top">
+
+                {{-- LEFT: BARCODE --}}
+                <div class="barcode-vertical">
+                    {!! DNS1D::getBarcodeSVG($item['sj'], 'C128', 0.6, 30) !!}
+                </div>
+
+                {{-- RIGHT: QR --}}
+                <div class="qr-box">
+                    {!! DNS2D::getBarcodeSVG($item['full'], 'QRCODE', 4, 4) !!}
+                </div>
+
             </div>
 
-            {{-- BARCODE SJ --}}
-            <div class="barcode-sj center">
-                {!! DNS1D::getBarcodeSVG($item['sj'], 'C128', 0.6, 40) !!}
-            </div>
-
-            {{-- OUTLET --}}
+            {{-- FOOTER --}}
             <div class="footer-container">
                 <div class="big-text">
                     {{ $codeOutlet }}
                 </div>
 
-                {{-- TANGGAL (DD) --}}
                 <div class="footer">
                     {{ $today }}
                 </div>

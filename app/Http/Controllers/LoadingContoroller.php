@@ -356,7 +356,7 @@ class LoadingContoroller extends Controller
     }
     public function index()
     {
-        $outlets = Outlet::pluck('codeOutlet', 'id')->toArray();
+        $outlets = Outlet::pluck('name', 'id')->toArray();
         $drivers = User::where('role', 'driver')->pluck('name', 'id')->toArray();
         return view('pages.loading', [
             'outlets' => $outlets,

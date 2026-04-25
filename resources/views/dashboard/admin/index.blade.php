@@ -111,6 +111,8 @@
                                         <th class="text-center col-no">Department</th>
 
                                         <th class="text-center">Total SJ</th>
+                                        <th class="text-center">Total Finished</th>
+                                        <th class="text-center">Total Progress</th>
                                         <th class="text-center">Rata - Rata Durasi</th>
                                         <th class="text-center">Pick Error</th>
                                         <th class="text-center">Performance</th>
@@ -374,6 +376,14 @@
                 },
                 {
                     data: 'total_barang',
+                    className: 'text-center'
+                },
+                {
+                    data: 'total_barang_finished',
+                    className: 'text-center'
+                },
+                {
+                    data: 'total_barang_in_progress',
                     className: 'text-center'
                 },
                 {

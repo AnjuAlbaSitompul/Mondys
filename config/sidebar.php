@@ -6,14 +6,14 @@ return [
         'title' => 'Dashboard',
         'icon' => 'fa-solid fa-house',
         'route' => 'dashboard',
-        'role' => ['ADMIN', 'DRIVER', 'PICKER', 'PIC', 'SPV']
+        'role' => ['ADMIN', 'DRIVER', 'PICKER', 'PIC', 'SPV', 'BOARDER']
     ],
 
     [
         'title' => 'Task',
         'icon' => 'fa-solid fa-box',
         'id' => 'barang',
-        'role' => ['ADMIN', 'SPV'], // hanya ini yang boleh
+        'role' => ['ADMIN', 'SPV', 'BOARDER'], // hanya ini yang boleh
         'children' => [
             [
                 'title' => 'Picking',
@@ -23,7 +23,7 @@ return [
             [
                 'title' => 'Boarding',
                 'route' => 'boarding',
-                'roles' => ['ADMIN', 'SPV']
+                'roles' => ['ADMIN', 'SPV', 'BOARDER']
             ],
             [
                 'title' => 'Loading',

@@ -34,6 +34,7 @@
                                             'SPV' => 'SPV',
                                             'DRIVER' => 'Driver',
                                             'PICKER' => 'Picker',
+                                            'BOARDER' => 'Boarder',
                                         ]" />
                                 </div>
 

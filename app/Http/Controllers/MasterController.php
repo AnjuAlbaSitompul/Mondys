@@ -82,7 +82,7 @@ class MasterController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:ADMIN,PIC,SPV,DRIVER,PICKER',
+            'role' => 'required|in:ADMIN,PIC,SPV,DRIVER,PICKER,BOARDER',
             'location_id' => 'nullable|exists:locations,id',
             'outlet_id' => 'nullable|exists:outlets,id',
         ]);
@@ -119,8 +119,8 @@ class MasterController extends Controller
 
     public function index()
     {
-        $locations = Location::pluck('code', 'id')->toArray();
-        $outlets = Outlet::pluck('codeOutlet', 'id')->toArray();
+        $locations = Location::pluck('name', 'id')->toArray();
+        $outlets = Outlet::pluck('name', 'id')->toArray();
 
         return view('pages.master-user', ['locations' => $locations, 'outlets' => $outlets]);
     }

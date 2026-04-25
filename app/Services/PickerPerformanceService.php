@@ -34,6 +34,8 @@ class PickerPerformanceService
                 'locations.name as picker_department', // ✅ ini yang kamu mau
 
                 DB::raw('COUNT(pick_lists.barang_id) as total_barang'),
+                DB::raw('SUM(CASE WHEN pick_lists.finished_at IS NOT NULL THEN 1 ELSE 0 END) as total_barang_finished'),
+                DB::raw('SUM(CASE WHEN pick_lists.finished_at IS NULL AND pick_lists.barang_id IS NOT NULL THEN 1 ELSE 0 END) as total_barang_in_progress'),
 
                 DB::raw('AVG(
             CASE 
@@ -87,6 +89,8 @@ class PickerPerformanceService
             return [
                 'picker_id' => $item->picker_id,
                 'picker_name' => $item->picker_name,
+                'total_barang_finished' => $item->total_barang_finished,
+                'total_barang_in_progress' => $item->total_barang_in_progress,
                 'picker_department' => $item->picker_department, // ✅ kirim ke frontend
                 'total_barang' => $total,
                 'avg_duration_minutes' => round($avgMinutes, 2),
