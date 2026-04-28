@@ -460,7 +460,8 @@ class DashboardController extends Controller
                 $data['totalDelivering'] = $deliverings->count();
                 break;
 
-            case 'ADMIN' || 'SPV':
+            case 'ADMIN':
+            case 'SPV':
 
                 $adminData = $service->getDashboardData(
                     $request->start_date,
@@ -468,6 +469,12 @@ class DashboardController extends Controller
                 );
 
                 $data = array_merge($data, $adminData);
+                break;
+
+            case 'BOARDER':
+
+                $data['boardingCount'] = BoardingList::whereNull('boarding_end')->count();
+
                 break;
         }
 

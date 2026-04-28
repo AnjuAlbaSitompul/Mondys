@@ -33,6 +33,18 @@ Route::middleware(['auth', 'role:ADMIN'])->group(function () {
     Route::delete('/master/user/delete/{id}', [MasterController::class, 'userDelete']);
 });
 
+Route::middleware(['auth', 'role:BOARDER,ADMIN,SPV'])->group(function () {
+    Route::get('/boarding', [BoardingListController::class, 'index'])->name('boarding');
+    Route::post('/boarding', [BoardingListController::class, 'store'])->name('boarding.store');
+    Route::get('/boarding/items', [BoardingListController::class, 'getAll'])->name('boarding.items');
+
+    Route::get('/titip', [DeliveringController::class, 'index'])->name('titip');
+    Route::post('/titip', [DeliveringController::class, 'create'])->name('titip.create');
+    Route::get('/titip/items', [DeliveringController::class, 'getAll'])->name('titip.items');
+    Route::delete('/titip/{id}', [DeliveringController::class, 'delete'])->name('titip.delete');
+    Route::patch('/titip/update/{id}', [DeliveringController::class, 'update'])->name('titip.update');
+});
+
 Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/picking', [BarangController::class, 'index'])->name('barang');
     Route::post('/barang', [BarangController::class, 'create']);
@@ -46,15 +58,15 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::patch('/pick/end', [PickController::class, 'end']);
     Route::patch('/pick/{id}/end', [PickController::class, 'endPick'])->name('pick.end');
 
-    Route::get('/boarding', [BoardingListController::class, 'index'])->name('boarding');
-    Route::post('/boarding', [BoardingListController::class, 'store'])->name('boarding.store');
-    Route::get('/boarding/items', [BoardingListController::class, 'getAll'])->name('boarding.items');
+    // Route::get('/boarding', [BoardingListController::class, 'index'])->name('boarding');
+    // Route::post('/boarding', [BoardingListController::class, 'store'])->name('boarding.store');
+    // Route::get('/boarding/items', [BoardingListController::class, 'getAll'])->name('boarding.items');
 
-    Route::get('/titip', [DeliveringController::class, 'index'])->name('titip');
-    Route::post('/titip', [DeliveringController::class, 'create'])->name('titip.create');
-    Route::get('/titip/items', [DeliveringController::class, 'getAll'])->name('titip.items');
-    Route::delete('/titip/{id}', [DeliveringController::class, 'delete'])->name('titip.delete');
-    Route::patch('/titip/update/{id}', [DeliveringController::class, 'update'])->name('titip.update');
+    // Route::get('/titip', [DeliveringController::class, 'index'])->name('titip');
+    // Route::post('/titip', [DeliveringController::class, 'create'])->name('titip.create');
+    // Route::get('/titip/items', [DeliveringController::class, 'getAll'])->name('titip.items');
+    // Route::delete('/titip/{id}', [DeliveringController::class, 'delete'])->name('titip.delete');
+    // Route::patch('/titip/update/{id}', [DeliveringController::class, 'update'])->name('titip.update');
 
     Route::get('/loading', [LoadingContoroller::class, 'index'])->name('loading');
     Route::post('/loading', [LoadingContoroller::class, 'loading'])->name('loading.store');
