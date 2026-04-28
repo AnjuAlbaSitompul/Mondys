@@ -69,9 +69,9 @@
         });
 
         $('#scanBtn').on('click', function(e) {
-            $('#scanBarcode').modal('show')
-            // $('#confirmQty').attr('data-id', 'HS27SJ/DC01-JICOALFK')
-            // $('#pickerQty').modal('show')
+            // $('#scanBarcode').modal('show')
+            $('#confirmQty').attr('data-id', 'HS01SJ/DC01-89103758')
+            $('#pickerQty').modal('show')
         })
 
         $('#pickingTable').DataTable({

@@ -39,6 +39,10 @@
             /* penting */
         }
 
+        .barcode-vertical svg {
+            scale: 1.3;
+        }
+
         /* === RIGHT: QR BOX === */
         .qr-box {
             display: flex;
