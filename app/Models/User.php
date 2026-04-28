@@ -62,4 +62,24 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Outlet::class);
     }
+
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'claimed_by');
+    }
+
+    public function approvedClaims()
+    {
+        return $this->hasMany(Claim::class, 'approved_by');
+    }
+
+    public function deliveries()
+    {
+        return $this->hasMany(Delivering::class, 'driver_id');
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(DriverRating::class, 'driver_id');
+    }
 }

@@ -115,7 +115,37 @@
                                         <th class="text-center">Total Progress</th>
                                         <th class="text-center">Rata - Rata Durasi</th>
                                         <th class="text-center">Pick Error</th>
+                                        <th class="text-center">Claimed</th>
                                         <th class="text-center">Performance</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 layout-spacing">
+                <div class="statbox widget box box-shadow">
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                <h4>Performa Driver</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-content widget-content-area">
+                        <div class="table-responsive">
+                            <table id="performaDriver" class="table style-3 dt-table-hover">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th class="text-center col-no">No</th>
+                                        <th>Nama Driver</th>
+                                        <th class="text-center">Total Delivering</th>
+                                        <th class="text-center">Total Finished</th>
+                                        <th class="text-center">Total Progress</th>
+                                        <th class="text-center">Rata - Rata Durasi</th>
+                                        <th class="text-center">Ratings</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -148,6 +178,14 @@
                                 aria-controls="loading-tab-pane" aria-selected="false">
                                 <i class="fa fa-truck-loading"></i>
                                 Loading
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="Delivering-tab" data-bs-toggle="tab"
+                                data-bs-target="#Delivering-tab-pane" type="button" role="tab"
+                                aria-controls="Delivering-tab-pane" aria-selected="false">
+                                <i class="fa fa-boxes"></i>
+                                Delivering
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -253,6 +291,37 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="Delivering-tab-pane" role="tabpanel"
+                            aria-labelledby="Delivering-tab-pane" tabindex="0">
+                            <div class="statbox widget box box-shadow">
+                                <div class="widget-header">
+                                    <div class="row">
+                                        <div class="col-xl-10 col-md-10col-sm-10 col-10">
+                                            <h4>Delivering List</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="widget-content widget-content-area">
+                                    <div class="table-responsive">
+                                        <table id="deliveringTable" class="table style-3 dt-table-hover mb-3">
+                                            <thead class="table-header">
+                                                <tr>
+                                                    <th class="text-center col-no">No</th>
+                                                    <th class="text-center col-no">No. Pengantaran</th>
+                                                    <th class="text-center col-no">Driver</th>
+                                                    <th class="text-center col-no">Jumlah Box</th>
+                                                    <th class="text-center col-no">Jumlah Koli</th>
+                                                    <th class="text-center col-no">Timestamp Start</th>
+                                                    <th class="text-center col-no">Timestamp Clock In</th>
+                                                    <th class="text-center col-no">Timestamp Clock Out</th>
+                                                    <th class="text-center col-no">Durasi Delivering</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="tab-pane fade" id="claim-tab-pane" role="tabpanel"
                             aria-labelledby="claim-tab-pane" tabindex="0">
@@ -260,7 +329,7 @@
                                 <div class="widget-header">
                                     <div class="row">
                                         <div class="col-xl-10 col-md-10col-sm-10 col-10">
-                                            <h4>Loading List</h4>
+                                            <h4>Claim List</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -350,6 +419,61 @@
         }
 
 
+        let tableDriver = $('#performaDriver').DataTable({
+            processing: true,
+            serverSide: false, // karena kita return array biasa
+            ajax: {
+                url: '/admin/dashboard/driver',
+                dataSrc: 'data',
+                data: function(d) {
+                    d.start_date = $('#startDate').val();
+                    d.end_date = $('#endDate').val();
+                }
+            },
+            columns: [{
+                    data: null,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    data: 'driver_name'
+                },
+                {
+                    data: 'total_delivering',
+                    className: 'text-center'
+                },
+                {
+                    data: 'total_finished',
+                    className: 'text-center'
+                },
+                {
+                    data: 'total_progress',
+                    className: 'text-center'
+                },
+                {
+                    data: 'avg_duration_minutes',
+                    className: 'text-center',
+                    render: function(data) {
+                        if (!data) return '-';
+
+                        let hours = Math.floor(data / 60);
+                        let minutes = Math.floor(data % 60);
+
+                        if (hours > 0) {
+                            return `${hours}j ${minutes}m`;
+                        }
+                        return `${minutes}m`;
+                    }
+                },
+                {
+                    data: 'ratings',
+                    className: 'text-center'
+                }
+            ]
+        });
+
         let tablePicker = $('#performaTable').DataTable({
             processing: true,
             serverSide: false, // karena kita return array biasa
@@ -407,6 +531,13 @@
                     render: function(data) {
                         let color = data > 0 ? 'danger' : 'success';
                         return `<span class="badge bg-${color}">${data}</span>`;
+                    }
+                },
+                {
+                    data: 'total_claimed',
+                    className: 'text-center',
+                    render: function(data) {
+                        return `<span class="badge bg-primary">${data}</span>`;
                     }
                 },
                 {
@@ -650,50 +781,144 @@
                     }
                 },
                 {
-                    data: 'picker_name'
+                    data: 'surat_jalan',
                 },
                 {
-                    data: 'picker_department'
+                    data: 'claim_description'
                 },
                 {
-                    data: 'total_barang',
+                    data: 'claimed_at',
+                    className: 'text-center',
+                    render: function(data) {
+                        return data ? moment.utc(data).local().format('DD MMM YYYY HH:mm') :
+                            '-';
+                    }
+                },
+                {
+                    data: 'approved',
+                    className: 'text-center',
+                    render: function(data) {
+                        let color = data === 'Approved' ? 'success' : 'warning';
+                        let text = data === 'Approved' ? 'Approved' : 'Pending';
+                        return `<span class="badge bg-${color}">${text}</span>`;
+                    }
+                },
+                {
+                    data: null,
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        if (row.approved === 'Pending') {
+                            return `<button class="btn btn-sm btn-primary btn-approve" data-id="${row.id}">Approve</button>`;
+                        } else {
+                            return '-';
+                        }
+                    }
+                }
+            ]
+        });
+
+        $('#claimTable').on('click', '.btn-approve', function() {
+            let claimId = $(this).data('id');
+
+            $.ajax({
+                url: `/admin/claim/approve/${claimId}`,
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(res) {
+                    Swal.fire('Success', 'Claim approved', 'success');
+                    tableClaim.ajax.reload();
+                    tablePicker.ajax.reload();
+                },
+                error: function() {
+                    Swal.fire('Error', 'Failed to approve claim', 'error');
+                }
+            });
+        });
+
+        let deliveringTable = $('#deliveringTable').DataTable({
+            processing: true,
+            serverSide: false,
+            ajax: {
+                url: '/admin/dashboard/delivering',
+                dataSrc: 'data',
+                data: function(d) {
+                    d.start_date = $('#startDate').val();
+                    d.end_date = $('#endDate').val();
+                }
+            },
+            columns: [{
+                    data: null,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    data: 'surat_jalan',
                     className: 'text-center'
                 },
                 {
-                    data: 'avg_duration_minutes',
+                    data: 'driver_name',
+                    className: 'text-center'
+                },
+                {
+                    data: 'total_box',
+                    className: 'text-center'
+                },
+                {
+                    data: 'total_koli',
+                    className: 'text-center'
+                },
+                {
+                    data: 'start_at',
                     className: 'text-center',
                     render: function(data) {
-                        if (!data) return '-';
-
-                        let hours = Math.floor(data / 60);
-                        let minutes = Math.floor(data % 60);
-
-                        if (hours > 0) {
-                            return `${hours}j ${minutes}m`;
-                        }
-                        return `${minutes}m`;
+                        return data ? moment.utc(data).local().format('DD MMM YYYY HH:mm') :
+                            '-';
                     }
                 },
                 {
-                    data: 'total_error',
+                    data: 'clock_in_at',
                     className: 'text-center',
                     render: function(data) {
-                        let color = data > 0 ? 'danger' : 'success';
-                        return `<span class="badge bg-${color}">${data}</span>`;
+                        return data ? moment.utc(data).local().format('DD MMM YYYY HH:mm') :
+                            '-';
                     }
                 },
                 {
-                    data: 'performance_score',
+                    data: 'clock_out_at',
                     className: 'text-center',
                     render: function(data) {
-                        let color = data >= 85 ? 'success' : data >= 70 ? 'warning' : 'danger';
-                        return `<span class="badge bg-${color}">${data}</span>`;
+                        return data ? moment.utc(data).local().format('DD MMM YYYY HH:mm') :
+                            '-';
+                    }
+                },
+                {
+                    data: null,
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        if (!row.start_at || !row.clock_out_at) return '-';
+
+                        let start = moment(row.start_at);
+                        let end = moment(row.clock_out_at);
+
+                        let duration = moment.duration(end.diff(start));
+
+                        let hours = Math.floor(duration.asHours());
+                        let minutes = duration.minutes();
+
+                        return hours > 0 ?
+                            `${hours}j ${minutes}m` :
+                            `${minutes}m`;
                     }
                 }
             ]
         });
 
         $('#refresh').on('click', function() {
+            tableClaim.ajax.reload();
             tablePicker.ajax.reload();
             tablePicking.ajax.reload();
             tableBoarding.ajax.reload();

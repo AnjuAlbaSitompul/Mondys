@@ -88,7 +88,12 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/admin/dashboard/picking', [DashboardController::class, 'pickingData']);
     Route::get('/admin/dashboard/boarding', [DashboardController::class, 'boardingData']);
     Route::get('/admin/dashboard/loading', [DashboardController::class, 'loadingData']);
+    Route::get('/admin/dashboard/delivering', [DashboardController::class, 'deliveringData']);
     Route::get('/admin/dashboard/summary', [DashboardController::class, 'summary']);
+    Route::get('/admin/dashboard/claim', [DashboardController::class, 'claimData']);
+    Route::get('/admin/dashboard/driver', [DashboardController::class, 'driverPerformance']);
+
+    Route::post('/admin/claim/approve/{id}', [DashboardController::class, 'approveClaim'])->name('admin.claim.approve');
 });
 
 Route::middleware(['auth', 'role:PICKER'])->group(function () {

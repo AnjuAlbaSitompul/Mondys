@@ -57,7 +57,7 @@
     /* 🔥 horizontal box (penting untuk barcode) */
     .scan-box {
         width: min(80vw, 320px);
-        height: 120px;
+        height: min(80vw, 320px);
         /* 🔥 pendek, bukan kotak */
         border: 3px solid #00ff99;
         border-radius: 12px;
@@ -172,7 +172,7 @@
                 fps: 10,
                 qrbox: {
                     width: 300,
-                    height: 120
+                    height: 300
                 }, // 🔥 horizontal (penting!)
                 aspectRatio: 1.777, // 🔥 biar landscape, cocok barcode
                 formatsToSupport: [

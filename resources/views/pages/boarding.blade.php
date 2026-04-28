@@ -50,7 +50,7 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <x-form.input id="qty" label="Masukkan Jumlah Box" name="qty"
-                                            type="number" min="1" placeholder="Masukkan Jumlah Box"
+                                            type="number" min="0" placeholder="Masukkan Jumlah Box"
                                             valid="Masukkan Jumlah Box yang valid" />
                                     </div>
                                     <button type="submit" class="btn btn-primary mb-2 me-4 ">Tambahkan Ke Boarding</button>

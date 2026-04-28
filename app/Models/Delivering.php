@@ -26,4 +26,9 @@ class Delivering extends Model
     {
         return $this->belongsTo(Loading::class);
     }
+
+    public function driver()
+    {
+        return $this->belongsTo(User::class, 'driver_id');
+    }
 }

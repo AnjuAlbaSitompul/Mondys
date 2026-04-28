@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BoardingList;
+use App\Models\Claim;
 use App\Models\Delivering;
 use App\Models\Loading;
 use App\Models\Outlet;
@@ -13,9 +14,169 @@ use App\Services\PickerPerformanceService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+
+    public function deliveringData(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : Carbon::now()->endOfDay();
+
+        $data = DB::table('deliverings')
+            ->join('loadings', 'deliverings.loading_id', '=', 'loadings.id')
+            ->join('users', 'deliverings.driver_id', '=', 'users.id')
+            ->leftJoin('loading_details', 'loadings.id', '=', 'loading_details.loading_id')
+
+            ->whereBetween('deliverings.start_at', [$startDate, $endDate])
+
+            ->select(
+                'loadings.surat_jalan',
+                'users.name as driver_name',
+                'deliverings.start_at',
+                'deliverings.clock_in as clock_in_at',
+                'deliverings.clock_out as clock_out_at',
+
+                DB::raw('SUM(loading_details.box) as total_box'),
+                DB::raw('SUM(loading_details.koli) as total_koli')
+            )
+
+            ->groupBy(
+                'deliverings.id',
+                'loadings.surat_jalan',
+                'users.name',
+                'deliverings.start_at',
+                'deliverings.clock_in',
+                'deliverings.clock_out'
+            )
+
+            ->orderBy('deliverings.start_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
+
+    public function driverPerformance(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : Carbon::now()->endOfDay();
+
+        $data = User::where('role', 'DRIVER')
+            ->where('is_active', 1)
+
+            // total delivering
+            ->withCount(['deliveries as total_delivering' => function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('start_at', [$startDate, $endDate]);
+            }])
+
+            ->withCount(['deliveries as total_finished' => function ($q) use ($startDate, $endDate) {
+                $q->whereNotNull('clock_out')
+                    ->whereBetween('start_at', [$startDate, $endDate]);
+            }])
+
+            ->withCount(['deliveries as total_progress' => function ($q) use ($startDate, $endDate) {
+                $q->whereNull('clock_out')
+                    ->whereBetween('start_at', [$startDate, $endDate]);
+            }])
+
+            // avg duration (🔥 ini penting)
+            ->withAvg(['deliveries as avg_duration_minutes' => function ($q) use ($startDate, $endDate) {
+                $q->whereNotNull('start_at')
+                    ->whereNotNull('clock_out')
+                    ->whereBetween('start_at', [$startDate, $endDate]);
+            }], DB::raw('TIMESTAMPDIFF(MINUTE, start_at, clock_out)'))
+
+            // rating
+            ->withAvg(['ratings as ratings'], 'rating')
+
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'driver_id' => $item->id,
+                    'driver_name' => $item->name,
+
+                    'total_delivering' => $item->total_delivering ?? 0,
+                    'total_finished' => $item->total_finished ?? 0,
+                    'total_progress' => $item->total_progress ?? 0,
+
+                    'avg_duration_minutes' => round($item->avg_duration_minutes ?? 0, 2),
+
+                    'ratings' => round($item->ratings ?? 0, 2),
+                ];
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
+    public function approveClaim($id)
+    {
+        $claim = Claim::findOrFail($id);
+
+        if ($claim->approved) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Claim sudah diapprove sebelumnya'
+            ], 400);
+        }
+
+        $claim->approved = true;
+        $claim->approved_by = Auth::id();
+        $claim->approved_at = Carbon::now();
+        $claim->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Claim berhasil diapprove'
+        ]);
+    }
+    public function claimData(Request $request)
+    {
+        $startDate = $request->start_date
+            ? Carbon::parse($request->start_date)->startOfDay()
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->end_date
+            ? Carbon::parse($request->end_date)->endOfDay()
+            : Carbon::now()->endOfDay();
+
+        $data = Claim::with(['barang', 'creator', 'approvedBy'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'id' => $item->id,
+                    'surat_jalan' => $item->barang->sjcode ?? '-',
+                    'claim_description' => $item->desc ?? '-',
+                    'pic_claim' => $item->creator->name ?? '-',
+                    'claimed_at' => $item->created_at,
+                    'approved' => $item->approved ? 'Approved' : 'Pending',
+                    'pic_approve' => $item->approvedBy->name ?? '-',
+                    'approved_at' => $item->approved_at ?? '-',
+                ];
+            });
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 
     public function summary(Request $request, DashboardAdminService $service)
     {
