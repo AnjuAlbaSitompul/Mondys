@@ -107,7 +107,7 @@
             {{-- FOOTER --}}
             <div class="footer-container">
                 <div class="big-text">
-                    {{ $codeOutlet }}
+                    {{ $codeOutlet }} - {{ $item['koli'] }}
                 </div>
 
                 <div class="footer">

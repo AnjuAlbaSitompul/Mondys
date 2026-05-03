@@ -356,6 +356,7 @@ class DashboardController extends Controller
         $codeOutlet = substr($id, 0, 4);     // 4 huruf awal
         $sjcode     = substr($id, 4);        // sisanya = sjcode asli
 
+
         // ========================
         // VALIDASI OUTLET
         // ========================
@@ -372,16 +373,16 @@ class DashboardController extends Controller
         // VALIDASI PICKLIST
         // ========================
 
-        $picklist = Picklist::whereHas('barang', function ($q) use ($sjcode) {
-            $q->where('sjcode', $sjcode);
-        })->where('picker_id', Auth::id())->first();
+        // $picklist = Picklist::whereHas('barang', function ($q) use ($sjcode) {
+        //     $q->where('sjcode', $sjcode);
+        // })->where('picker_id', Auth::id())->first();
 
-        if (!$picklist) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'SJ tidak ditemukan / bukan milik kamu'
-            ], 403);
-        }
+        // if (!$picklist) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'SJ tidak ditemukan / bukan milik kamu'
+        //     ], 403);
+        // }
 
         // ========================
         // GENERATE BARCODE
@@ -399,6 +400,7 @@ class DashboardController extends Controller
                 'full' => $barcodeFullValue,
                 'sj'   => $barcodeSjValue,
                 'outlet' => $codeOutlet,
+                'koli' => $formattedQty,
             ];
         }
 
@@ -421,8 +423,10 @@ class DashboardController extends Controller
                     ->whereNotNull('finished_at')
                     ->count();
 
-                $data['upComingTask'] = PickList::where('picker_id', $user->id)
-                    ->whereNull('finished_at')
+                // $data['upComingTask'] = PickList::where('picker_id', $user->id)
+                //     ->whereNull('finished_at')
+                //     ->count();
+                $data['upComingTask'] = PickList::whereNull('finished_at')
                     ->count();
                 break;
 
@@ -482,7 +486,8 @@ class DashboardController extends Controller
     }
     public function pickerDashboard()
     {
-        $data = Picklist::with(['barang', 'picker'])->whereNull('finished_at')->where('picker_id', Auth::id())->get();
+        // $data = Picklist::with(['barang', 'picker'])->whereNull('finished_at')->where('picker_id', Auth::id())->get();
+        $data = Picklist::with(['barang', 'picker'])->whereNull('finished_at')->get();
 
         return response()->json([
             'data' => $data,

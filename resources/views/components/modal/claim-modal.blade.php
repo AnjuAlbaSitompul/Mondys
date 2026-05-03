@@ -46,6 +46,11 @@
 
             <input type="hidden" id="ratingValue">
 
+            {{-- input picture --}}
+            <div class="mb-3">
+                <input class="form-control border-0 bg-light rounded-3 px-3 py-2 mb-3" type="file" id="claimImage"
+                    accept="image/*" placeholder="Bukti Gambar" name="claimImage">
+            </div>
             <!-- claim -->
             <textarea class="form-control border-0 bg-light rounded-3 px-3 py-2 mb-3" id="claim"
                 placeholder="Masukkan Alasan Claim.." name="claim"></textarea>
@@ -75,22 +80,26 @@
         $('#submitClaim').click(function() {
             let barangId = $(this).data('id');
             let desc = $('#claim').val();
+            let image = $('#claimImage')[0].files[0];
+
+            let formData = new FormData();
+            formData.append('barang_id', barangId);
+            formData.append('desc', desc);
+            formData.append('image', image);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
             $.ajax({
-                url: '/claim', // sesuaikan route kamu
+                url: '/claim',
                 type: 'POST',
-                data: {
-                    barang_id: barangId,
-                    desc: desc,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
+                data: formData,
+                processData: false, // penting
+                contentType: false, // penting
                 beforeSend: function() {
                     $('#submitClaim').prop('disabled', true).text('Loading...');
                 },
                 success: function(res) {
                     $('#claimModal').modal('hide');
 
-                    // optional notif
                     Toast.fire({
                         icon: 'success',
                         title: "Claim Berhasil, Silahkan Tunggu Response"

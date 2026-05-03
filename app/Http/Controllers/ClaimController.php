@@ -7,6 +7,7 @@ use App\Models\Claim;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ClaimController extends Controller
 {
@@ -14,9 +15,9 @@ class ClaimController extends Controller
     {
         $request->validate([
             'barang_id' => 'required|exists:barangs,id',
-            'desc' => 'nullable|string|max:1000'
+            'desc' => 'required|string|max:1000',
+            'image' => 'required|image|max:2048'
         ]);
-
         $existing = Claim::where('barang_id', $request->barang_id)->first();
 
         if ($existing) {
@@ -38,6 +39,19 @@ class ClaimController extends Controller
                 'claimed_by' => Auth::id(),
                 'desc' => $request->desc
             ]);
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+
+                Http::attach(
+                    'photo',
+                    file_get_contents($image->getRealPath()),
+                    $image->getClientOriginalName()
+                )->post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendPhoto", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'caption' => "📦 Claim Barang\n\nNo SJ: {$barang->sjcode}\nUser: " . Auth::user()->name . "\nDeskripsi: {$request->desc}"
+                ]);
+            }
 
             DB::commit();
 
