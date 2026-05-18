@@ -82,10 +82,10 @@
 
 <body onload="window.print()">
 
-    @foreach ($barcodes as $item)
+    @foreach ($barcodes as $index => $item)
         @php
             $codeOutlet = substr($item['full'], 0, 4);
-            $today = date('d'); // <-- ini yang diubah
+            $today = date('d');
         @endphp
 
         <div class="label">
@@ -107,7 +107,7 @@
             {{-- FOOTER --}}
             <div class="footer-container">
                 <div class="big-text">
-                    {{ $codeOutlet }} - {{ $item['koli'] }}
+                    {{ $codeOutlet }} - {{ $item['koli'] }} - [{{ $index + 1 }}]
                 </div>
 
                 <div class="footer">
@@ -119,7 +119,6 @@
 
         <div style="page-break-after: always;"></div>
     @endforeach
-
 </body>
 
 </html>
