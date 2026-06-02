@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\PickList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class PickController extends Controller
     public function end(Request $request)
     {
         $codes = json_decode($request->codesj, true);
+
         $request->merge([
             'codesj' => $codes
         ]);
@@ -50,34 +52,46 @@ class PickController extends Controller
 
         try {
 
-            $pickLists = PickList::where('status', '!=', 'finished')->get();
+            $sjCodes = collect($request->codesj)
+                ->pluck('value')
+                ->toArray();
 
-            foreach ($pickLists as $pickList) {
-                $pickList->update([
-                    'status' => 'finished',
-                    'finished_at' => now(),
-                    'ended_by' => Auth::id()
-                ]);
+            $barangs = Barang::with('pickList')
+                ->whereIn('sjcode', $sjCodes)
+                ->whereHas('pickList', function ($q) {
+                    $q->where('status', '!=', 'finished');
+                })
+                ->get();
 
-                if ($pickList->barang) {
-                    $pickList->barang->update([
-                        'status' => 'PICK END'
+            foreach ($barangs as $barang) {
+
+                if ($barang->pickList) {
+                    $barang->pickList->update([
+                        'status' => 'finished',
+                        'finished_at' => now(),
+                        'ended_by' => Auth::id()
                     ]);
                 }
+
+                $barang->update([
+                    'status' => 'PICK END',
+                    'updated_by' => Auth::id()
+                ]);
             }
 
             DB::commit();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Semua Pick List berhasil diakhiri'
+                'message' => 'Pick List berhasil diakhiri'
             ]);
         } catch (\Throwable $th) {
+
             DB::rollBack();
 
             return response()->json([
                 'status' => 'error',
-                'message' => $th->getMessage() ?: 'Terjadi kesalahan server'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
