@@ -375,7 +375,7 @@
         let firstDay = `${yyyy}-${mm}-01`;
 
         // set default value
-        $('#startDate').val(firstDay);
+        $('#startDate').val(todayStr);
         $('#endDate').val(todayStr);
 
         // set max (tidak boleh lebih dari hari ini)

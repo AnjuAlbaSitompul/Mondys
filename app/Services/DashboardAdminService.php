@@ -17,11 +17,11 @@ class DashboardAdminService
     {
         $startDate = $startDate
             ? Carbon::parse($startDate)->startOfDay()
-            : Carbon::now()->startOfMonth();
+            : Carbon::now()->startOfHour();
 
         $endDate = $endDate
             ? Carbon::parse($endDate)->endOfDay()
-            : Carbon::now()->endOfDay();
+            : Carbon::now()->endOfHour();
 
         // 🔹 1. total barang
         $totalBarang = Barang::whereBetween('created_at', [$startDate, $endDate])->count();

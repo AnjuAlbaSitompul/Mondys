@@ -58,10 +58,10 @@ class BoardingListController extends Controller
                 $code = $item['value'];
 
                 return [
-                    'full'        => $code,
+                    'full' => $code,
                     'outlet_code' => substr($code, 0, 4),
-                    'sj_barang'   => substr($code, 4, 16),
-                    'koli'        => substr($code, -2),
+                    'sj_barang' => substr($code, 4, 16),
+                    'koli' => substr($code, -2),
                 ];
             });
 
@@ -77,7 +77,7 @@ class BoardingListController extends Controller
             if ($outlets->count() !== $outletCodes->count()) {
                 throw new \Exception(
                     "Outlet tidak valid: " .
-                        implode(', ', $outletCodes->diff($outlets->keys())->toArray())
+                    implode(', ', $outletCodes->diff($outlets->keys())->toArray())
                 );
             }
 
@@ -93,14 +93,14 @@ class BoardingListController extends Controller
             if ($barangs->count() !== $sjBarangs->count()) {
                 throw new \Exception(
                     "Barang tidak ditemukan dari SJ: " .
-                        implode(', ', $sjBarangs->diff($barangs->keys())->toArray())
+                    implode(', ', $sjBarangs->diff($barangs->keys())->toArray())
                 );
             }
 
             if ($barangs->where('status', '!=', 'PICK END')->isNotEmpty()) {
                 throw new \Exception(
                     "Ada barang yang belum selesai pick: " .
-                        implode(', ', $barangs->where('status', '!=', 'PICK END')->pluck('sjcode')->toArray()) . ' Harap Perhatikan Pekerjaan Anda'
+                    implode(', ', $barangs->where('status', '!=', 'PICK END')->pluck('sjcode')->toArray()) . ' Harap Perhatikan Pekerjaan Anda'
                 );
             }
 
@@ -115,7 +115,7 @@ class BoardingListController extends Controller
             if ($existing->isNotEmpty()) {
                 throw new \Exception(
                     "Code sudah pernah diinput: " .
-                        implode(', ', $existing->toArray())
+                    implode(', ', $existing->toArray())
                 );
             }
 
@@ -124,15 +124,15 @@ class BoardingListController extends Controller
             // =====================
             $insertData = $parsed->map(function ($item) use ($outlets, $barangs, $qty) {
                 return [
-                    'barang_id'     => $barangs[$item['sj_barang']]->id,
-                    'outlet_id'     => $outlets[$item['outlet_code']]->id,
+                    'barang_id' => $barangs[$item['sj_barang']]->id,
+                    'outlet_id' => $outlets[$item['outlet_code']]->id,
                     'code_boarding' => $item['full'],
-                    'qty'           => $qty, // 🔥 dari input, bukan dari code
-                    'koli'          => $item['koli'], // 🔥 dari code
-                    'created_at'    => now(),
+                    'qty' => $qty, // 🔥 dari input, bukan dari code
+                    'koli' => $item['koli'], // 🔥 dari code
+                    'created_at' => now(),
                     'boarding_start' => now(),
-                    'created_by'    => Auth::id(),
-                    'updated_at'    => now(),
+                    'created_by' => Auth::id(),
+                    'updated_at' => now(),
                 ];
             })->toArray();
 

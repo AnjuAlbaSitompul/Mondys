@@ -104,7 +104,7 @@
             var input = document.querySelector('#codeBoarding');
             var tagify = new Tagify(input, {
                 delimiters: ",",
-                maxTags: 1
+                maxTags: 10
             });
 
             let tableBoarding = $('#boardingListTable').DataTable({
