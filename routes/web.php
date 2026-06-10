@@ -73,10 +73,9 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/loading/items', [LoadingContoroller::class, 'getLoadingItems'])->name('loading.items');
     Route::get('/loading/items/{outletId}', [LoadingContoroller::class, 'getLoadingItemsByOutlet'])->name('loading.items.by-outlet');
     Route::patch('/loading/update/{id}', [LoadingContoroller::class, 'updateLoading'])->name('loading.update');
-    Route::get('/loading/print/{id}', [LoadingContoroller::class,  'printById'])->name('loading.print');
+    Route::get('/loading/print/{id}', [LoadingContoroller::class, 'printById'])->name('loading.print');
     Route::get('/loading/history', [LoadingContoroller::class, 'history']);
-    Route::get('/loading/{id}', [LoadingContoroller::class,  'loadingDetail'])->name('loading.detail');
-
+    Route::get('/loading/{id}', [LoadingContoroller::class, 'loadingDetail'])->name('loading.detail');
 
     Route::get('/master/department', [DepartmentController::class, 'index'])->name('master.department');
     Route::get('/master/department/items', [DepartmentController::class, 'items'])->name('department.items');
@@ -139,10 +138,10 @@ Route::middleware(['auth', 'role:PIC'])->group(function () {
 //     Route::get('/barang/items', [BarangController::class, 'getAll']);
 //     Route::patch('/barang/{id}/update-picker', [BarangController::class, 'updatePicker'])->name('barang.update-picker');
 
-    // Route::get('/pick', [PickController::class, 'index'])->name('barang.pick');
-    // Route::get('/pick/items', [PickController::class, 'getAll'])->name('barang.pick');
-    // Route::patch('/pick/{id}/end', [PickController::class, 'endPick'])->name('pick.end');
-    // Route::patch('/pick/end', [PickController::class, 'end']);
+// Route::get('/pick', [PickController::class, 'index'])->name('barang.pick');
+// Route::get('/pick/items', [PickController::class, 'getAll'])->name('barang.pick');
+// Route::patch('/pick/{id}/end', [PickController::class, 'endPick'])->name('pick.end');
+// Route::patch('/pick/end', [PickController::class, 'end']);
 
 //     Route::get('/boarding', [BoardingListController::class, 'index'])->name('boarding');
 //     Route::post('/boarding', [BoardingListController::class, 'store'])->name('boarding.store');
@@ -192,8 +191,8 @@ Route::middleware(['auth', 'role:PIC'])->group(function () {
 //     Route::get('/picker/dashboard', [DashboardController::class, 'pickerDashboard']);
 //     Route::get('/picker/print', [DashboardController::class, 'printBarcode']);
 
-    // Route::get('/driver/dashboard', [DashboardController::class, 'driverDashboard']);
-    // Route::get('/driver/camera/{id}', [DeliverController::class, 'camera']);
+// Route::get('/driver/dashboard', [DashboardController::class, 'driverDashboard']);
+// Route::get('/driver/camera/{id}', [DeliverController::class, 'camera']);
 
 //     Route::get('/pic/dashboard', [DashboardController::class, 'picDashboard']);
 //     Route::get('/pic/detail/{id}', [DeliverController::class, 'picDetail']);

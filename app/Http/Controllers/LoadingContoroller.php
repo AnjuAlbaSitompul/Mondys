@@ -56,15 +56,25 @@ class LoadingContoroller extends Controller
         ])->findOrFail($id);
 
         // Pisahin data
-        $titipItems = $loading->details->filter(
-            fn($d) =>
-            $d->boardingList?->barang?->type === 'TITIP'
-        );
+        $titipItems = $loading->details
+            ->filter(
+                fn($d) =>
+                $d->boardingList?->barang?->type === 'TITIP'
+            )
+            ->sortBy(
+                fn($d) =>
+                $d->boardingList?->barang?->sjcode ?? ''
+            );
 
-        $regularItems = $loading->details->filter(
-            fn($d) =>
-            $d->boardingList?->barang?->type === 'REGULER'
-        );
+        $regularItems = $loading->details
+            ->filter(
+                fn($d) =>
+                $d->boardingList?->barang?->type === 'REGULER'
+            )
+            ->sortBy(
+                fn($d) =>
+                $d->boardingList?->barang?->sjcode ?? ''
+            );
 
         // Rekap jenis barang (TITIP saja)
         $rekapJenis = $titipItems
@@ -125,16 +135,16 @@ class LoadingContoroller extends Controller
                 $boarding = BoardingList::lockForUpdate()->findOrFail($item['id']);
 
                 $newKoli = (int) $item['koli'];
-                $newBox  = (int) ($item['qty'] ?? 0);
+                $newBox = (int) ($item['qty'] ?? 0);
 
                 $old = $oldMap[$item['id']] ?? null;
 
                 $oldKoli = $old?->koli ?? 0;
-                $oldBox  = $old?->box ?? 0;
+                $oldBox = $old?->box ?? 0;
 
                 // 🔥 VALIDASI (pakai stok + data lama)
                 $availableKoli = $boarding->koli + $oldKoli;
-                $availableBox  = ($boarding->qty ?? 0) + $oldBox;
+                $availableBox = ($boarding->qty ?? 0) + $oldBox;
 
                 if ($newKoli > $availableKoli) {
                     throw new \Exception("Koli melebihi stok item ");
@@ -146,7 +156,7 @@ class LoadingContoroller extends Controller
 
                 // 🔹 update boarding (balikin dulu stok lama, lalu kurangi baru)
                 $boarding->koli = $availableKoli - $newKoli;
-                $boarding->qty  = $availableBox - $newBox;
+                $boarding->qty = $availableBox - $newBox;
 
                 if ($boarding->koli == 0 && $boarding->qty == 0) {
                     $boarding->boarding_end = now();
@@ -160,15 +170,15 @@ class LoadingContoroller extends Controller
                 if ($old) {
                     $old->update([
                         'koli' => $newKoli,
-                        'box'  => $newBox,
+                        'box' => $newBox,
                     ]);
                 } else {
                     LoadingDetail::create([
-                        'loading_id'       => $loading->id,
+                        'loading_id' => $loading->id,
                         'boarding_list_id' => $boarding->id,
-                        'koli'             => $newKoli,
-                        'barang_id'        => $boarding->barang_id,
-                        'box'              => $newBox,
+                        'koli' => $newKoli,
+                        'barang_id' => $boarding->barang_id,
+                        'box' => $newBox,
                     ]);
                 }
             }
@@ -184,7 +194,7 @@ class LoadingContoroller extends Controller
                     if ($boarding) {
                         // balikin stok
                         $boarding->koli += $old->koli;
-                        $boarding->qty  += $old->box;
+                        $boarding->qty += $old->box;
                         $boarding->boarding_end = null;
                         $boarding->save();
                     }
@@ -296,12 +306,12 @@ class LoadingContoroller extends Controller
         try {
             // 🔹 1. create loading (header)
             $loading = Loading::create([
-                'surat_jalan'  => $this->generateSjCode(),
-                'driver_id'    => $request->driverId,
+                'surat_jalan' => $this->generateSjCode(),
+                'driver_id' => $request->driverId,
                 'co_driver_id' => $request->coDriverId,
-                'outlet_id'    => $request->outletId,
+                'outlet_id' => $request->outletId,
                 'loading_start' => now(),
-                'created_by'   => Auth::id() ?? 1,
+                'created_by' => Auth::id() ?? 1,
             ]);
 
             // 🔹 2. loop items → insert ke loading_details
@@ -320,16 +330,16 @@ class LoadingContoroller extends Controller
 
                 // 🔹 insert detail
                 LoadingDetail::create([
-                    'loading_id'        => $loading->id,
-                    'barang_id'         => $boarding->barang_id,
-                    'boarding_list_id'  => $boarding->id,
-                    'koli'              => $item['koli'],
-                    'box'               => $item['qty'] ?? 0,
+                    'loading_id' => $loading->id,
+                    'barang_id' => $boarding->barang_id,
+                    'boarding_list_id' => $boarding->id,
+                    'koli' => $item['koli'],
+                    'box' => $item['qty'] ?? 0,
                 ]);
 
                 // 🔹 update boarding (kurangi stok)
                 $boarding->koli -= $item['koli'];
-                $boarding->qty  -= ($item['qty'] ?? 0);
+                $boarding->qty -= ($item['qty'] ?? 0);
 
                 // optional: tandai sudah loading
                 if ($boarding->koli == 0 && $boarding->qty == 0) {
