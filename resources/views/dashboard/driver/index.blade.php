@@ -58,74 +58,74 @@
     $(document).ready(function() {
 
         $('#scanBtn').on('click', function() {
-            // $('#scanBarcodeDriver').modal('show')
-            $.ajax({
-                url: `/loading/get/HS2604001`,
-                type: 'GET',
-                success: function(res) {
+            $('#scanBarcodeDriver').modal('show')
+            // $.ajax({
+            //     url: `/loading/get/HS2604001`,
+            //     type: 'GET',
+            //     success: function(res) {
 
-                    // ✅ kalau valid → Swal confirm
-                    Swal.fire({
-                        title: 'Valid Loading',
-                        text: 'Lanjutkan ke delivering?',
-                        icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonText: 'Ya',
-                        cancelButtonText: 'Tidak'
-                    }).then((result) => {
+            //         // ✅ kalau valid → Swal confirm
+            //         Swal.fire({
+            //             title: 'Valid Loading',
+            //             text: 'Lanjutkan ke delivering?',
+            //             icon: 'success',
+            //             showCancelButton: true,
+            //             confirmButtonText: 'Ya',
+            //             cancelButtonText: 'Tidak'
+            //         }).then((result) => {
 
-                        if (result.isConfirmed) {
+            //             if (result.isConfirmed) {
 
-                            // 🔥 CREATE DELIVERING
-                            $.ajax({
-                                url: '/deliver/create',
-                                type: 'POST',
-                                data: {
-                                    id: 'HS2604001',
-                                    _token: $(
-                                        'meta[name="csrf-token"]'
-                                    ).attr('content')
-                                },
-                                success: function(res) {
-                                    $('#clockInBtn').attr(
-                                        'data-id', res
-                                        .data.id
-                                    ).show();
-                                    $('#scanBtn').hide();
-                                    $('#scanBarcodeDriver')
-                                        .modal('hide');
-                                    Swal.fire('Success',
-                                        'Delivering dibuat',
-                                        'success');
-                                },
-                                error: function(xhr) {
-                                    $('#clockInBtn').hide();
-                                    $('#scanBtn').show();
-                                    $('#scanBarcodeDriver')
-                                        .modal('hide')
-                                    Swal.fire('Error',
-                                        'Gagal membuat delivering',
-                                        'error');
-                                }
-                            });
+            //                 // 🔥 CREATE DELIVERING
+            //                 $.ajax({
+            //                     url: '/deliver/create',
+            //                     type: 'POST',
+            //                     data: {
+            //                         id: 'HS2604001',
+            //                         _token: $(
+            //                             'meta[name="csrf-token"]'
+            //                         ).attr('content')
+            //                     },
+            //                     success: function(res) {
+            //                         $('#clockInBtn').attr(
+            //                             'data-id', res
+            //                             .data.id
+            //                         ).show();
+            //                         $('#scanBtn').hide();
+            //                         $('#scanBarcodeDriver')
+            //                             .modal('hide');
+            //                         Swal.fire('Success',
+            //                             'Delivering dibuat',
+            //                             'success');
+            //                     },
+            //                     error: function(xhr) {
+            //                         $('#clockInBtn').hide();
+            //                         $('#scanBtn').show();
+            //                         $('#scanBarcodeDriver')
+            //                             .modal('hide')
+            //                         Swal.fire('Error',
+            //                             'Gagal membuat delivering',
+            //                             'error');
+            //                     }
+            //                 });
 
-                        }
+            //             }
 
-                    });
+            //         });
 
-                },
-                error: function() {
+            //     },
+            //     error: function() {
 
-                    // ❌ kalau tidak valid
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Loading tidak valid / tidak ditemukan',
-                        icon: 'error'
-                    });
+            //         // ❌ kalau tidak valid
+            //         Swal.fire({
+            //             title: 'Error',
+            //             text: 'Loading tidak valid / tidak ditemukan',
+            //             icon: 'error'
+            //         });
 
-                    scanned = false; // allow scan ulang
-                }
-            });
+            //         scanned = false; // allow scan ulang
+            //     }
+            // });
 
         });
         $('#pickingTable').DataTable({
