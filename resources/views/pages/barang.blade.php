@@ -12,12 +12,13 @@
             <div class="simple-tab">
 
                 <ul class="nav nav-tabs p-3" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
+                    <li class="nav-item" role="presentation"> 
                         <button class="nav-link active" id="home-tab-icon" data-bs-toggle="tab"
                             data-bs-target="#home-tab-icon-pane" type="button" role="tab"
                             aria-controls="home-tab-icon-pane" aria-selected="true">
                             <i class="fa fa-box"></i>
                             Pick Start
+                        </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab-icon" data-bs-toggle="tab"

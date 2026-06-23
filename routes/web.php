@@ -11,6 +11,7 @@ use App\Http\Controllers\LoadingContoroller;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\PickController;
+use App\Http\Controllers\SuratJalanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DeliverController;
 use App\Http\Controllers\JenisController;
@@ -58,6 +59,10 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::patch('/pick/end', [PickController::class, 'end']);
     Route::patch('/pick/{id}/end', [PickController::class, 'endPick'])->name('pick.end');
 
+    Route::get('/suratjalan', [SuratJalanController::class, 'index'])->name('daftar-sj');
+    Route::get('/surat-jalan-detail', [SuratJalanController::class, 'getDetail'])->name('surat-jalan.detail');
+    Route::get('/surat-jalan/data', [SuratJalanController::class, 'getData'])->name('surat-jalan.data');
+
     // Route::get('/boarding', [BoardingListController::class, 'index'])->name('boarding');
     // Route::post('/boarding', [BoardingListController::class, 'store'])->name('boarding.store');
     // Route::get('/boarding/items', [BoardingListController::class, 'getAll'])->name('boarding.items');
@@ -73,6 +78,7 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/loading/items', [LoadingContoroller::class, 'getLoadingItems'])->name('loading.items');
     Route::get('/loading/items/{outletId}', [LoadingContoroller::class, 'getLoadingItemsByOutlet'])->name('loading.items.by-outlet');
     Route::patch('/loading/update/{id}', [LoadingContoroller::class, 'updateLoading'])->name('loading.update');
+    Route::get('/loading/preview/{id}', [LoadingContoroller::class, 'preview'])->name('loading.preview');
     Route::get('/loading/print/{id}', [LoadingContoroller::class, 'printById'])->name('loading.print');
     Route::get('/loading/history', [LoadingContoroller::class, 'history']);
     Route::get('/loading/{id}', [LoadingContoroller::class, 'loadingDetail'])->name('loading.detail');

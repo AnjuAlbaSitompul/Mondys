@@ -8,7 +8,12 @@ return [
         'route' => 'dashboard',
         'role' => ['ADMIN', 'DRIVER', 'PICKER', 'PIC', 'SPV', 'BOARDER']
     ],
-
+    [
+        'title' => 'Daftar SJ',
+        'icon' => 'fa-solid fa-list',
+        'route' => 'daftar-sj',
+        'role' => ['ADMIN', 'SPV'],
+    ],
     [
         'title' => 'Task',
         'icon' => 'fa-solid fa-box',

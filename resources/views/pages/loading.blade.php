@@ -11,8 +11,8 @@
                 <ul class="nav nav-tabs p-3" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="home-tab-icon" data-bs-toggle="tab"
-                            data-bs-target="#home-tab-icon-pane" type="button" role="tab"
-                            aria-controls="home-tab-icon-pane" aria-selected="true">
+                            data-bs-target="#home-tab-icon-pane" type="button" role="tab" aria-controls="home-tab-icon-pane"
+                            aria-selected="true">
                             <i class="fa fa-truck-loading"></i>
                             Loading
                     </li>
@@ -129,8 +129,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="profile-tab-icon-pane" role="tabpanel"
-                        aria-labelledby="profile-tab-icon" tabindex="0">
+                    <div class="tab-pane fade" id="profile-tab-icon-pane" role="tabpanel" aria-labelledby="profile-tab-icon"
+                        tabindex="0">
                         <div class="statbox widget box box-shadow">
                             <div class="widget-header">
                                 <div class="row">
@@ -166,7 +166,7 @@
     </div>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             moment.locale('id')
             const Toast = Swal.mixin({
                 toast: true,
@@ -183,52 +183,52 @@
 
             let tableSj = $('#sjItems').DataTable({
                 columns: [{
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            return meta.row + 1;
-                        }
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'barang.sjcode',
-                        defaultContent: '-'
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'qty',
-                        defaultContent: '-'
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'koli',
-                        defaultContent: '-'
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'boarding_start',
-                        render: function(data) {
-                            return data ? moment.utc(data).local().fromNow() : '-';
-                        }
-                    },
-                    {
-                        className: 'text-center',
-                        data: null,
-                        render: function(data) {
-                            return `
-            <input 
-                type="checkbox"
-                class="form-check-input sj-select"
-                name="selectedSj[]"
-                value="${data.id}"
-                ${data.checked ? 'checked' : ''}
-            >
-        `;
-                        }
-                    },
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    className: 'text-center',
+                    data: 'barang.sjcode',
+                    defaultContent: '-'
+                },
+                {
+                    className: 'text-center',
+                    data: 'qty',
+                    defaultContent: '-'
+                },
+                {
+                    className: 'text-center',
+                    data: 'koli',
+                    defaultContent: '-'
+                },
+                {
+                    className: 'text-center',
+                    data: 'boarding_start',
+                    render: function (data) {
+                        return data ? moment.utc(data).local().fromNow() : '-';
+                    }
+                },
+                {
+                    className: 'text-center',
+                    data: null,
+                    render: function (data) {
+                        return `
+                <input 
+                    type="checkbox"
+                    class="form-check-input sj-select"
+                    name="selectedSj[]"
+                    value="${data.id}"
+                    ${data.checked ? 'checked' : ''}
+                >
+            `;
+                    }
+                },
                 ]
             });
 
-            $('#sjItems tbody').on('dblclick', 'td', function() {
+            $('#sjItems tbody').on('dblclick', 'td', function () {
                 let cell = tableSj.cell(this);
                 let columnIndex = cell.index().column;
 
@@ -267,12 +267,12 @@
 
 
 
-            $('#sjItems tbody').on('blur', 'input', function() {
+            $('#sjItems tbody').on('blur', 'input', function () {
 
                 saveData($(this), tableSj);
             });
 
-            $('#sjItems tbody').on('keypress', 'input', function(e) {
+            $('#sjItems tbody').on('keypress', 'input', function (e) {
                 if (e.which === 13) {
                     saveData($(this), tableSj);
                 }
@@ -280,52 +280,52 @@
 
             let tableTitip = $('#titipItems').DataTable({
                 columns: [{
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            return meta.row + 1;
-                        }
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'barang.nama_barang',
-                        defaultContent: '-'
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'barang.jenis_barang.name',
-                        defaultContent: '-'
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'koli',
-                        defaultContent: '-'
-                    },
-                    {
-                        className: 'text-center',
-                        data: 'boarding_start',
-                        render: function(data) {
-                            return data ? moment.utc(data).local().fromNow() : '-';
-                        }
-                    },
-                    {
-                        className: 'text-center',
-                        data: null,
-                        render: function(data) {
-                            return `
-            <input 
-                type="checkbox"
-                class="form-check-input sj-select"
-                name="selectedSj[]"
-                value="${data.id}"
-                ${data.checked ? 'checked' : ''}
-            >
-        `;
-                        }
-                    },
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    className: 'text-center',
+                    data: 'barang.nama_barang',
+                    defaultContent: '-'
+                },
+                {
+                    className: 'text-center',
+                    data: 'barang.jenis_barang.name',
+                    defaultContent: '-'
+                },
+                {
+                    className: 'text-center',
+                    data: 'koli',
+                    defaultContent: '-'
+                },
+                {
+                    className: 'text-center',
+                    data: 'boarding_start',
+                    render: function (data) {
+                        return data ? moment.utc(data).local().fromNow() : '-';
+                    }
+                },
+                {
+                    className: 'text-center',
+                    data: null,
+                    render: function (data) {
+                        return `
+                <input 
+                    type="checkbox"
+                    class="form-check-input sj-select"
+                    name="selectedSj[]"
+                    value="${data.id}"
+                    ${data.checked ? 'checked' : ''}
+                >
+            `;
+                    }
+                },
                 ]
             });
 
-            $('#titipItems tbody').on('dblclick', 'td', function() {
+            $('#titipItems tbody').on('dblclick', 'td', function () {
                 let cell = tableTitip.cell(this);
                 let columnIndex = cell.index().column;
 
@@ -346,12 +346,12 @@
                 td.find('input').focus().select();
             });
 
-            $('#titipItems tbody').on('blur', 'input', function() {
+            $('#titipItems tbody').on('blur', 'input', function () {
 
                 saveData($(this), tableTitip);
             });
 
-            $('#titipItems tbody').on('keypress', 'input', function(e) {
+            $('#titipItems tbody').on('keypress', 'input', function (e) {
                 if (e.which === 13) {
                     saveData($(this), tableTitip);
                 }
@@ -378,18 +378,18 @@
 
             }
 
-            $('#outlet').on('change', function() {
+            $('#outlet').on('change', function () {
 
                 let outletId = $(this).val();
                 if (outletId) {
                     $.ajax({
                         url: `/loading/items/${outletId}`,
                         type: 'GET',
-                        success: function(data) {
+                        success: function (data) {
                             tableSj.clear().rows.add(data.data.reguler).draw();
                             tableTitip.clear().rows.add(data.data.titip).draw();
                         },
-                        error: function(xhr, status, error) {
+                        error: function (xhr, status, error) {
                             console.error('Error fetching Surat Jalan:', error);
                         }
                     });
@@ -405,79 +405,79 @@
                 ajax: {
                     url: '/loading/items',
                     type: 'GET',
-                    dataSrc: function(json) {
+                    dataSrc: function (json) {
                         return json;
                     }
                 },
                 columns: [{
-                        data: null,
-                        className: "text-center",
-                        render: function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    {
-                        data: 'surat_jalan',
-                        name: 'Loading Code'
-                    },
-                    {
-                        data: 'outlet.name',
-                        name: 'Tujuan'
-                    },
-                    {
-                        data: 'driver.name',
-                        className: 'text-center',
-                        render: function(data) {
-                            return data || '-';
-                        }
-                    },
-                    {
-                        data: 'co_driver.name',
-                        className: 'text-center',
-                        render: function(data) {
-                            return data || '-';
-                        }
-                    },
-                    {
-                        data: 'loading_start',
-                        className: 'text-center',
-                        render: function(data) {
-                            return data ? moment.utc(data).local().fromNow() : '-';
-                        }
-                    },
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        className: 'text-center',
-                        render: function(data, type, row) {
-                            return `<div class="dropdown">
-                                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                                        </a>
-    
-                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                                            <a class="dropdown-item update-loading" data-id="${data.id}">Update</a>
-                                                            <a class="dropdown-item print-loading" data-id="${data.id}">Print</a>
-                                                        </div>
-                                                    </div>`;
-                        }
+                    data: null,
+                    className: "text-center",
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
                     }
+                },
+                {
+                    data: 'surat_jalan',
+                    name: 'Loading Code'
+                },
+                {
+                    data: 'outlet.name',
+                    name: 'Tujuan'
+                },
+                {
+                    data: 'driver.name',
+                    className: 'text-center',
+                    render: function (data) {
+                        return data || '-';
+                    }
+                },
+                {
+                    data: 'co_driver.name',
+                    className: 'text-center',
+                    render: function (data) {
+                        return data || '-';
+                    }
+                },
+                {
+                    data: 'loading_start',
+                    className: 'text-center',
+                    render: function (data) {
+                        return data ? moment.utc(data).local().fromNow() : '-';
+                    }
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center',
+                    render: function (data, type, row) {
+                        return `<div class="dropdown">
+                                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                                            </a>
+
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+                                                                <a class="dropdown-item update-loading" data-id="${data.id}">Update</a>
+                                                                <a class="dropdown-item print-loading" data-id="${data.id}">Print</a>
+                                                            </div>
+                                                        </div>`;
+                    }
+                }
                 ]
             });
-            $(document).on('click', '.print-loading', function() {
+            $(document).on('click', '.print-loading', function () {
                 let id = $(this).data('id');
                 window.open(`/loading/print/${id}`)
             })
 
-            $(document).on('click', '.update-loading', function() {
+            $(document).on('click', '.update-loading', function () {
                 let id = $(this).data('id');
 
 
                 $.ajax({
                     url: `/loading/${id}`,
                     type: 'GET',
-                    success: function(res) {
+                    success: function (res) {
                         tableTitip.clear();
                         tableSj.clear();
 
@@ -518,18 +518,18 @@
                         $('#loadingBtn').hide();
 
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         alert(xhr.responseJSON?.message || 'Gagal ambil data 😢');
                     }
                 });
             });
 
-            $('#updateLoading').on('click', function(e) {
+            $('#updateLoading').on('click', function (e) {
                 let selectedItems = [];
                 let id = $(this).data('id')
 
                 function collectSelected(table) {
-                    table.rows().every(function() {
+                    table.rows().every(function () {
                         let rowNode = this.node();
                         let isChecked = $(rowNode).find('.sj-select').is(':checked');
 
@@ -583,7 +583,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         Toast.fire({
                             icon: 'success',
                             title: 'Loading operation updated successfully'
@@ -591,7 +591,7 @@
                         $('#outlet').trigger('change'); // refresh data items
                         table.ajax.reload(); // refresh data table
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         Toast.fire({
                             icon: 'error',
                             title: xhr.responseJSON?.message ||
@@ -601,12 +601,12 @@
                     }
                 });
             })
-            $('#loadingForm').on('submit', function(e) {
+            $('#loadingForm').on('submit', function (e) {
                 e.preventDefault();
                 let selectedItems = [];
 
                 function collectSelected(table) {
-                    table.rows().every(function() {
+                    table.rows().every(function () {
                         let rowNode = this.node();
                         let isChecked = $(rowNode).find('.sj-select').is(':checked');
 
@@ -660,7 +660,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response) {
+                    success: function (response) {
                         Toast.fire({
                             icon: 'success',
                             title: 'Loading operation started successfully'
@@ -671,7 +671,7 @@
 
                         table.ajax.reload(); // refresh data table
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         Toast.fire({
                             icon: 'error',
                             title: xhr.responseJSON?.message ||
@@ -690,57 +690,57 @@
             ajax: {
                 url: '/loading/history',
                 type: 'GET',
-                dataSrc: function(json) {
+                dataSrc: function (json) {
                     return json.data
                 }
             },
             columns: [{
-                    data: null,
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    }
-                },
-                {
-                    data: 'surat_jalan',
-                    className: 'text-center'
-                },
-                {
-                    data: 'created_at',
-                    className: 'text-center',
-                    render: function(data) {
-                        if (!data) return '-';
-                        let date = new Date(data);
-                        return date.toLocaleString('id-ID');
-                    }
-                },
-                {
-                    data: 'outlet',
-                    className: 'text-center',
-                    render: function(data) {
-                        return data?.codeOutlet ?? '-';
-                    }
-                },
-                {
-                    data: 'driver',
-                    className: 'text-center',
-                    render: function(data, type, row) {
-                        let driver = row.driver?.name ?? '-';
-                        let coDriver = row.co_driver?.name ?? '';
-                        return coDriver ? `${driver} / ${coDriver}` : driver;
-                    }
-                },
-                {
-                    data: 'id',
-                    className: 'text-center',
-                    render: function(data) {
-                        return `
-                    <button class="btn btn-sm btn-primary print-loading" data-id="${data}">
-                        Print
-                    </button>
-                `;
-                    }
+                data: null,
+                className: 'text-center',
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
                 }
+            },
+            {
+                data: 'surat_jalan',
+                className: 'text-center'
+            },
+            {
+                data: 'created_at',
+                className: 'text-center',
+                render: function (data) {
+                    if (!data) return '-';
+                    let date = new Date(data);
+                    return date.toLocaleString('id-ID');
+                }
+            },
+            {
+                data: 'outlet',
+                className: 'text-center',
+                render: function (data) {
+                    return data?.codeOutlet ?? '-';
+                }
+            },
+            {
+                data: 'driver',
+                className: 'text-center',
+                render: function (data, type, row) {
+                    let driver = row.driver?.name ?? '-';
+                    let coDriver = row.co_driver?.name ?? '';
+                    return coDriver ? `${driver} / ${coDriver}` : driver;
+                }
+            },
+            {
+                data: 'id',
+                className: 'text-center',
+                render: function (data) {
+                    return `
+                        <button class="btn btn-sm btn-primary print-loading" data-id="${data}">
+                            Print
+                        </button>
+                    `;
+                }
+            }
             ]
         });
     </script>

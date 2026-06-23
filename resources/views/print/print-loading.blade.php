@@ -216,6 +216,7 @@
                 <tr>
                     <th>No</th>
                     <th>No SJ</th>
+                    <th>Keterangan</th>
                     <th>Box</th>
                     <th>Koli</th>
                 </tr>
@@ -234,6 +235,8 @@
                         <td class="text-left">
                             {{ $item->boardingList?->barang?->sjcode ?? '-' }}
                         </td>
+                        <td>
+                        </td>
                         <td>{{ $item->box }}</td>
                         <td>{{ $item->koli }}</td>
                     </tr>
@@ -245,7 +248,7 @@
                 @endforeach
 
                 <tr>
-                    <td colspan="2" class="text-left"><b>Total Detail</b></td>
+                    <td colspan="3" class="text-left"><b>Total Detail</b></td>
                     <td><b>{{ $totalBox }}</b></td>
                     <td><b>{{ $totalKoli }}</b></td>
                 </tr>

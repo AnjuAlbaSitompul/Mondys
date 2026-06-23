@@ -110,6 +110,72 @@ class LoadingContoroller extends Controller
             'rekapJenis'
         ));
     }
+
+    public function preview($id)
+    {
+        $loading = Loading::with([
+            'details.boardingList.barang.jenisBarang',
+            'driver',
+            'coDriver',
+            'creator.location',
+            'outlet',
+        ])->findOrFail($id);
+
+        // Pisahin data
+        $titipItems = $loading->details
+            ->filter(
+                fn($d) =>
+                $d->boardingList?->barang?->type === 'TITIP'
+            )
+            ->sortBy(
+                fn($d) =>
+                $d->boardingList?->barang?->sjcode ?? ''
+            );
+
+        $regularItems = $loading->details
+            ->filter(
+                fn($d) =>
+                $d->boardingList?->barang?->type === 'REGULER'
+            )
+            ->sortBy(
+                fn($d) =>
+                $d->boardingList?->barang?->sjcode ?? ''
+            );
+
+        // Rekap jenis barang (TITIP saja)
+        $rekapJenis = $titipItems
+            ->groupBy(
+                fn($d) =>
+                $d->boardingList?->barang?->jenisBarang?->name ?? 'LAINNYA'
+            )
+            ->map(fn($items) => $items->sum('koli'));
+
+        $rekapJenis = $titipItems
+            ->groupBy(
+                fn($d) =>
+                $d->boardingList?->barang?->jenisBarang?->name ?? 'LAINNYA'
+            )
+            ->map(fn($items) => $items->sum('koli'));
+
+        // TOTAL QTY SEMUA TITIP
+        $totalQtyTitip = $titipItems->sum('koli');
+
+        // TOTAL BOX (dari REGULER)
+        $totalBox = $regularItems->sum('box');
+
+        // Tambahkan "BOX" ke rekap jenis
+        $rekapJenis = $rekapJenis->put('BOX', $totalBox);
+
+        // GRAND TOTAL (kalau mau dipakai di view)
+        $grandTotal = $totalQtyTitip + $totalBox;
+
+        return view('print.show-loading', compact(
+            'loading',
+            'titipItems',
+            'regularItems',
+            'rekapJenis'
+        ));
+    }
     public function updateLoading(Request $request, $id)
     {
         $request->validate([
