@@ -59,7 +59,7 @@ class BoardingListController extends Controller
 
                 return [
                     'full' => $code,
-                    'outlet_code' => substr($code, 0, 4),
+                    'outlet_code' => strtoupper(trim(substr($code, 0, 4))),
                     'sj_barang' => substr($code, 4, 16),
                     'koli' => substr($code, -2),
                 ];
@@ -71,12 +71,13 @@ class BoardingListController extends Controller
             $outletCodes = $parsed->pluck('outlet_code')->unique();
 
             $outlets = Outlet::whereIn('codeOutlet', $outletCodes)
+                ->where('is_active', true)
                 ->get()
                 ->keyBy('codeOutlet');
 
             if ($outlets->count() !== $outletCodes->count()) {
                 throw new \Exception(
-                    "Outlet tidak valid: " .
+                    "Outlet tidak valid atau tidak aktif: " .
                     implode(', ', $outletCodes->diff($outlets->keys())->toArray())
                 );
             }

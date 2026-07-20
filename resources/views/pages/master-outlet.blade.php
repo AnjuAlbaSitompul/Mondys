@@ -36,7 +36,8 @@
                             {{-- USERNAME --}}
                             <div class="mb-3">
                                 <label for="alamat" class="form-label">Alamat</label>
-                                <textarea class="form-control" aria-label="With textarea" id="alamat" placeholder="Masukkan Alamat" name="alamat"></textarea>
+                                <textarea class="form-control" aria-label="With textarea" id="alamat"
+                                    placeholder="Masukkan Alamat" name="alamat"></textarea>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">
@@ -68,6 +69,7 @@
                                         <th>Code</th>
                                         <th class="text-center">Nama</th>
                                         <th class="text-center">Alamat</th>
+                                        <th class="text-center">Status</th>
                                         <th class="text-center col-action">
                                             <i class="fa-solid fa-ellipsis-vertical"></i>
                                         </th>
@@ -83,7 +85,7 @@
     </div>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -102,46 +104,74 @@
                 processing: true,
                 ajax: {
                     url: '/master/outlet/items',
-                    dataSrc: 'data'
+                    dataSrc: function (json) {
+                        console.log(json.data);
+                        return json.data;
+                    }
                 },
                 columns: [{
-                        data: null,
-                        className: 'text-center',
-                        render: (data, type, row, meta) => meta.row + 1
-                    },
-                    {
-                        data: 'codeOutlet'
-                    },
-                    {
-                        data: 'name',
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'alamat',
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'id',
-                        className: 'text-center',
-                        orderable: false,
-                        render: function(data) {
-                            return `
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-light border" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item btn-edit" data-id="${data}">Edit</a></li>
-                            <li><a class="dropdown-item text-danger btn-delete" data-id="${data}">Delete</a></li>
-                        </ul>
-                    </div>
-                `;
+                    data: null,
+                    className: 'text-center',
+                    render: (data, type, row, meta) => meta.row + 1
+                },
+                {
+                    data: 'codeOutlet'
+                },
+                {
+                    data: 'name',
+                    className: 'text-center'
+                },
+                {
+                    data: 'alamat',
+                    className: 'text-center'
+                },
+                {
+                    data: 'is_active',
+                    className: 'text-center',
+                    render: function (data, row, type, meta) {
+                        if (data === 1) {
+                            return '<span class="badge badge-success">Aktif</span>';
+                        } else {
+                            return '<span class="badge badge-danger">Nonaktif</span>';
                         }
                     }
+                },
+                {
+                    data: 'id',
+                    className: 'text-center',
+                    orderable: false,
+                    render: function (data, row, type, meta) {
+                        if (type.is_active === 1) {
+                            return `
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light border" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit" data-id="${data}">Edit</a></li>
+                                <li><a class="dropdown-item text-danger btn-delete" data-id="${data}">Delete</a></li>
+                            </ul>
+                        </div>
+                    `;
+                        } else {
+                            return `
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light border" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item btn-edit" data-id="${data}">Edit</a></li>
+                                <li><a class="dropdown-item text-success btn-activate" data-id="${data}">Activate</a></li>
+                            </ul>
+                        </div>
+                    `;
+                        }
+                    }
+                }
                 ]
             });
 
-            $('#userForm').on('submit', function(e) {
+            $('#userForm').on('submit', function (e) {
                 e.preventDefault();
 
                 let btn = $(this).find('button[type="submit"]');
@@ -152,7 +182,7 @@
                     url: '/master/outlet/create',
                     method: 'POST',
                     data: $(this).serialize(),
-                    success: function(res) {
+                    success: function (res) {
 
                         Toast.fire({
                             icon: 'success',
@@ -165,7 +195,7 @@
 
                         btn.prop('disabled', false).text('Simpan');
                     },
-                    error: function(err) {
+                    error: function (err) {
                         btn.prop('disabled', false).text('Simpan');
 
                         let msg = err.responseJSON?.message || 'Terjadi kesalahan';
@@ -178,7 +208,7 @@
                 });
             });
 
-            $(document).on('click', '.btn-edit', function() {
+            $(document).on('click', '.btn-edit', function () {
                 let data = outletTable.row($(this).closest('tr')).data();
 
                 $('#name').val(data.name);
@@ -197,7 +227,7 @@
                 }, 300);
             });
 
-            $('.update-user').on('click', function() {
+            $('.update-user').on('click', function () {
                 let id = $(this).data('id');
                 let btn = $(this);
 
@@ -207,7 +237,7 @@
                     url: `/master/outlet/update/${id}`,
                     method: 'PATCH',
                     data: $('#userForm').serialize(),
-                    success: function(res) {
+                    success: function (res) {
 
                         Toast.fire({
                             icon: 'success',
@@ -223,7 +253,7 @@
 
                         btn.prop('disabled', false).text('Update');
                     },
-                    error: function() {
+                    error: function () {
                         btn.prop('disabled', false).text('Update');
 
                         Toast.fire({
@@ -234,7 +264,7 @@
                 });
             });
 
-            $(document).on('click', '.btn-delete', function() {
+            $(document).on('click', '.btn-delete', function () {
                 let id = $(this).data('id');
 
                 Swal.fire({
@@ -248,11 +278,40 @@
                         $.ajax({
                             url: `/master/outlet/delete/${id}`,
                             method: 'DELETE',
-                            success: function(res) {
+                            success: function (res) {
 
                                 Toast.fire({
                                     icon: 'success',
                                     title: res.message || 'Berhasil dihapus'
+                                });
+
+                                outletTable.ajax.reload();
+                            }
+                        });
+                    }
+                });
+            });
+
+
+            $(document).on('click', '.btn-activate', function () {
+                let id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Yakin?',
+                    text: 'Data akan diAktifkan',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, aktifkan!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/master/outlet/activate/${id}`,
+                            method: 'PATCH',
+                            success: function (res) {
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: res.message || 'Berhasil diaktifkan'
                                 });
 
                                 outletTable.ajax.reload();

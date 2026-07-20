@@ -103,6 +103,9 @@
                                         <th class="text-center col-no">No</th>
                                         <th>Nama</th>
                                         <th class="text-center">Role</th>
+                                        <th class="text-center">Code Outlet</th>
+                                        <th class="text-center">Outlet</th>
+                                        <th class="text-center">Status</th>
                                         <th class="text-center col-action">
                                             <i class="fa-solid fa-ellipsis-vertical"></i>
                                         </th>
@@ -197,7 +200,10 @@
                 processing: true,
                 ajax: {
                     url: '/master/users/items',
-                    dataSrc: 'data'
+                    dataSrc: function(json) {
+                        console.log(json);
+                        return json.data;
+                    }
                 },
                 columns: [{
                         data: null,
@@ -215,6 +221,29 @@
                         render: function(data) {
                             let color = data === 'ADMIN' ? 'primary' : 'warning';
                             return `<span class="badge bg-${color}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'outlet.codeOutlet',
+                        className: 'text-center',
+                        render: function(data, type, row) {
+                            return data ?? '-';
+                        }
+                    },
+                    {
+                        data:'outlet.name',
+                        className: 'text-center',
+                        render: function(data, type, row) {
+                            return data ?? '-';
+                        }
+                    },
+                    {
+                        data: 'is_active',
+                        className: 'text-center',
+                        render: function(data) {
+                            let color = data ? 'success' : 'danger';
+                            let text = data ? 'Aktif' : 'Nonaktif';
+                            return `<span class="badge bg-${color}">${text}</span>`;
                         }
                     },
                     {

@@ -14,7 +14,7 @@ class OutletController extends Controller
 
     public function items()
     {
-        $outlet = Outlet::where('is_active', '1')->get();
+        $outlet = Outlet::all();
 
         return response()->json([
             'data' => $outlet
@@ -23,12 +23,15 @@ class OutletController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'codeOutlet' => 'required|string|max:100|unique:outlets,codeOutlet',
-            'alamat' => 'nullable|string',
+        $request->merge([
+            'codeOutlet' => strtoupper(str_replace(' ', '', (string) $request->input('codeOutlet'))),
         ]);
 
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'codeOutlet' => 'required|string|max:100|regex:/^\S+$/|unique:outlets,codeOutlet',
+            'alamat' => 'nullable|string',
+        ]);
 
 
         $outlet = Outlet::create($request->all());
@@ -43,6 +46,10 @@ class OutletController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->merge([
+            'codeOutlet' => str_replace(' ', '', (string) $request->input('codeOutlet')),
+        ]);
+
         $outlet = Outlet::find($id);
 
         if (!$outlet) {
@@ -54,7 +61,7 @@ class OutletController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'codeOutlet' => 'required|string|max:100|unique:outlets,codeOutlet,' . $id,
+            'codeOutlet' => 'required|string|max:100|regex:/^\S+$/|unique:outlets,codeOutlet,' . $id,
             'alamat' => 'nullable|string',
         ]);
 
@@ -84,6 +91,25 @@ class OutletController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Outlet berhasil dihapus'
+        ]);
+    }
+
+    public function activate($id)
+    {
+        $outlet = Outlet::find($id);
+
+        if (!$outlet) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Outlet tidak ditemukan'
+            ], 404);
+        }
+
+        $outlet->update(['is_active' => 1]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Outlet berhasil diaktifkan'
         ]);
     }
 }
