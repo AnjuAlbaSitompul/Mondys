@@ -94,6 +94,7 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::post('/master/outlet/create', [OutletController::class, 'store']);
     Route::patch('/master/outlet/update/{id}', [OutletController::class, 'update']);
     Route::delete('/master/outlet/delete/{id}', [OutletController::class, 'destroy']);
+    Route::patch('/master/outlet/activate/{id}', [OutletController::class, 'activate']);
 
     Route::get('/master/jenis-barang', [JenisController::class, 'index'])->name('master.jenis');
     Route::get('/master/jenis-barang/items', [JenisController::class, 'items'])->name('master.jenis.items');
