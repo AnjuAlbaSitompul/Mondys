@@ -63,16 +63,6 @@ Route::middleware(['auth', 'role:ADMIN,SPV'])->group(function () {
     Route::get('/surat-jalan-detail', [SuratJalanController::class, 'getDetail'])->name('surat-jalan.detail');
     Route::get('/surat-jalan/data', [SuratJalanController::class, 'getData'])->name('surat-jalan.data');
 
-    // Route::get('/boarding', [BoardingListController::class, 'index'])->name('boarding');
-    // Route::post('/boarding', [BoardingListController::class, 'store'])->name('boarding.store');
-    // Route::get('/boarding/items', [BoardingListController::class, 'getAll'])->name('boarding.items');
-
-    // Route::get('/titip', [DeliveringController::class, 'index'])->name('titip');
-    // Route::post('/titip', [DeliveringController::class, 'create'])->name('titip.create');
-    // Route::get('/titip/items', [DeliveringController::class, 'getAll'])->name('titip.items');
-    // Route::delete('/titip/{id}', [DeliveringController::class, 'delete'])->name('titip.delete');
-    // Route::patch('/titip/update/{id}', [DeliveringController::class, 'update'])->name('titip.update');
-
     Route::get('/loading', [LoadingContoroller::class, 'index'])->name('loading');
     Route::post('/loading', [LoadingContoroller::class, 'loading'])->name('loading.store');
     Route::get('/loading/items', [LoadingContoroller::class, 'getLoadingItems'])->name('loading.items');
